@@ -1,29 +1,11 @@
 package test2;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.Color;
+import java.util.HashMap;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -49,40 +31,39 @@ public class GLTest2 {
 	
 	static Camera camera;
 	
-	static Vector3D pos = new Vector3D(0,-1,3);
-	static Vector3D rot = new Vector3D(0,0,0);
+	static HashMap<Integer, Renderer> renderers;
 	
 	public static void main(String[] args) {
 		GLFWErrorCallback.createPrint(System.err).set();
 		
-		glfwInit();
+		GLFW.glfwInit();
 //		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 //		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 //		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL33.GL_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_FALSE);
 		
-		window = glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
-		glfwMakeContextCurrent(window);
+		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
+		GLFW.glfwMakeContextCurrent(window);
         GL.createCapabilities();
 		
         GL33.glViewport(0,0,width,height);
-		glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
+        GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
 			width = w;
 			height = h;
 			GL33.glViewport(0, 0, width, height);
 			camera.aspectRatio = (float)width/(float)height;
-			camera.recaculateTransform();
+			camera.recaculatePerspective();
 		});
 		
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+        GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+        GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
         
         try {
 			shader = new ShaderProgram();
-			shader.createVertexShaderFile("src/shaders/vertex.vs");
-			shader.createFragmentShaderFile("src/shaders/fragment.fs");
+			shader.createVertexShaderFile("src/shaders/vertex.vert");
+			shader.createFragmentShaderFile("src/shaders/fragment.frag");
 			shader.link();
 			shader.bind();
 		} catch (Exception e) {
@@ -93,20 +74,31 @@ public class GLTest2 {
         lighting = new LightingSettings(shader);
         
         camera = new Camera(shader);
-        camera.setPosition(0,2,-1);
+        camera.transform.setPosition(0,0,-3);
+        camera.transform.setRotation(25, -90, 0);
+		camera.aspectRatio = (float)width/(float)height;
+		camera.recaculatePerspective();
         
-        glfwShowWindow(window);
+        GLFW.glfwShowWindow(window);
         
 //        testMesh = new Mesh(new float[] {
-//    		 0.5f,  0.5f, 0.0f,  // top right
-//             0.5f, -0.5f, 0.0f,  // bottom right
-//            -0.5f, -0.5f, 0.0f,  // bottom left
-//            -0.5f,  0.5f, 0.0f   // top left 
-//        }, new int[] {
-//    		0, 1, 3,  // first Triangle
-//            1, 2, 3   // second Triangle
+//             0.5f, -0.5f, -1.5f,  // bottom right
+//            -0.5f, -0.5f, -1.5f,  // bottom left
+//             0.0f,  0.5f, -1.5f   // top left 
 //        });
-        float vertices[] = {
+//        testMesh.setColors(new float[] {
+//       		 1.0f, 0.0f, 0.0f,
+//       		 0.0f, 1.0f, 0.0f,
+//       		 0.0f, 0.0f, 1.0f,
+//       		 1.0f, 1.0f, 1.0f
+//       });
+//       testMesh.setNormals(new float[] {
+//       		 0.0f, 0.0f, 1.0f,
+//       		 0.0f, 0.0f, 1.0f,
+//       		 0.0f, 0.0f, 1.0f,
+//       		 0.0f, 0.0f, 1.0f
+//       });
+       float vertices[] = {
         	    -0.5f, -0.5f, -0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  0.0f, -1.0f,
         	     0.5f, -0.5f, -0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  0.0f, -1.0f, 
         	     0.5f,  0.5f, -0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  0.0f, -1.0f, 
@@ -148,81 +140,61 @@ public class GLTest2 {
         	     0.5f,  0.5f,  0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  1.0f,  0.0f,
         	    -0.5f,  0.5f,  0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  1.0f,  0.0f,
         	    -0.5f,  0.5f, -0.5f,  0.5f, 0.25f, 0.2f,   0.0f,  1.0f,  0.0f
-        	};
-//        testMesh = new Mesh(new float[] {
-//	    		-0.5f, -0.5f,  0.0f, // left  
-//	             0.5f, -0.5f,  0.0f, // right 
-//	             0.0f,  0.5f,  0.0f  // top   
-//        });
-//        testMesh.setColors(new float[] {
-//        		 1.0f, 0.0f, 0.0f,
-//        		 0.0f, 1.0f, 0.0f,
-//        		 0.0f, 0.0f, 1.0f,
-//        		 1.0f, 1.0f, 1.0f
-//        });
-//        testMesh.setNormals(new float[] {
-//        		 0.0f, 0.0f, 1.0f,
-//        		 0.0f, 0.0f, 1.0f,
-//        		 0.0f, 0.0f, 1.0f,
-//        		 0.0f, 0.0f, 1.0f
-//        });
+        };
         testMesh = new Mesh(vertices, true);
         
-        lighting.setAbientLighting(Color.decode("0x202020"));
-        lighting.setLightPosition(new Vector3D(0.0, 0.0, -1.0));
-        lighting.setAbientLighting(Color.decode("0xf0f0f0"));
+        renderers = new HashMap<Integer, Renderer>();;
         
-//        GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+        Transform t1 = new Transform();
+        t1.setPosition(-1.0f, 0.0f, 0.0f);
+        Renderer r1 = new Renderer(testMesh, t1);
+        r1.setShader(shader);
+        renderers.put(0, r1);
         
-//        float val = 0.0f;
+        lighting.setAbientLighting(Color.decode("0x505050"));
+        lighting.setLightPosition(new Vector3f(-2.0f, 1.0f, -1.0f));
+        lighting.setLightColor(Color.decode("0xf000f0"));
         
-//        int colorUniform = shader.getUniform("testColor");
+        GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
         
-        while(!glfwWindowShouldClose(window)) {
-    		glfwPollEvents();
+        while(!GLFW.glfwWindowShouldClose(window)) {
+        	GLFW.glfwPollEvents();
     		processInput();
     		shader.bind();
         	loop();
-    		glfwSwapBuffers(window);
+        	GLFW.glfwSwapBuffers(window);
 //    		val += 0.001f;
 //            GL33.glUniform4f(colorUniform, 0.0f, (float)(Math.sin(val)/2.0)+0.5f, 0.0f, 0.0f);
         }
         
         testMesh.dispose();
         
-        glfwTerminate();
+        GLFW.glfwTerminate();
 	}
 	
 	public static void loop() {
-		GL33.glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		GL33.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 		
 		t += 0.002f;
-		float y = (float)Math.sin(t)*10f;
-//		System.out.println(y);
-        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
-		
-//        GL33.glLoadIdentity();
-//        GL33.glScaled(0.1,0.1,0.1);
-//        GL33.glTranslated(cPos.x, cPos.y, cPos.z);
-//        GL33.glRotated(cRot.x, 1, 0.0, 0.0);
-//        GL33.glRotated(cRot.y, 0, 1, 0.0);
-//        GL33.glRotated(cRot.z, 0, 0, 1);
-//        GL33.glTranslated(pos.x, pos.y, pos.z);
-//        GL33.glRotated(rot.x, 1, 0.0, 0.0);
-//        GL33.glRotated(rot.y, 0, 1, 0.0);
-//        GL33.glRotated(rot.z, 0, 0, 1);
+		if(t >= 360) t = 0;
+//		float y = (float)Math.sin(t)*10f;
+//        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
         
-        float aspect = (float)width/(float)height;
+        camera.recalculateMatrix();
         
-		testMesh.render();
+        renderers.get(0).transform.setRotation(0, t, 0);
+        
+        for (Renderer renderer : renderers.values()) {
+        	renderer.render();
+		}
 		
 		
 	}
 	
 	public static void processInput() {
-	    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-	        glfwSetWindowShouldClose(window, true);
+	    if(GLFW.glfwGetKey(window, GLFW.GLFW_KEY_ESCAPE) == GLFW.GLFW_PRESS) {
+	    	GLFW.glfwSetWindowShouldClose(window, true);
 	    }
 	}
 }

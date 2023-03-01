@@ -40,9 +40,9 @@ public class Mesh {
 			color[i*3+1] = vertices[cI+1];
 			color[i*3+2] = vertices[cI+2];
 			int nI = (i*3 + 2)*3;
-			color[i*3] = vertices[nI];
-			color[i*3+1] = vertices[nI+1];
-			color[i*3+2] = vertices[nI+2];
+			norm[i*3] = vertices[nI];
+			norm[i*3+1] = vertices[nI+1];
+			norm[i*3+2] = vertices[nI+2];
 		}
 
 		vao = new VAO();
@@ -63,12 +63,20 @@ public class Mesh {
 	
 	public void render() {
 		vao.bind();
+		GL33.glEnableVertexAttribArray(0);
+		GL33.glEnableVertexAttribArray(1);
+		GL33.glEnableVertexAttribArray(3);
 		
 		if(indexMode) {
 			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLenght, GL33.GL_UNSIGNED_INT, 0);
 		} else {
 			GL33.glDrawArrays(GL33.GL_TRIANGLES, 0, indexLenght);
 		}
+		
+		GL33.glDisableVertexAttribArray(0);
+		GL33.glDisableVertexAttribArray(1);
+		GL33.glDisableVertexAttribArray(3);
+		VAO.unbind();
 	}
 	
 	public void dispose() {

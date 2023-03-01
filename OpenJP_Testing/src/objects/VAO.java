@@ -20,8 +20,8 @@ public class VAO {
 		ABO abo = new ABO(GL30.GL_ARRAY_BUFFER);
 		abo.fill(data);
 		abos.add(abo);
-		GL30.glVertexAttribPointer(attrib, 3, GL30.GL_FLOAT, false, 0, 0);
 		GL30.glEnableVertexAttribArray(attrib);
+		GL30.glVertexAttribPointer(attrib, 3, GL30.GL_FLOAT, false, 0, 0);
 		abo.unbind();
 	}
 	
@@ -33,20 +33,13 @@ public class VAO {
 		ABO ebo = new ABO(GL30.GL_ELEMENT_ARRAY_BUFFER);
 		ebo.fill(indicies);
 		abos.add(ebo);
-		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, false, 0, 0);
 		GL30.glEnableVertexAttribArray(0);
+		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, false, 0, 0);
 		vbo.unbind();
 	}
 	
 	public void storeColorData(float[] colors) {
 		storeDataInAttributeList(1, colors);
-//		bind();
-//		ABO vbo = new ABO(GL30.GL_ARRAY_BUFFER);
-//		vbo.fill(colors);
-//		abos.add(vbo);
-//		GL30.glVertexAttribPointer(1, 3, GL30.GL_FLOAT, false, 0, 0);
-//		GL30.glEnableVertexAttribArray(1);
-//		vbo.unbind();
 	}
 	public void storeNormalData(float[] normals) {
 		storeDataInAttributeList(2, normals);
