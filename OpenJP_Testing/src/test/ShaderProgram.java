@@ -64,14 +64,6 @@ public class ShaderProgram {
 
         return shaderId;
     }
-    public void createShaderFile(String filename, int shaderType) throws Exception {
-    	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
-    	String code = "";
-    	for(int i = 0 ; i < lines.size(); i++) {
-    		code += lines.get(i) + "\n";
-    	}
-    	createShader(code, shaderType);
-    }
 
     public void link() throws Exception {
         glLinkProgram(programId);
