@@ -9,6 +9,8 @@ public class Transform {
 	public Vector3f rotation;
 	public Vector3f scale;
 	
+	public Transform parent;
+	
 	public Transform() {
 		position = new Vector3f();
 		rotation = new Vector3f();
@@ -27,6 +29,7 @@ public class Transform {
 				.rotateY((float)Math.toRadians(rotation.y))
 				.rotateZ((float)Math.toRadians(rotation.z))
 				.scale(scale);
+		if(parent != null) world = parent.createMatrix().mul(world);
 		return world;
 	}
 	public Matrix4f createMatrixInvert() {
@@ -36,6 +39,7 @@ public class Transform {
 				.rotateY((float)Math.toRadians(rotation.y))
 				.rotateZ((float)Math.toRadians(rotation.z))
 				.scale(scale);
+		if(parent != null) world = world.mul(parent.createMatrixInvert());
 		return world;
 	}
 	

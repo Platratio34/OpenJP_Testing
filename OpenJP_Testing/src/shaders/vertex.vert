@@ -17,6 +17,6 @@ void main()
 {
     gl_Position = projectionMatrix * cameraMatrix * transformMatrix * vec4(position, 1.0);
     vertexColor = vec4(color, 1.0);
-    vertexNormal = (transformMatrix * vec4(normal, 0.0)).xyz;
+    vertexNormal = normalize((transformMatrix * vec4(normal, 0.0)).xyz);
     fragPos = (transformMatrix * vec4(position, 1.0)).xyz;
 }

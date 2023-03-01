@@ -15,12 +15,10 @@ uniform vec3 globalLightColor;
 
 void main()
 {
-	vec3 normal = normalize(vertexNormal);
 	vec3 lightDir = normalize(lightPos - fragPos);
-	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = lightColor * diff;
+	vec3 diffuse = lightColor * max(dot(vertexNormal, lightDir), 0.0);
 	
-	vec3 globalDiffuse = globalLightColor * max(dot(normal, globalLightDir), 0.0);
+	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
 	vec3 lighting = ambientColor + diffuse + globalDiffuse;
 	

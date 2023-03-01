@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 
 import test.ShaderProgram;
-import vectorLibrary.Vector3D;
 
 public class GLTest2 {
 
@@ -33,6 +32,9 @@ public class GLTest2 {
 	
 	static HashMap<Integer, Renderer> renderers;
 	protected static int nextId = 0;
+	
+	static Transform p1;
+	static Transform p2;
 	
 	public static void main(String[] args) {
 		GLFWErrorCallback.createPrint(System.err).set();
@@ -147,11 +149,72 @@ public class GLTest2 {
         
         renderers = new HashMap<Integer, Renderer>();;
         
-//        Transform t1 = new Transform();
-//        t1.setPosition(-2.0f, 0.0f, 0.0f);
-//        Renderer r1 = new Renderer(testMesh, t1);
-//        r1.setShader(shader);
-//        renderers.put(0, r1);
+        p1 = new Transform();
+        p2 = new Transform();
+        
+        Transform t1 = new Transform();
+        t1.setPosition(0.0f, 0.0f, 0.0f);
+        t1.setScale(10.0f, 0.1f, 0.1f);
+        t1.parent = p1;
+        Renderer r1 = new Renderer(testMesh, t1);
+        r1.setShader(shader);
+        addRenderer(r1);
+        
+        Transform t2 = new Transform();
+        t2.setPosition(0.0f, 0.0f, 0.0f);
+        t2.setScale(0.1f, 0.1f, 10.0f);
+        t2.parent = p1;
+        Renderer r2 = new Renderer(testMesh, t2);
+        r2.setShader(shader);
+        addRenderer(r2);
+        
+        Transform t3 = new Transform();
+        t3.setPosition(0.0f, 1.0f, 0.0f);
+        t3.setScale(10.0f, 0.1f, 0.1f);
+        t3.parent = p2;
+        Renderer r3 = new Renderer(testMesh, t3);
+        r3.setShader(shader);
+        addRenderer(r3);
+        
+        Transform t4 = new Transform();
+        t4.setPosition(0.0f, 1.0f, 0.0f);
+        t4.setScale(0.1f, 0.1f, 10.0f);
+        t4.parent = p2;
+        Renderer r4 = new Renderer(testMesh, t4);
+        r4.setShader(shader);
+        addRenderer(r4);
+        
+        t1 = new Transform();
+        t1.setPosition(0.0f, 2.0f, 0.0f);
+        t1.setScale(10.0f, 0.1f, 0.1f);
+        t1.parent = p1;
+        r1 = new Renderer(testMesh, t1);
+        r1.setShader(shader);
+        addRenderer(r1);
+        
+        t2 = new Transform();
+        t2.setPosition(0.0f, 2.0f, 0.0f);
+        t2.setScale(0.1f, 0.1f, 10.0f);
+        t2.parent = p1;
+        r2 = new Renderer(testMesh, t2);
+        r2.setShader(shader);
+        addRenderer(r2);
+        
+        t3 = new Transform();
+        t3.setPosition(0.0f, 3.0f, 0.0f);
+        t3.setScale(10.0f, 0.1f, 0.1f);
+        t3.parent = p2;
+        r3 = new Renderer(testMesh, t3);
+        r3.setShader(shader);
+        addRenderer(r3);
+        
+        t4 = new Transform();
+        t4.setPosition(0.0f, 3.0f, 0.0f);
+        t4.setScale(0.1f, 0.1f, 10.0f);
+        t4.parent = p2;
+        r4 = new Renderer(testMesh, t4);
+        r4.setShader(shader);
+        addRenderer(r4);
         
         int num = 30;
         float rConst = num/(3.141592653f*2f);
@@ -256,15 +319,17 @@ public class GLTest2 {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 		
-		t += 0.2f;
-		if(t >= 360) t = 0;
+		t += 0.02f;
+		if(t >= 360*2) t = 0;
 //		float y = (float)Math.sin(t)*10f;
 //        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
         
-		camera.transform.setRotation(20, t, 0);
+		camera.transform.setPosition(0, 0, 6);
+		camera.transform.setRotation(75, t/2f, 0);
         camera.recalculateMatrix();
         
-//        renderers.get(0).transform.setRotation(0, t, 0);
+        p1.setRotation(0, t, 0);
+        p2.setRotation(0, -t, 0);
         
         for (Renderer renderer : renderers.values()) {
         	renderer.render();
