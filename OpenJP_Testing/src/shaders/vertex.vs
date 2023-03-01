@@ -9,6 +9,14 @@ out vec4 vertexColor;
 out vec3 vertexNormal;
 out vec3 fragPos;
 
+uniform mat4 projectionMatrix;
+
+uniform vec3 cameraPos;
+uniform vec3 cameraRot;
+
+uniform mat4 cameraTransform;
+uniform mat4 objectTransform;
+
 void main()
 {
     gl_Position = vec4(position, 1.0);

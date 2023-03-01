@@ -1,16 +1,10 @@
 package test;
 
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-
 import java.io.IOException;
 
-import objects.Cube;
-import objects.GL_Drawable;
 import objects.GL_Window;
 import objects.Mesh;
-import objects.Plane;
 import objects.Triangle;
-import vectorLibrary.Vector2D;
 import vectorLibrary.Vector3D;
 
 public class TestWindow extends GL_Window {

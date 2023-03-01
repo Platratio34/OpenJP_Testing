@@ -1,7 +1,5 @@
 package objects;
 
-import vectorLibrary.Vector3D;
-
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor3d;
@@ -12,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import vectorLibrary.Vector3D;
 
 public class Triangle {
 	

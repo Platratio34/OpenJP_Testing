@@ -22,13 +22,13 @@ public class LightingSettings {
 	}
 	
 	public void setAbientLighting(Color color) {
-		GL33.glUniform4f(ambientColorUniform, color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
+		GL33.glUniform3f(ambientColorUniform, color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f);
 	}
 	public void setLightPosition(Vector3D pos) {
 		GL33.glUniform3f(lightPosUniform, (float)pos.x, (float)pos.y, (float)pos.z);
 	}
 	public void setLightColor(Color color) {
-		GL33.glUniform4f(lightColorUniform, color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
+		GL33.glUniform3f(lightColorUniform, color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f);
 	}
 	
 }

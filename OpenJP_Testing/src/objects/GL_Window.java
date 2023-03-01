@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL30.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.ArrayList;
@@ -42,7 +42,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import test.ShaderProgram;
-import vectorLibrary.Vector2D;
 import vectorLibrary.Vector3D;
 
 public abstract class GL_Window {

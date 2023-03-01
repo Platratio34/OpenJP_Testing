@@ -8,16 +8,16 @@ in vec3 fragPos;
 
 out vec4 fragColor;
 
-uniform vec4 ambientColor;
+uniform vec3 ambientColor;
 uniform vec3 lightPos;
-uniform vec4 lightColor;
+uniform vec3 lightColor;
 
 void main()
 {
 	vec3 normal = normalize(vertexNormal);
 	vec3 lightDir = normalize(lightPos - fragPos);
-	float diff = max(dot(norm, lightPos), 0.0);
+	float diff = max(dot(vertexNormal, lightPos), 0.0);
 	vec3 diffuse = diff * lightColor;
 	
-	fragColor = (ambientColor + diffuse) * vertexColor;
+	fragColor = vec4((ambientColor + diffuse) * vertexColor.xyz, vertexColor.w);
 }

@@ -5,7 +5,6 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.system.MemoryUtil;
 
 public class ABO {
 	
@@ -23,7 +22,7 @@ public class ABO {
 		buffer.flip();
 		bind();
 		GL30.glBufferData(type, buffer, GL30.GL_STATIC_DRAW);
-		MemoryUtil.memFree(buffer);
+//		MemoryUtil.memFree(buffer);
 	}
 	public void fill(float[] data) {
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
@@ -31,7 +30,7 @@ public class ABO {
 		buffer.flip();
 		bind();
 		GL30.glBufferData(type, buffer, GL30.GL_STATIC_DRAW);
-		MemoryUtil.memFree(buffer);
+//		MemoryUtil.memFree(buffer);
 	}
 	
 	public void bind() {

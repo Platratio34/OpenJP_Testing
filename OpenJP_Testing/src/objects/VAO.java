@@ -1,6 +1,7 @@
 package objects;
 
 import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL30;
 
 public class VAO {
