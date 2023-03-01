@@ -29,6 +29,6 @@ public class Camera {
 	}
 	
 	public void recalculateMatrix() {
-		Uniform.setMatrix4f(transformMatrixUniform, transform.createMatrix());
+		Uniform.setMatrix4f(transformMatrixUniform, transform.createMatrixInvert());
 	}
 }
