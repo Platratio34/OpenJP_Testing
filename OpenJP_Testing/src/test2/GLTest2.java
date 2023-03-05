@@ -35,6 +35,29 @@ public class GLTest2 {
 	
 	static Transform p1;
 	static Transform p2;
+
+    static Color[] colors2 = new Color[] {
+    	new Color(0.0f, 0.75f, 0.4f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f)
+    };
+    static Color[] colors3 = new Color[] {
+    	new Color(0.0f, 0.0f, 0.9f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f),
+    	new Color(0.0f, 0.0f, 0.0f)
+    };
 	
 	public static void main(String[] args) {
 		GLFWErrorCallback.createPrint(System.err).set();
@@ -147,6 +170,18 @@ public class GLTest2 {
         };
         testMesh = new Mesh(vertices, true);
         
+        Color[] colors = new Color[] {
+        	new Color(0.5f, 0.5f, 0.4f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f),
+        	new Color(0.0f, 0.0f, 0.0f)
+        };
+        
         renderers = new HashMap<Integer, Renderer>();;
         
         p1 = new Transform();
@@ -158,6 +193,7 @@ public class GLTest2 {
         t1.parent = p1;
         Renderer r1 = new Renderer(testMesh, t1);
         r1.setShader(shader);
+        r1.setColors(colors2);
         addRenderer(r1);
         
         Transform t2 = new Transform();
@@ -166,6 +202,7 @@ public class GLTest2 {
         t2.parent = p1;
         Renderer r2 = new Renderer(testMesh, t2);
         r2.setShader(shader);
+        r2.setColors(colors2);
         addRenderer(r2);
         
         Transform t3 = new Transform();
@@ -174,6 +211,7 @@ public class GLTest2 {
         t3.parent = p2;
         Renderer r3 = new Renderer(testMesh, t3);
         r3.setShader(shader);
+        r3.setColors(colors3);
         addRenderer(r3);
         
         Transform t4 = new Transform();
@@ -182,6 +220,7 @@ public class GLTest2 {
         t4.parent = p2;
         Renderer r4 = new Renderer(testMesh, t4);
         r4.setShader(shader);
+        r4.setColors(colors3);
         addRenderer(r4);
         
         t1 = new Transform();
@@ -190,6 +229,7 @@ public class GLTest2 {
         t1.parent = p1;
         r1 = new Renderer(testMesh, t1);
         r1.setShader(shader);
+        r1.setColors(colors2);
         addRenderer(r1);
         
         t2 = new Transform();
@@ -198,6 +238,7 @@ public class GLTest2 {
         t2.parent = p1;
         r2 = new Renderer(testMesh, t2);
         r2.setShader(shader);
+        r2.setColors(colors2);
         addRenderer(r2);
         
         t3 = new Transform();
@@ -206,6 +247,7 @@ public class GLTest2 {
         t3.parent = p2;
         r3 = new Renderer(testMesh, t3);
         r3.setShader(shader);
+        r3.setColors(colors3);
         addRenderer(r3);
         
         t4 = new Transform();
@@ -214,6 +256,7 @@ public class GLTest2 {
         t4.parent = p2;
         r4 = new Renderer(testMesh, t4);
         r4.setShader(shader);
+        r4.setColors(colors3);
         addRenderer(r4);
         
         int num = 30;
@@ -227,6 +270,7 @@ public class GLTest2 {
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
     		r.setShader(shader);
+            r.setColors(colors);
     		addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
@@ -238,6 +282,7 @@ public class GLTest2 {
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
     		r.setShader(shader);
+            r.setColors(colors);
     		addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
@@ -249,6 +294,7 @@ public class GLTest2 {
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
     		r.setShader(shader);
+            r.setColors(colors);
     		addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
@@ -260,6 +306,7 @@ public class GLTest2 {
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
     		r.setShader(shader);
+            r.setColors(colors);
     		addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
@@ -271,6 +318,7 @@ public class GLTest2 {
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
     		r.setShader(shader);
+            r.setColors(colors);
     		addRenderer(r);
         }
         
@@ -319,10 +367,38 @@ public class GLTest2 {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 		
-		t += 0.02f;
+		t += 0.2f;
 		if(t >= 360*2) t = 0;
 //		float y = (float)Math.sin(t)*10f;
 //        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
+		
+		float t2 = t%90f;
+		if(t2 <= 45) {
+			colors2[0] = new Color(0,1-(t2/75f),t2/75f+0.4f);
+			colors3[0] = new Color(0,t2/75f+0.4f,1-(t2/75f));
+		} else {
+			t2 -= 45;
+			colors3[0] = new Color(0,1-(t2/75f),t2/75f+0.4f);
+			colors2[0] = new Color(0,t2/75f+0.4f,1-(t2/75f));
+		}
+//		float t2 = t%40;
+//		if(t2 < 0.5) {
+////			for(int i = 0; i < 8; i++) {
+////				renderers.get(i).setColors(colors3);
+////			}
+//			colors2[0] = new Color(0,t/720f,1-(t/720f));
+////			colors2[0] = Color.decode("0x00c090");
+//			colors2[0] = new Color(0,1-(t/720f),t/720f);
+////			colors2[0] = Color.decode("0x0000e0");
+//		} else if(t2 > 20 && t2 < 20.5) {
+////			colors2[0] = Color.decode("0x0000e0");
+//			colors2[0] = new Color(0,t/720f,1-(t/720f));
+////			colors3[0] = Color.decode("0x00c090");
+//			colors3[0] = new Color(0,1-(t/720f),t/720f);
+////			for(int i = 0; i < 8; i++) {
+////				renderers.get(i).setColors(colors2);
+////			}
+//		}
         
 		camera.transform.setPosition(0, 0, 6);
 		camera.transform.setRotation(75, t/2f, 0);

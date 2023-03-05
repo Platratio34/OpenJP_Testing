@@ -28,4 +28,14 @@ public class Uniform {
 	public static void setVector3f(int uniform, Vector3f vector) {
 		GL33.glUniform3f(uniform, vector.x, vector.y, vector.z);
 	}
+	
+	public static void setColorArray(int uniform, Color[] array) {
+		for(int i = 0; i < array.length; i++) {
+			setColor(uniform + i, array[i]);
+		}
+	}
+	
+	public static void setBoolean(int uniform, boolean bool) {
+		GL33.glUniform1i(uniform, bool?1:0);
+	}
 }
