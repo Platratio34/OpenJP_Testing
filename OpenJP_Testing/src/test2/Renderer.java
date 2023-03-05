@@ -35,7 +35,7 @@ public class Renderer {
 	
 	public void render() {
 		shader.bind();
-		Matrix4f matrix = transform.createMatrix();
+		Matrix4f matrix = transform.getTransformMatrix();
 		Uniform.setMatrix4f(matrixUniform, matrix);
 		if(colors != null) {
 			Uniform.setColorArray(colorsUniform, colors);

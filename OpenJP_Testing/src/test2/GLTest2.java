@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -58,7 +59,7 @@ public class GLTest2 {
     	new Color(0.0f, 0.0f, 0.0f),
     	new Color(0.0f, 0.0f, 0.0f)
     };
-	
+		
 	public static void main(String[] args) {
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -68,7 +69,7 @@ public class GLTest2 {
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL33.GL_FALSE);
-//		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_TRUE);
 		
 		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
@@ -80,8 +81,9 @@ public class GLTest2 {
 			width = w;
 			height = h;
 			GL33.glViewport(0, 0, width, height);
-			camera.aspectRatio = (float)width/(float)height;
-			camera.recaculatePerspective();
+			camera.updateAspectRation(width, height);
+//			camera.aspectRatio = (float)width/(float)height;
+//			camera.recaculatePerspective();
 		});
 		
         GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
@@ -125,50 +127,14 @@ public class GLTest2 {
 //       		 0.0f, 0.0f, 1.0f,
 //       		 0.0f, 0.0f, 1.0f
 //       });
-       float vertices[] = {
-        	     0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f,
-        	     0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f, 
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f, 
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f, 
-        	    -0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f, 
-        	     0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f, -1.0f, 
-
-        	    -0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-        	     0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-        	    -0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-        	    -0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  0.0f,  1.0f,
-
-        	    -0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-        	    -0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-        	    -0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-        	    -0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,  -1.0f,  0.0f,  0.0f,
-
-        	     0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-        	     0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-        	     0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-        	     0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   1.0f,  0.0f,  0.0f,
-
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-        	     0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-        	     0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-        	     0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-        	    -0.5f, -0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-        	    -0.5f, -0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f, -1.0f,  0.0f,
-
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f,
-        	     0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f,
-        	    -0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f,
-        	    -0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f,
-        	    -0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f,
-        	     0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.4f,   0.0f,  1.0f,  0.0f
-        };
-        testMesh = new Mesh(vertices, true);
+        
+//        testMesh = Mesh.createFromSingleArray(vertices);
+        try {
+			testMesh = Mesh.createFromFile("src/meshes/newCube.mesh");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
         
         Color[] colors = new Color[] {
         	new Color(0.5f, 0.5f, 0.4f),
@@ -345,8 +311,6 @@ public class GLTest2 {
     		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
         	loop();
         	GLFW.glfwSwapBuffers(window);
-//    		val += 0.001f;
-//            GL33.glUniform4f(colorUniform, 0.0f, (float)(Math.sin(val)/2.0)+0.5f, 0.0f, 0.0f);
         }
         
         testMesh.dispose();
@@ -363,42 +327,20 @@ public class GLTest2 {
 		return nextId-1;
 	}
 	
+	static float colorMax = 90f;
+	static float colorDivMax = 60f;
+	
 	public static void loop() {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 		
-		t += 0.2f;
+		t += 0.02f;
 		if(t >= 360*2) t = 0;
 //		float y = (float)Math.sin(t)*10f;
 //        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
-		
-		float t2 = t%90f;
-		if(t2 <= 45) {
-			colors2[0] = new Color(0,1-(t2/75f),t2/75f+0.4f);
-			colors3[0] = new Color(0,t2/75f+0.4f,1-(t2/75f));
-		} else {
-			t2 -= 45;
-			colors3[0] = new Color(0,1-(t2/75f),t2/75f+0.4f);
-			colors2[0] = new Color(0,t2/75f+0.4f,1-(t2/75f));
-		}
-//		float t2 = t%40;
-//		if(t2 < 0.5) {
-////			for(int i = 0; i < 8; i++) {
-////				renderers.get(i).setColors(colors3);
-////			}
-//			colors2[0] = new Color(0,t/720f,1-(t/720f));
-////			colors2[0] = Color.decode("0x00c090");
-//			colors2[0] = new Color(0,1-(t/720f),t/720f);
-////			colors2[0] = Color.decode("0x0000e0");
-//		} else if(t2 > 20 && t2 < 20.5) {
-////			colors2[0] = Color.decode("0x0000e0");
-//			colors2[0] = new Color(0,t/720f,1-(t/720f));
-////			colors3[0] = Color.decode("0x00c090");
-//			colors3[0] = new Color(0,1-(t/720f),t/720f);
-////			for(int i = 0; i < 8; i++) {
-////				renderers.get(i).setColors(colors2);
-////			}
-//		}
+
+		colors2[0] = Color.getHSBColor(t/180f, 1, 1);
+		colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
         
 		camera.transform.setPosition(0, 0, 6);
 		camera.transform.setRotation(75, t/2f, 0);

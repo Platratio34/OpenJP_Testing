@@ -29,6 +29,11 @@ public class Camera {
 	}
 	
 	public void recalculateMatrix() {
-		Uniform.setMatrix4f(transformMatrixUniform, transform.createMatrixInvert());
+		Uniform.setMatrix4f(transformMatrixUniform, transform.getTransformMatrixInverse());
+	}
+
+	public void updateAspectRation(int width, int height) {
+		aspectRatio = (float)width/(float)height;
+		recaculatePerspective();
 	}
 }
