@@ -1,4 +1,4 @@
-package objects;
+package GLObjects;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

@@ -41,10 +41,10 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import objects.Cube;
-import objects.GL_Drawable;
-import objects.Plane;
-import objects.Triangle;
+import oldObjects.Cube;
+import oldObjects.GL_Drawable;
+import oldObjects.Plane;
+import oldObjects.Triangle;
 import vectorLibrary.Vector2D;
 import vectorLibrary.Vector3D;
 

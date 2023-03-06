@@ -1,9 +1,11 @@
-package test2;
+package lighting;
 
 import java.awt.Color;
 
 import org.joml.Vector3f;
-import test.ShaderProgram;
+
+import GLObjects.Uniform;
+import shaders.ShaderProgram;
 
 public class LightingSettings {
 

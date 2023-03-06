@@ -1,9 +1,11 @@
-package test2;
+package objects;
 
 import org.joml.Matrix4f;
 
+import GLObjects.Uniform;
+import shaders.ShaderProgram;
+
 import java.awt.Color;
-import test.ShaderProgram;
 
 public class Renderer {
 

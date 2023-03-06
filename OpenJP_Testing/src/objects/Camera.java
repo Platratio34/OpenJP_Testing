@@ -1,7 +1,9 @@
-package test2;
+package objects;
 
 import org.joml.Matrix4f;
-import test.ShaderProgram;
+
+import GLObjects.Uniform;
+import shaders.ShaderProgram;
 
 public class Camera {
 	

@@ -1,4 +1,4 @@
-package objects;
+package GLObjects;
 
 import org.lwjgl.opengl.GL30;
 

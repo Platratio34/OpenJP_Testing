@@ -1,4 +1,4 @@
-package objects;
+package oldObjects;
 
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glRotated;

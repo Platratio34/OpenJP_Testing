@@ -1,4 +1,4 @@
-package objects;
+package oldObjects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
@@ -41,7 +41,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import test.ShaderProgram;
+import shaders.ShaderProgram;
 import vectorLibrary.Vector3D;
 
 public abstract class GL_Window {

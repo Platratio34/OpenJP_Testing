@@ -13,7 +13,12 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 
-import test.ShaderProgram;
+import lighting.LightingSettings;
+import objects.Camera;
+import objects.Mesh;
+import objects.Renderer;
+import objects.Transform;
+import shaders.ShaderProgram;
 
 public class GLTest2 {
 

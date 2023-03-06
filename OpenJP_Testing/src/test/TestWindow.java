@@ -2,9 +2,9 @@ package test;
 
 import java.io.IOException;
 
-import objects.GL_Window;
-import objects.Mesh;
-import objects.Triangle;
+import oldObjects.GL_Window;
+import oldObjects.Mesh;
+import oldObjects.Triangle;
 import vectorLibrary.Vector3D;
 
 public class TestWindow extends GL_Window {

@@ -1,4 +1,4 @@
-package test;
+package shaders;
 
 //import static org.lwjgl.opengl.GL30.glGetUniformLocation;
 import org.lwjgl.opengl.GL33;
