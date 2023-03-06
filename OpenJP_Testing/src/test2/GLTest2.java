@@ -1,48 +1,40 @@
 package test2;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
-import static org.lwjgl.system.MemoryUtil.NULL;
-
 import java.awt.Color;
 import java.io.IOException;
-import java.util.HashMap;
-
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL33;
 
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Mesh;
 import objects.Renderer;
 import objects.Transform;
-import shaders.ShaderProgram;
+import windows.Window;
+import windows.WindowLoopRunnable;
 
-public class GLTest2 {
+public class GLTest2 implements WindowLoopRunnable {
 
-	static ShaderProgram shader;
-	static long window;
+//	static ShaderProgram shader;
+//	static long window;
+//	
+//	static int width = 800;
+//	static int height = 600;
 	
-	static int width = 800;
-	static int height = 600;
+	Mesh testMesh;
 	
-	static Mesh testMesh;
+	LightingSettings lighting;
 	
-	static LightingSettings lighting;
+	float t = 0;
 	
-	static float t = 0;
+	Camera camera;
 	
-	static Camera camera;
+//	static HashMap<Integer, Renderer> renderers;
+//	protected static int nextId = 0;
 	
-	static HashMap<Integer, Renderer> renderers;
-	protected static int nextId = 0;
-	
-	static Transform p1;
-	static Transform p2;
+	Transform p1;
+	Transform p2;
 
-    static Color[] colors2 = new Color[] {
+    Color[] colors2 = new Color[] {
     	new Color(0.0f, 0.75f, 0.4f),
     	new Color(0.0f, 0.0f, 0.0f),
     	new Color(0.0f, 0.0f, 0.0f),
@@ -53,7 +45,7 @@ public class GLTest2 {
     	new Color(0.0f, 0.0f, 0.0f),
     	new Color(0.0f, 0.0f, 0.0f)
     };
-    static Color[] colors3 = new Color[] {
+    Color[] colors3 = new Color[] {
     	new Color(0.0f, 0.0f, 0.9f),
     	new Color(0.0f, 0.0f, 0.0f),
     	new Color(0.0f, 0.0f, 0.0f),
@@ -64,56 +56,22 @@ public class GLTest2 {
     	new Color(0.0f, 0.0f, 0.0f),
     	new Color(0.0f, 0.0f, 0.0f)
     };
-		
+	
+    Window window;
+    
 	public static void main(String[] args) {
-		GLFWErrorCallback.createPrint(System.err).set();
+		GLTest2 glTest = new GLTest2();
+		glTest.run();
+	}
+	public GLTest2() {
+		window = new Window("Open GL Test");
+		window.addLoopRunnable(this);
 		
-		GLFW.glfwInit();
-		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
-		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
-		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL33.GL_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_TRUE);
+		camera = window.camera;
+		lighting = window.lightingSettings;
 		
-		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
-		GLFW.glfwMakeContextCurrent(window);
-        GL.createCapabilities();
-        GL33.glEnable(GL33.GL_DEPTH_TEST);
-		
-        GL33.glViewport(0,0,width,height);
-        GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
-			width = w;
-			height = h;
-			GL33.glViewport(0, 0, width, height);
-			camera.updateAspectRation(width, height);
-//			camera.aspectRatio = (float)width/(float)height;
-//			camera.recaculatePerspective();
-		});
-		
-        GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
-        
-        try {
-			shader = new ShaderProgram();
-			shader.createVertexShaderFile("src/shaders/vertex.vert");
-			shader.createFragmentShaderFile("src/shaders/fragment.frag");
-			shader.link();
-			shader.bind();
-		} catch (Exception e) {
-			e.printStackTrace();
-            throw new IllegalStateException("Unable to initialize Shader");
-		}
-        
-        lighting = new LightingSettings(shader);
-        
-        camera = new Camera(shader);
         camera.transform.setPosition(0,1,3);
         camera.transform.setRotation(25, -90, 0);
-		camera.aspectRatio = (float)width/(float)height;
-		camera.recaculatePerspective();
-        
-        GLFW.glfwShowWindow(window);
         
 //        testMesh = new Mesh(new float[] {
 //             0.5f, -0.5f, -1.5f,  // bottom right
@@ -153,8 +111,6 @@ public class GLTest2 {
         	new Color(0.0f, 0.0f, 0.0f)
         };
         
-        renderers = new HashMap<Integer, Renderer>();;
-        
         p1 = new Transform();
         p2 = new Transform();
         
@@ -163,72 +119,64 @@ public class GLTest2 {
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
         Renderer r1 = new Renderer(testMesh, t1);
-        r1.setShader(shader);
         r1.setColors(colors2);
-        addRenderer(r1);
+        window.addRenderer(r1);
         
         Transform t2 = new Transform();
         t2.setPosition(0.0f, 0.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
         Renderer r2 = new Renderer(testMesh, t2);
-        r2.setShader(shader);
         r2.setColors(colors2);
-        addRenderer(r2);
+        window.addRenderer(r2);
         
         Transform t3 = new Transform();
         t3.setPosition(0.0f, 1.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
         Renderer r3 = new Renderer(testMesh, t3);
-        r3.setShader(shader);
         r3.setColors(colors3);
-        addRenderer(r3);
+        window.addRenderer(r3);
         
         Transform t4 = new Transform();
         t4.setPosition(0.0f, 1.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
         Renderer r4 = new Renderer(testMesh, t4);
-        r4.setShader(shader);
         r4.setColors(colors3);
-        addRenderer(r4);
+        window.addRenderer(r4);
         
         t1 = new Transform();
         t1.setPosition(0.0f, 2.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
         r1 = new Renderer(testMesh, t1);
-        r1.setShader(shader);
         r1.setColors(colors2);
-        addRenderer(r1);
+        window.addRenderer(r1);
         
         t2 = new Transform();
         t2.setPosition(0.0f, 2.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
         r2 = new Renderer(testMesh, t2);
-        r2.setShader(shader);
         r2.setColors(colors2);
-        addRenderer(r2);
+        window.addRenderer(r2);
         
         t3 = new Transform();
         t3.setPosition(0.0f, 3.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
         r3 = new Renderer(testMesh, t3);
-        r3.setShader(shader);
         r3.setColors(colors3);
-        addRenderer(r3);
+        window.addRenderer(r3);
         
         t4 = new Transform();
         t4.setPosition(0.0f, 3.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
         r4 = new Renderer(testMesh, t4);
-        r4.setShader(shader);
         r4.setColors(colors3);
-        addRenderer(r4);
+        window.addRenderer(r4);
         
         int num = 30;
         float rConst = num/(3.141592653f*2f);
@@ -240,9 +188,8 @@ public class GLTest2 {
     		t.setPosition(x, -2, z);
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
-    		r.setShader(shader);
             r.setColors(colors);
-    		addRenderer(r);
+    		window.addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -252,9 +199,8 @@ public class GLTest2 {
     		t.setPosition(x, -1, z);
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
-    		r.setShader(shader);
             r.setColors(colors);
-    		addRenderer(r);
+    		window.addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -264,9 +210,8 @@ public class GLTest2 {
     		t.setPosition(x, 0, z);
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
-    		r.setShader(shader);
             r.setColors(colors);
-    		addRenderer(r);
+    		window.addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -276,9 +221,8 @@ public class GLTest2 {
     		t.setPosition(x, 1, z);
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
-    		r.setShader(shader);
             r.setColors(colors);
-    		addRenderer(r);
+    		window.addRenderer(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -288,9 +232,8 @@ public class GLTest2 {
     		t.setPosition(x, 2, z);
     		t.setRotation(0, i/(num/360f), 0);
     		Renderer r = new Renderer(testMesh, t);
-    		r.setShader(shader);
             r.setColors(colors);
-    		addRenderer(r);
+    		window.addRenderer(r);
         }
         
 //        Transform t2 = new Transform();
@@ -305,40 +248,19 @@ public class GLTest2 {
 
         lighting.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
         lighting.setGlobalLightColor(Color.decode("0xf0f0f0"));
-        
-//        GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
-        GL33.glEnable(GL33.GL_CULL_FACE);
-        
-        while(!GLFW.glfwWindowShouldClose(window)) {
-        	GLFW.glfwPollEvents();
-    		processInput();
-    		shader.bind();
-    		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
-        	loop();
-        	GLFW.glfwSwapBuffers(window);
-        }
+	}
+	
+	public void run() {
+		window.run();
         
         testMesh.dispose();
-        
-        GLFW.glfwTerminate();
 	}
 	
-	public static int addRenderer(Renderer renderer) {
-		while(renderers.containsKey(nextId)) {
-			nextId++;
-		}
-		renderers.put(nextId, renderer);
-		nextId++;
-		return nextId-1;
-	}
+	float colorMax = 90f;
+	float colorDivMax = 60f;
 	
-	static float colorMax = 90f;
-	static float colorDivMax = 60f;
-	
-	public static void loop() {
-		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
-		
+	@Override
+	public void onLoop() {
 		t += 0.02f;
 		if(t >= 360*2) t = 0;
 //		float y = (float)Math.sin(t)*10f;
@@ -353,17 +275,5 @@ public class GLTest2 {
         
         p1.setRotation(0, t, 0);
         p2.setRotation(0, -t, 0);
-        
-        for (Renderer renderer : renderers.values()) {
-        	renderer.render();
-		}
-		
-		
-	}
-	
-	public static void processInput() {
-	    if(GLFW.glfwGetKey(window, GLFW.GLFW_KEY_ESCAPE) == GLFW.GLFW_PRESS) {
-	    	GLFW.glfwSetWindowShouldClose(window, true);
-	    }
 	}
 }
