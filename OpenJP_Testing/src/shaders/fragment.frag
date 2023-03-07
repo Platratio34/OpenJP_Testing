@@ -13,6 +13,14 @@ uniform vec3 lightColor;
 uniform vec3 globalLightDir;
 uniform vec3 globalLightColor;
 
+struct light {
+	vec3 position;
+	vec3 color;
+	float range;
+};
+
+uniform light[16] lights;
+
 void main()
 {
 	vec3 lightDir = normalize(lightPos - fragPos);
@@ -21,6 +29,13 @@ void main()
 	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
 	vec3 lighting = ambientColor + diffuse + globalDiffuse;
+	
+	for(int i = 0; i < 16; i++) {
+		vec3 dir = normalize(lights[i].position - fragPos);
+		float attn = 1.0 - min(distance(lights[i].position, fragPos)/lights[i].range, 1.0);
+		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
+		lighting = lighting + diff;
+	}
 	
 	fragColor = vertexColor * vec4(lighting.xyz, 1.0);
 }

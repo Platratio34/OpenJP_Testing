@@ -1,9 +1,11 @@
 package objects;
 
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Transform {
+public class Transform implements TransformUpdate {
 	
 	private Vector3f position;
 	private Vector3f rotation;
@@ -14,12 +16,15 @@ public class Transform {
 	private Matrix4f matrix;
 	private Matrix4f matrixInverse;
 	
+	private ArrayList<TransformUpdate> updaters;
+	
 	public Transform() {
 		position = new Vector3f();
 		rotation = new Vector3f();
 		scale = new Vector3f(1.0f);
 		matrix = new Matrix4f();
 		matrixInverse = new Matrix4f();
+		updaters = new ArrayList<TransformUpdate>();
 		recalculateMatrix();
 	}
 	public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -28,6 +33,7 @@ public class Transform {
 		this.scale = scale;
 		matrix = new Matrix4f();
 		matrixInverse = new Matrix4f();
+		updaters = new ArrayList<TransformUpdate>();
 		recalculateMatrix();
 	}
 	
@@ -43,6 +49,8 @@ public class Transform {
 		.rotateY((float)Math.toRadians(rotation.y))
 		.rotateZ((float)Math.toRadians(rotation.z))
 		.scale(scale);
+		
+		update();
 	}
 	
 	public Matrix4f getTransformMatrix() {
@@ -90,5 +98,20 @@ public class Transform {
 	}
 	public Vector3f getScale() {
 		return new Vector3f(scale);
+	}
+	private void update() {
+		for(TransformUpdate tu : updaters) {
+			tu.onTransformUpdate(this);
+		}
+	}
+	@Override
+	public void onTransformUpdate(Transform transform) {
+		update();
+	}
+	public void addUpdate(TransformUpdate updater) {
+		updaters.add(updater);
+	}
+	public void removeUpdate(TransformUpdate updater) {
+		updaters.remove(updater);
 	}
 }

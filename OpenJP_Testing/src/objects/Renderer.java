@@ -2,8 +2,8 @@ package objects;
 
 import org.joml.Matrix4f;
 
-import GLObjects.Uniform;
 import shaders.ShaderProgram;
+import shaders.Uniform;
 
 import java.awt.Color;
 

@@ -1,9 +1,11 @@
 package test2;
 
-import org.joml.Vector3f;
 import java.awt.Color;
 import java.io.IOException;
 
+import org.joml.Vector3f;
+
+import lighting.Light;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Mesh;
@@ -243,8 +245,13 @@ public class GLTest2 implements WindowLoopRunnable {
 //        renderers.put(1, r2);
         
         lighting.setAbientLighting(Color.decode("0x000040"));
-        lighting.setLightPosition(new Vector3f(0.0f, -1.0f, 0.0f));
-        lighting.setLightColor(Color.decode("0x800000"));
+//        lighting.setLightPosition(new Vector3f(0.0f, -1.0f, 0.0f));
+//        lighting.setLightColor(Color.decode("0x800000"));
+        
+        Transform lT = new Transform();
+        lT.setPosition(0.0f, -1.0f, 0.0f);;
+        Light light = new Light(Color.decode("0x800000"),5,lT);
+        lighting.addLight(light);
 
         lighting.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
         lighting.setGlobalLightColor(Color.decode("0xf0f0f0"));
@@ -272,6 +279,9 @@ public class GLTest2 implements WindowLoopRunnable {
 		camera.transform.setPosition(0, 0, 6);
 		camera.transform.setRotation(75, t/2f, 0);
         camera.recalculateMatrix();
+        
+        lighting.getLight(0).transform.setPosition(0.0f, t/180f, 0.0f);
+        lighting.getLight(0).setColor(Color.getHSBColor(t/900f, 1, 1));
         
         p1.setRotation(0, t, 0);
         p2.setRotation(0, -t, 0);

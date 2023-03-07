@@ -1,4 +1,4 @@
-package GLObjects;
+package shaders;
 
 import java.awt.Color;
 import java.nio.FloatBuffer;
@@ -37,5 +37,9 @@ public class Uniform {
 	
 	public static void setBoolean(int uniform, boolean bool) {
 		GL33.glUniform1i(uniform, bool?1:0);
+	}
+	
+	public static void setFloat(int uniform, float val) {
+		GL33.glUniform1f(uniform, val);
 	}
 }
