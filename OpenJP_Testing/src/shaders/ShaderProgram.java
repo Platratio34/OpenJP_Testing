@@ -1,6 +1,5 @@
 package shaders;
 
-//import static org.lwjgl.opengl.GL30.glGetUniformLocation;
 import org.lwjgl.opengl.GL33;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +20,10 @@ public class ShaderProgram {
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
+        int defTextureUniform = getUniform("defaultTexture");
+//        int textureId = GL33.glGenTexture();
+//        GL33.glActiveTexture(GL33.GL_TEXTURE0);
+//        GL33.glBindTexture()
     }
 
     public void createVertexShader(String shaderCode) throws Exception {

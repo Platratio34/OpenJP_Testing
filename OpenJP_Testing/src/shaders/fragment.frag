@@ -4,6 +4,8 @@ precision mediump float;
 in vec4 vertexColor;
 in vec3 vertexNormal;
 in vec3 fragPos;
+in vec2 textCord;
+in float matId;
 
 out vec4 fragColor;
 
@@ -21,8 +23,24 @@ struct light {
 
 uniform light[16] lights;
 
+struct material {
+	vec4 color;
+	float smoothness;
+	bool textured;
+	sampler2D texture;
+};
+
+uniform material[16] materials;
+
+uniform sampler2D defaultTexture;
+
 void main()
 {
+	material cMat = material(vertexColor, 0.0, false, defaultTexture);
+	if(matId >= 0.0) {
+		cMat = materials[int(matId)];
+	}
+	
 	vec3 lightDir = normalize(lightPos - fragPos);
 	vec3 diffuse = lightColor * max(dot(vertexNormal, lightDir), 0.0);
 	
@@ -35,6 +53,12 @@ void main()
 		float attn = 1.0 - min(distance(lights[i].position, fragPos)/lights[i].range, 1.0);
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
 		lighting = lighting + diff;
+	}
+	
+	vec4 color = cMat.color;
+	
+	if(cMat.textured) {
+		color = cMat.color * texture(cMat.texture, textCord);
 	}
 	
 	fragColor = vertexColor * vec4(lighting.xyz, 1.0);

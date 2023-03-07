@@ -77,10 +77,28 @@ public class Transform implements TransformUpdate {
 		position.z = z;
 		recalculateMatrix();
 	}
+	public void translate(Vector3f ammount) {
+		translate(ammount.x, ammount.y, ammount.z);
+	}
+	public void translate(float x, float y, float z) {
+		position.x = x;
+		position.y = y;
+		position.z = z;
+		recalculateMatrix();
+	}
 	public void setRotation(float x, float y, float z) {
-		rotation.x = x;
-		rotation.y = y;
-		rotation.z = z;
+		rotation.x += x;
+		rotation.y += y;
+		rotation.z += z;
+		recalculateMatrix();
+	}
+	public void rotate(Vector3f ammount) {
+		rotate(ammount.x, ammount.y, ammount.z);
+	}
+	public void rotate(float x, float y, float z) {
+		rotation.x += x;
+		rotation.y += y;
+		rotation.z += z;
 		recalculateMatrix();
 	}
 	public void setScale(float x, float y, float z) {
@@ -104,6 +122,7 @@ public class Transform implements TransformUpdate {
 			tu.onTransformUpdate(this);
 		}
 	}
+	
 	@Override
 	public void onTransformUpdate(Transform transform) {
 		update();
