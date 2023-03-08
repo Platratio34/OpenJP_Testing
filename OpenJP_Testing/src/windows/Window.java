@@ -33,6 +33,11 @@ public class Window {
 	private HashMap<Integer, WindowLoopRunnable> loopRunnables;
 	private int nextIdLR = 0;
 	
+	private long lastFrameTime;
+	private long frameTime;
+	private long targetFrameTime = 1000/30;
+	private long frameNumber;
+	
 	public Window(String title) {
 		init();
 	}
@@ -90,11 +95,18 @@ public class Window {
 	public void run() {
 		showWindow(true);
 //		GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		lastFrameTime = System.currentTimeMillis();
 		while(!GLFW.glfwWindowShouldClose(window)) loop();
         GLFW.glfwTerminate();
 	}
 	
 	public void loop() {
+		frameNumber++;
+		long time = System.currentTimeMillis();
+		frameTime = time - lastFrameTime;
+		lastFrameTime = time;
+//		System.out.println("Frame Time: "+frameTime+"ms");
+		if(frameTime > targetFrameTime * 2) System.err.println("F-"+frameNumber+"; Frame took "+frameTime+"ms to do; Target frame time: "+targetFrameTime+"ms");
 		GLFW.glfwPollEvents();
 		processInput();
 		shader.bind();
@@ -111,6 +123,14 @@ public class Window {
 		}
     	
     	GLFW.glfwSwapBuffers(window);
+    	
+    	try {
+    		long sleepTime = targetFrameTime - (System.currentTimeMillis() - lastFrameTime);
+//    		System.out.println("- Sleep time: "+sleepTime+"ms");
+    		if(sleepTime > 2) Thread.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void showWindow(boolean show) {
@@ -144,6 +164,14 @@ public class Window {
 		loopRunnables.put(nextIdRend, loopRunnable);
 		nextIdLR++;
 		return nextIdLR-1;
+	}
+	
+	public float deltaTime() {
+		return frameTime/1000f;
+	}
+	
+	public void setTargetFPS(int fps) {
+		targetFrameTime = 1000/fps;
 	}
 	
 }

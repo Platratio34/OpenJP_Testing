@@ -14,6 +14,7 @@ public class Texture2D {
 	
 	public Texture2D(int w, int h) {
 		textureId = GL33.glGenTextures();
+//		System.out.println("Created texture with ID "+textureId);
 		width = w;
 		height = h;
 		pixels = new Color[w*h];
@@ -55,6 +56,7 @@ public class Texture2D {
 		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA, width, height, 0, GL33.GL_RGBA, GL33.GL_UNSIGNED_BYTE, buff);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glGenerateMipmap(GL33.GL_TEXTURE_2D);
 		unbind();
 	}
 	public void bind() {
@@ -62,5 +64,13 @@ public class Texture2D {
 	}
 	public void unbind() {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
+	}
+	public void activeteBind(int index) {
+		GL33.glActiveTexture(GL33.GL_TEXTURE0+index);
+		bind();
+	}
+	
+	public int getId() {
+		return textureId;
 	}
 }

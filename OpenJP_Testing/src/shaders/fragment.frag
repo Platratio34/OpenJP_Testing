@@ -26,8 +26,7 @@ uniform light[16] lights;
 struct material {
 	vec4 color;
 	float smoothness;
-	bool textured;
-	sampler2D texture;
+	// sampler2D texture;
 };
 
 uniform material[16] materials;
@@ -36,7 +35,7 @@ uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 0.0, false, defaultTexture);
+	material cMat = material(vertexColor, 0.0/*, defaultTexture*/);
 	if(matId >= 0.0) {
 		cMat = materials[int(matId)];
 	}
@@ -57,9 +56,8 @@ void main()
 	
 	vec4 color = cMat.color;
 	
-	if(cMat.textured) {
-		color = cMat.color * texture(cMat.texture, textCord);
-	}
+	// color = cMat.color * texture(cMat.texture, textCord);
+	color = cMat.color * texture(defaultTexture, textCord);
 	
 	fragColor = vertexColor * vec4(lighting.xyz, 1.0);
 }

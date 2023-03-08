@@ -268,7 +268,7 @@ public class GLTest2 implements WindowLoopRunnable {
 	
 	@Override
 	public void onLoop() {
-		t += 0.02f;
+		t += window.deltaTime()*45;
 		if(t >= 360*2) t = 0;
 //		float y = (float)Math.sin(t)*10f;
 //        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));

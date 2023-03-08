@@ -2,6 +2,9 @@ package shaders;
 
 import org.lwjgl.opengl.GL33;
 
+import objects.Texture2D;
+
+import java.awt.Color;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,6 +17,7 @@ public class ShaderProgram {
     private int vertexShaderId;
 
     private int fragmentShaderId;
+    private Texture2D defTexture;
 
     public ShaderProgram() throws Exception {
         programId = GL33.glCreateProgram();
@@ -21,6 +25,10 @@ public class ShaderProgram {
             throw new Exception("Could not create Shader");
         }
         int defTextureUniform = getUniform("defaultTexture");
+        defTexture = new Texture2D(2,2);
+        defTexture.fill(Color.WHITE);
+        defTexture.updateTexture();
+        Uniform.setTexture2D(defTextureUniform, defTexture);
 //        int textureId = GL33.glGenTexture();
 //        GL33.glActiveTexture(GL33.GL_TEXTURE0);
 //        GL33.glBindTexture()

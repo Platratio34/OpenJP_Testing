@@ -8,6 +8,8 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryStack;
 
+import objects.Texture2D;
+
 public class Uniform {
 	
 	public static void setMatrix4f(int uniform, Matrix4f matrix) {
@@ -41,5 +43,9 @@ public class Uniform {
 	
 	public static void setFloat(int uniform, float val) {
 		GL33.glUniform1f(uniform, val);
+	}
+
+	public static void setTexture2D(int uniform, Texture2D texture) {
+		GL33.glUniform1i(uniform, texture.getId());
 	}
 }
