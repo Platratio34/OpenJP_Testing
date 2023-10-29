@@ -27,6 +27,7 @@ struct material {
 	vec4 color;
 	float smoothness;
 	// sampler2D texture;
+	int textuerIndex;
 };
 
 uniform material[16] materials;
@@ -35,7 +36,7 @@ uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 0.0/*, defaultTexture*/);
+	material cMat = material(vertexColor, 0.0, 0);
 	if(matId >= 0.0) {
 		cMat = materials[int(matId)];
 	}

@@ -263,9 +263,6 @@ public class GLTest2 implements WindowLoopRunnable {
         testMesh.dispose();
 	}
 	
-	float colorMax = 90f;
-	float colorDivMax = 60f;
-	
 	@Override
 	public void onLoop() {
 		t += window.deltaTime()*45;

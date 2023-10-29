@@ -1,5 +1,6 @@
 package shaders;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL33;
 
 import objects.Texture2D;
@@ -117,5 +118,24 @@ public class ShaderProgram {
 			System.err.println("Could not find uniform '"+name+"' in shader");
 		}
 		return id;
+	}
+	
+	public void uniformSetBoolean(String name, boolean val) {
+		Uniform.setBoolean(getUniform(name), val);
+	}
+	public void uniformSetColor(String name, Color val) {
+		Uniform.setColor(getUniform(name), val);
+	}
+	public void uniformSetColor4(String name, Color val) {
+		Uniform.setColor4(getUniform(name), val);
+	}
+	public void uniformSetFloat(String name, float val) {
+		Uniform.setFloat(getUniform(name), val);
+	}
+	public void uniformSetVector3f(String name, Vector3f val) {
+		Uniform.setVector3f(getUniform(name), val);
+	}
+	public void uniformSetInt1(String name, int val) {
+		GL33.glUniform1i(getUniform(name), val);
 	}
 }
