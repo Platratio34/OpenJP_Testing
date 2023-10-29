@@ -31,9 +31,21 @@ struct material {
 };
 
 uniform material[16] materials;
-uniform sampler2D[16] textures
+// uniform sampler2DArray textures;
+// uniform sampler2D textures[16];
 
 uniform sampler2D defaultTexture;
+
+// vec4 getSampleFromArray(sampler2D textures[16], int ndx, vec2 uv) {
+//     vec4 color = vec4(0);
+//     for (int i = 0; i < 16; ++i) {
+//       vec4 c = texture2D(textures[i], uv);
+//       if (i == ndx) {
+//         color += c;
+//       }
+//     }
+//     return color;
+// }
 
 void main()
 {
@@ -59,8 +71,9 @@ void main()
 	vec4 color = cMat.color;
 	
 	// color = cMat.color * texture(cMat.texture, textCord);
-	if(cMat.textureIndex >= 0.0) {
-		color = cMat.color * texture(textures[cMat.textureIndex], textCord);
+	if(cMat.textureIndex >= 0) {
+		// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
+		// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
 	} else {
 		color = cMat.color * texture(defaultTexture, textCord);
 	}
