@@ -1,11 +1,14 @@
 package windows;
 
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
@@ -37,6 +40,8 @@ public class Window {
 	private long frameTime;
 	private long targetFrameTime = 1000/30;
 	private long frameNumber;
+
+	private KeyboardCallback keyboardCallback;
 	
 	public Window(String title) {
 		init();
@@ -74,8 +79,8 @@ public class Window {
         
         try {
 			shader = new ShaderProgram();
-			shader.createVertexShaderFile("src/shaders/vertex.vert");
-			shader.createFragmentShaderFile("src/shaders/fragment.frag");
+			shader.createVertexShaderResource("shaders/vertex.vs");
+			shader.createFragmentShaderResource("shaders/fragment.fs");
 			shader.link();
 			shader.bind();
 		} catch (Exception e) {
@@ -90,6 +95,9 @@ public class Window {
 		camera.recaculatePerspective();
 
 		GL33.glEnable(GL33.GL_CULL_FACE);
+
+		keyboardCallback = new KeyboardCallback();
+		glfwSetKeyCallback(window, keyboardCallback);
 	}
 	
 	public void run() {
@@ -171,7 +179,32 @@ public class Window {
 	}
 	
 	public void setTargetFPS(int fps) {
-		targetFrameTime = 1000/fps;
+		targetFrameTime = 1000 / fps;
+	}
+
+	public void addKeyboardListener(KeyboardEventI listener) {
+		keyboardCallback.listeners.add(listener);
+	}
+
+	private class KeyboardCallback implements GLFWKeyCallbackI {
+
+		ArrayList<KeyboardEventI> listeners;
+
+		KeyboardCallback() {
+			listeners = new ArrayList<KeyboardEventI>();
+		}
+
+		@Override
+		public void invoke(long window, int key, int scancode, int action, int mods) {
+			for (KeyboardEventI listener : listeners) {
+				listener.onKeyboardEvent(key, scancode, action, mods);
+			}
+		}
+
+	}
+
+	public interface KeyboardEventI {
+		public void onKeyboardEvent(int key, int scancode, int action, int mods);
 	}
 	
 }

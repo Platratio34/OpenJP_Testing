@@ -65,7 +65,7 @@ public class Texture2D {
 	public void unbind() {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
 	}
-	public void activeteBind(int index) {
+	public void activateBind(int index) {
 		GL33.glActiveTexture(GL33.GL_TEXTURE0+index);
 		bind();
 	}

@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.lwjgl.opengl.GL33;
 
 import GLObjects.VAO;
+import oldObjects.Triangle;
+import java.io.InputStreamReader;
 
 public class Mesh {
 
@@ -143,6 +145,19 @@ public class Mesh {
 	}
 	public static Mesh createFromFile(String path) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(path));
+		String line = "";
+		String str = "";
+		while (line != null) {
+			str += line;
+			line = br.readLine();
+		}
+		br.close();
+		return createFromString(str);
+	}
+	public static Mesh createFromResource(String resource) throws IOException {
+		// BufferedReader br = new BufferedReader(new FileReader(path));
+		ClassLoader classLoader = Triangle.class.getClassLoader();
+		BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
 		String line = "";
 		String str = "";
 		while (line != null) {

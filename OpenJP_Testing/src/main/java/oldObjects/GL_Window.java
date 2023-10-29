@@ -128,8 +128,8 @@ public abstract class GL_Window {
         
         try {
 			shader = new ShaderProgram();
-			shader.createVertexShaderFile("src/shaders/vertex.vs");
-			shader.createFragmentShaderFile("src/shaders/fragment.fs");
+			shader.createVertexShaderResource("shaders/vertex.vs");
+			shader.createFragmentShaderResource("shaders/fragment.fs");
 			shader.bind();
 			shader.link();
 		} catch (Exception e) {
@@ -137,8 +137,8 @@ public abstract class GL_Window {
             throw new IllegalStateException("Unable to initialize Shader");
 		}
         
-        int abientLightingLocation = shader.getUniform("ambientLighting");
-        glUniform1f(abientLightingLocation, 0.1f);
+        // int ambientLightingLocation = shader.getUniform("ambientLighting");
+        // glUniform1f(ambientLightingLocation, 0.1f);
         
         onInit();
         

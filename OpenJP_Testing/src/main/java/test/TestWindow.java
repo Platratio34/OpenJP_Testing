@@ -19,10 +19,10 @@ public class TestWindow extends GL_Window {
 	@Override
 	protected void onInit() {
 		try {
-        	cubeMesh = Triangle.loadMesh("src/meshes/cube.mesh");
-        	pyramidMesh = Triangle.loadMesh("src/meshes/pyramid.mesh");
-        	planeMesh = Triangle.loadMesh("src/meshes/plane.mesh");
-        	plane2Mesh = Triangle.loadMesh("src/meshes/plane2.mesh");
+        	cubeMesh = Triangle.loadMeshResource("meshes/cube.mesh");
+        	pyramidMesh = Triangle.loadMeshResource("meshes/pyramid.mesh");
+        	planeMesh = Triangle.loadMeshResource("meshes/plane.mesh");
+        	plane2Mesh = Triangle.loadMeshResource("meshes/plane2.mesh");
         	System.out.println("Meshes loaded");
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,7 +1,12 @@
 package test2;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+
 import java.awt.Color;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
@@ -10,11 +15,12 @@ import lighting.LightingSettings;
 import objects.Camera;
 import objects.Mesh;
 import objects.Renderer;
+import objects.Texture2D;
 import objects.Transform;
 import windows.Window;
 import windows.WindowLoopRunnable;
 
-public class GLTest2 implements WindowLoopRunnable {
+public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 
 //	static ShaderProgram shader;
 //	static long window;
@@ -36,6 +42,18 @@ public class GLTest2 implements WindowLoopRunnable {
 	Transform p1;
 	Transform p2;
 
+        
+	Color[] colors = new Color[] {
+		new Color(0.5f, 0.5f, 0.4f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f),
+		new Color(0.0f, 0.0f, 0.0f)
+	};
     Color[] colors2 = new Color[] {
     	new Color(0.0f, 0.75f, 0.4f),
     	new Color(0.0f, 0.0f, 0.0f),
@@ -59,7 +77,13 @@ public class GLTest2 implements WindowLoopRunnable {
     	new Color(0.0f, 0.0f, 0.0f)
     };
 	
-    Window window;
+	Window window;
+	
+	List<Renderer> boxes = new ArrayList<Renderer>();
+	Renderer testR;
+	Light light;
+
+	Texture2D texture;
     
 	public static void main(String[] args) {
 		GLTest2 glTest = new GLTest2();
@@ -68,6 +92,7 @@ public class GLTest2 implements WindowLoopRunnable {
 	public GLTest2() {
 		window = new Window("Open GL Test");
 		window.addLoopRunnable(this);
+		window.addKeyboardListener(this);
 		
 		camera = window.camera;
 		lighting = window.lightingSettings;
@@ -95,23 +120,11 @@ public class GLTest2 implements WindowLoopRunnable {
         
 //        testMesh = Mesh.createFromSingleArray(vertices);
         try {
-			testMesh = Mesh.createFromFile("src/meshes/newCube.mesh");
+			testMesh = Mesh.createFromResource("meshes/newCube.mesh");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
-        
-        Color[] colors = new Color[] {
-        	new Color(0.5f, 0.5f, 0.4f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f),
-        	new Color(0.0f, 0.0f, 0.0f)
-        };
         
         p1 = new Transform();
         p2 = new Transform();
@@ -188,10 +201,11 @@ public class GLTest2 implements WindowLoopRunnable {
     		float z = (float)Math.cos(a) * 1;
     		Transform t = new Transform();
     		t.setPosition(x, -2, z);
-    		t.setRotation(0, i/(num/360f), 0);
+    		t.setRotation(0, i/(num/360f) + 90f, 0);
     		Renderer r = new Renderer(testMesh, t);
             r.setColors(colors);
-    		window.addRenderer(r);
+			window.addRenderer(r);
+			boxes.add(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -199,10 +213,11 @@ public class GLTest2 implements WindowLoopRunnable {
     		float z = (float)Math.cos(a) * 2;
     		Transform t = new Transform();
     		t.setPosition(x, -1, z);
-    		t.setRotation(0, i/(num/360f), 0);
+    		t.setRotation(0, i/(num/360f) + 90f, 0);
     		Renderer r = new Renderer(testMesh, t);
             r.setColors(colors);
     		window.addRenderer(r);
+			boxes.add(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -210,10 +225,11 @@ public class GLTest2 implements WindowLoopRunnable {
     		float z = (float)Math.cos(a) * 3;
     		Transform t = new Transform();
     		t.setPosition(x, 0, z);
-    		t.setRotation(0, i/(num/360f), 0);
+    		t.setRotation(0, i/(num/360f) + 90f, 0);
     		Renderer r = new Renderer(testMesh, t);
             r.setColors(colors);
     		window.addRenderer(r);
+			boxes.add(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -221,10 +237,11 @@ public class GLTest2 implements WindowLoopRunnable {
     		float z = (float)Math.cos(a) * 4;
     		Transform t = new Transform();
     		t.setPosition(x, 1, z);
-    		t.setRotation(0, i/(num/360f), 0);
+    		t.setRotation(0, i/(num/360f) + 90f, 0);
     		Renderer r = new Renderer(testMesh, t);
             r.setColors(colors);
     		window.addRenderer(r);
+			boxes.add(r);
         }
         for(int i = 0; i < num; i++) {
         	float a = i/rConst;
@@ -232,10 +249,11 @@ public class GLTest2 implements WindowLoopRunnable {
     		float z = (float)Math.cos(a) * 5;
     		Transform t = new Transform();
     		t.setPosition(x, 2, z);
-    		t.setRotation(0, i/(num/360f), 0);
+    		t.setRotation(0, i/(num/360f) + 90f, 0);
     		Renderer r = new Renderer(testMesh, t);
             r.setColors(colors);
     		window.addRenderer(r);
+			boxes.add(r);
         }
         
 //        Transform t2 = new Transform();
@@ -249,12 +267,20 @@ public class GLTest2 implements WindowLoopRunnable {
 //        lighting.setLightColor(Color.decode("0x800000"));
         
         Transform lT = new Transform();
-        lT.setPosition(0.0f, -1.0f, 0.0f);;
-        Light light = new Light(Color.decode("0x800000"),5,lT);
+        lT.setPosition(0.0f, 2.0f, 0.0f);;
+        light = new Light(Color.decode("0x800000"),5,lT);
         lighting.addLight(light);
 
         lighting.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
-        lighting.setGlobalLightColor(Color.decode("0xf0f0f0"));
+		lighting.setGlobalLightColor(Color.decode("0xf0f0f0"));
+		
+		camera.transform.setPosition(0, 0, 6);
+		camera.transform.setRotation(75, 45, 0);
+		camera.recalculateMatrix();
+		
+		texture = new Texture2D(2, 2);
+		texture.setPixel(1, 0, Color.RED);
+		texture.setPixel(0, 1, Color.RED);
 	}
 	
 	public void run() {
@@ -270,17 +296,37 @@ public class GLTest2 implements WindowLoopRunnable {
 //		float y = (float)Math.sin(t)*10f;
 //        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
 
-		colors2[0] = Color.getHSBColor(t/180f, 1, 1);
-		colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
+		// colors2[0] = Color.getHSBColor(t/180f, 1, 1);
+		// colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
         
-		camera.transform.setPosition(0, 0, 6);
-		camera.transform.setRotation(75, t/2f, 0);
-        camera.recalculateMatrix();
+		// camera.transform.setPosition(0, 0, 6);
+		// camera.transform.setRotation(75, t/2f, 0);
+        // camera.recalculateMatrix();
         
-        lighting.getLight(0).transform.setPosition(0.0f, t/180f, 0.0f);
-        lighting.getLight(0).setColor(Color.getHSBColor(t/900f, 1, 1));
+        // light.transform.setPosition(0.0f, t/180f, 0.0f);
+        // light.setColor(Color.getHSBColor(t/900f, 1, 1));
         
-        p1.setRotation(0, t, 0);
-        p2.setRotation(0, -t, 0);
+        // p1.setRotation(0, t, 0);
+		// p2.setRotation(0, -t, 0);
+		
+		// for (Renderer renderer : boxes) {
+		// 	// Vector3f rot = renderer.transform.getRotation();
+		// 	renderer.transform.rotate(0, 0, 1);
+		// }
+	}
+	@Override
+	public void onKeyboardEvent(int key, int scancode, int action, int mods) {
+		if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+			// System.out.println("Space was pressed");
+			if (testR == null) {
+				Transform t = new Transform();
+				t.setPosition(0, 2, 0);
+				testR = new Renderer(testMesh, t);
+				testR.setColors(colors);
+				window.addRenderer(testR);
+			} else {
+				testR.setVisible(!testR.isVisible());
+			}
+		}
 	}
 }

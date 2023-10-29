@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.InputStreamReader;
 
 import vectorLibrary.Vector3D;
 
@@ -76,18 +77,37 @@ public class Triangle {
 	
 	public static Triangle[] loadMesh(String filename) throws IOException {
 		ArrayList<Triangle> mesh = new ArrayList<Triangle>();
-		
+
 		BufferedReader br = new BufferedReader(new FileReader(filename));
-		
+
 		String st = "";
 		while (st != null) {
 			st = br.readLine();
-			if(st != null && !st.equals("")) {
+			if (st != null && !st.equals("")) {
 				mesh.add(new Triangle(st));
 			}
 		}
 		br.close();
-		System.out.println("Loaded mesh "+filename);
+		System.out.println("Loaded mesh " + filename);
 		return mesh.toArray(new Triangle[0]);
 	}
+	public static Triangle[] loadMeshResource(String resource) throws IOException {
+		ArrayList<Triangle> mesh = new ArrayList<Triangle>();
+
+		// BufferedReader br = new BufferedReader(new FileReader(filename));
+		ClassLoader classLoader = Triangle.class.getClassLoader();
+		BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
+
+		String st = "";
+		while (st != null) {
+			st = br.readLine();
+			if (st != null && !st.equals("")) {
+				mesh.add(new Triangle(st));
+			}
+		}
+		br.close();
+		System.out.println("Loaded mesh " + resource);
+		return mesh.toArray(new Triangle[0]);
+	}
+	
 }

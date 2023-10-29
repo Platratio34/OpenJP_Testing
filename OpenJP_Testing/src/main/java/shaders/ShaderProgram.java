@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL33;
 import objects.Texture2D;
 
 import java.awt.Color;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,11 +26,11 @@ public class ShaderProgram {
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
-        int defTextureUniform = getUniform("defaultTexture");
         defTexture = new Texture2D(2,2);
         defTexture.fill(Color.WHITE);
         defTexture.updateTexture();
-        Uniform.setTexture2D(defTextureUniform, defTexture);
+        // int defTextureUniform = getUniform("defaultTexture");
+        // Uniform.setTexture2D(defTextureUniform, defTexture);
 //        int textureId = GL33.glGenTexture();
 //        GL33.glActiveTexture(GL33.GL_TEXTURE0);
 //        GL33.glBindTexture()
@@ -38,8 +39,14 @@ public class ShaderProgram {
     public void createVertexShader(String shaderCode) throws Exception {
         vertexShaderId = createShader(shaderCode, GL33.GL_VERTEX_SHADER);
     }
-    public void createVertexShaderFile(String filename) throws Exception {
-    	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+    public void createVertexShaderResource(String filename) throws Exception {
+        URL res = getClass().getClassLoader().getResource(filename);
+        if (res == null) {
+            throw new Exception("Could not load vertex shader from resources: " + filename);
+            // System.err.println("Could not load vertex shader from resources: "+filename);
+            // return;
+        }
+    	List<String> lines = Files.readAllLines(Paths.get(res.toURI()), StandardCharsets.UTF_8);
     	String code = "";
     	for(int i = 0 ; i < lines.size(); i++) {
     		code += lines.get(i) + "\n";
@@ -50,8 +57,15 @@ public class ShaderProgram {
     public void createFragmentShader(String shaderCode) throws Exception {
         fragmentShaderId = createShader(shaderCode, GL33.GL_FRAGMENT_SHADER);
     }
-    public void createFragmentShaderFile(String filename) throws Exception {
-    	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+
+    public void createFragmentShaderResource(String filename) throws Exception {
+        URL res = getClass().getClassLoader().getResource(filename);
+        if (res == null) {
+            throw new Exception("Could not load fragment shader from resources: " + filename);
+            // System.err.println("Could not load fragment shader from resources: "+filename);
+            // return;
+        }
+    	List<String> lines = Files.readAllLines(Paths.get(res.toURI()), StandardCharsets.UTF_8);
     	String code = "";
     	for(int i = 0 ; i < lines.size(); i++) {
     		code += lines.get(i) + "\n";
@@ -112,30 +126,31 @@ public class ShaderProgram {
         }
     }
 
-	public int getUniform(String name) {
+	public int getUniform(String name) throws UniformException {
 		int id = GL33.glGetUniformLocation(programId, name);
 		if(id < 0) {
-			System.err.println("Could not find uniform '"+name+"' in shader");
+            // System.err.println("Could not find uniform '"+name+"' in shader");
+            throw new UniformException("Could not find uniform '"+name+"' in shader");
 		}
 		return id;
 	}
 	
-	public void uniformSetBoolean(String name, boolean val) {
+	public void uniformSetBoolean(String name, boolean val) throws UniformException {
 		Uniform.setBoolean(getUniform(name), val);
 	}
-	public void uniformSetColor(String name, Color val) {
+	public void uniformSetColor(String name, Color val) throws UniformException {
 		Uniform.setColor(getUniform(name), val);
 	}
-	public void uniformSetColor4(String name, Color val) {
+	public void uniformSetColor4(String name, Color val) throws UniformException {
 		Uniform.setColor4(getUniform(name), val);
 	}
-	public void uniformSetFloat(String name, float val) {
+	public void uniformSetFloat(String name, float val) throws UniformException {
 		Uniform.setFloat(getUniform(name), val);
 	}
-	public void uniformSetVector3f(String name, Vector3f val) {
+	public void uniformSetVector3f(String name, Vector3f val) throws UniformException {
 		Uniform.setVector3f(getUniform(name), val);
 	}
-	public void uniformSetInt1(String name, int val) {
+	public void uniformSetInt1(String name, int val) throws UniformException {
 		GL33.glUniform1i(getUniform(name), val);
 	}
 }

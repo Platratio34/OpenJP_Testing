@@ -18,6 +18,8 @@ public class Renderer {
 	private int matrixUniform;
 	private int colorsUniform;
 	private int useColorsUniform;
+
+	private boolean visible = true;
 	
 	public Renderer(Mesh mesh, Transform transform) {
 		this.mesh = mesh;
@@ -35,7 +37,16 @@ public class Renderer {
 		this.colors = colors;
 	}
 	
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
 	public void render() {
+		if (!visible) return;
 		shader.bind();
 		Matrix4f matrix = transform.getTransformMatrix();
 		Uniform.setMatrix4f(matrixUniform, matrix);

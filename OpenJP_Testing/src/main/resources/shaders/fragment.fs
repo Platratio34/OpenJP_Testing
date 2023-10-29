@@ -27,16 +27,17 @@ struct material {
 	vec4 color;
 	float smoothness;
 	// sampler2D texture;
-	int textuerIndex;
+	int textureIndex;
 };
 
 uniform material[16] materials;
+uniform sampler2D[16] textures
 
 uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 0.0, 0);
+	material cMat = material(vertexColor, 0.0, -1);
 	if(matId >= 0.0) {
 		cMat = materials[int(matId)];
 	}
@@ -58,7 +59,12 @@ void main()
 	vec4 color = cMat.color;
 	
 	// color = cMat.color * texture(cMat.texture, textCord);
-	color = cMat.color * texture(defaultTexture, textCord);
+	if(cMat.textureIndex >= 0.0) {
+		color = cMat.color * texture(textures[cMat.textureIndex], textCord);
+	} else {
+		color = cMat.color * texture(defaultTexture, textCord);
+	}
+	
 	
 	fragColor = vertexColor * vec4(lighting.xyz, 1.0);
 }

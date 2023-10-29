@@ -5,9 +5,11 @@ import java.awt.Color;
 public class Material {
 
 	private int matId;
+	
 	private Color color;
 	private float smoothness;
 	private int textureIndex;
+
 	private Materials materials;
 	
 	public Material(Materials materials) {
