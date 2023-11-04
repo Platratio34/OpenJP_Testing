@@ -9,11 +9,11 @@ import shaders.Uniform;
 
 public class LightingSettings {
 
-	private int ambientColorUniform;
-	private int lightPosUniform;
-	private int lightColorUniform;
-	private int globalLightDirUniform;
-	private int globalLightColorUniform;
+	private Uniform ambientColorUniform;
+	private Uniform lightPosUniform;
+	private Uniform lightColorUniform;
+	private Uniform globalLightDirUniform;
+	private Uniform globalLightColorUniform;
 	
 	private Light[] lights;
 	private int nextLightId = 0;
@@ -21,29 +21,29 @@ public class LightingSettings {
 	private ShaderProgram shader;
 	
 	public LightingSettings(ShaderProgram shader) {
-		ambientColorUniform = shader.getUniform("ambientColor");
-		lightPosUniform = shader.getUniform("lightPos");
-		lightColorUniform = shader.getUniform("lightColor");
-		globalLightDirUniform = shader.getUniform("globalLightDir");
-		globalLightColorUniform = shader.getUniform("globalLightColor");
+		ambientColorUniform = new Uniform(shader, "ambientColor");
+		lightPosUniform = new Uniform(shader, "lightPos");
+		lightColorUniform = new Uniform(shader, "lightColor");
+		globalLightDirUniform = new Uniform(shader, "globalLightDir");
+		globalLightColorUniform = new Uniform(shader, "globalLightColor");
 		lights = new Light[16];
 		this.shader = shader;
 	}
 	
 	public void setAbientLighting(Color color) {
-		Uniform.setColor(ambientColorUniform, color);
+		ambientColorUniform.setColor(color);
 	}
 	public void setLightPosition(Vector3f pos) {
-		Uniform.setVector3f(lightPosUniform, pos);
+		lightPosUniform.setVector3f(pos);
 	}
 	public void setLightColor(Color color) {
-		Uniform.setColor(lightColorUniform, color);
+		lightColorUniform.setColor(color);
 	}
 	public void setGlobalLightDirection(Vector3f pos) {
-		Uniform.setVector3f(globalLightDirUniform, pos.normalize());
+		globalLightDirUniform.setVector3f(pos.normalize());
 	}
 	public void setGlobalLightColor(Color color) {
-		Uniform.setColor(globalLightColorUniform, color);
+		globalLightColorUniform.setColor(color);
 	}
 
 	public int addLight(Light light) {
@@ -77,12 +77,12 @@ public class LightingSettings {
 	}
 	private void setLightArray(String uniform, Light light, int index) {
 		uniform += "["+index+"].";
-		int posUni = shader.getUniform(uniform+"position");
-		Uniform.setVector3f(posUni, light.transform.getPosition());
-		int colorUni = shader.getUniform(uniform+"color");
-		Uniform.setColor(colorUni, light.getColor());
-		int rangeUni = shader.getUniform(uniform+"range");
-		Uniform.setFloat(rangeUni, light.getRange());
+		Uniform posUni = new Uniform(shader, uniform+"position");
+		posUni.setVector3f(light.transform.getPosition());
+		Uniform colorUni = new Uniform(shader, uniform+"color");
+		colorUni.setColor(light.getColor());
+		Uniform rangeUni = new Uniform(shader, uniform+"range");
+		rangeUni.setFloat(light.getRange());
 	}
 	
 }

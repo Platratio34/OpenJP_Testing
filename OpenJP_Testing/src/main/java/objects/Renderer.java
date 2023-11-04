@@ -15,9 +15,9 @@ public class Renderer {
 	
 	public Color[] colors;
 	
-	private int matrixUniform;
-	private int colorsUniform;
-	private int useColorsUniform;
+	private Uniform matrixUniform;
+	private Uniform colorsUniform;
+	private Uniform useColorsUniform;
 
 	private boolean visible = true;
 	
@@ -28,9 +28,9 @@ public class Renderer {
 	
 	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
-		matrixUniform = shader.getUniform("transformMatrix");
-		colorsUniform = shader.getUniform("colors");
-		useColorsUniform = shader.getUniform("useColors");
+		matrixUniform = new Uniform(shader, "transformMatrix");
+		colorsUniform = new Uniform(shader, "colors");
+		useColorsUniform = new Uniform(shader, "useColors");
 	}
 	
 	public void setColors(Color[] colors) {
@@ -49,12 +49,12 @@ public class Renderer {
 		if (!visible) return;
 		shader.bind();
 		Matrix4f matrix = transform.getTransformMatrix();
-		Uniform.setMatrix4f(matrixUniform, matrix);
+		matrixUniform.setMatrix4f(matrix);
 		if(colors != null) {
-			Uniform.setColorArray(colorsUniform, colors);
-			Uniform.setBoolean(useColorsUniform, true);
+			colorsUniform.setColorArray(colors);
+			useColorsUniform.setBoolean(true);
 		} else {
-			Uniform.setBoolean(useColorsUniform, false);
+			useColorsUniform.setBoolean(false);
 		}
 		mesh.render();
 	}

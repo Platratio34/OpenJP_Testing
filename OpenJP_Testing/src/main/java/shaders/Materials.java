@@ -15,6 +15,8 @@ public class Materials {
 
 	private Texture2D defTexture;
 	private Texture2D[] textures;
+
+	private Uniform defTextureUniform;
 	
 	public Materials(ShaderProgram shader) {
 		this.shader = shader;
@@ -25,8 +27,8 @@ public class Materials {
         defTexture = new Texture2D(2,2);
         defTexture.fill(Color.WHITE);
         defTexture.updateTexture();
-        int defTextureUniform = shader.getUniform("defaultTexture");
-        Uniform.setTexture2D(defTextureUniform, defTexture);
+        defTextureUniform = new Uniform(shader, "defaultTexture");
+        defTextureUniform.setTexture2D(defTexture);
 	}
 
 	public void updateMaterial(Material material) {
@@ -39,8 +41,8 @@ public class Materials {
 	
 	public void setTexture(int texId, Texture2D texture) {
 		textures[texId] = texture;
-		int uId = shader.getUniform(TEXTURES_UNIFORM_NAME + "[" + texId + "]");
-		Uniform.setTexture2D(uId, texture);
+		Uniform textureUniform = new Uniform(shader, TEXTURES_UNIFORM_NAME + "[" + texId + "]");
+		textureUniform.setTexture2D(texture);
 	}
 
 	public Texture2D getTexture(int texId) {
