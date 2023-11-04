@@ -12,18 +12,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.io.InputStreamReader;
 
-import vectorLibrary.Vector3D;
+// import vectorLibrary.Vector3D;
+import org.joml.Vector3f;
 
 public class Triangle {
 	
-	public Vector3D p0;
-	public Vector3D p1;
-	public Vector3D p2;
+	public Vector3f p0;
+	public Vector3f p1;
+	public Vector3f p2;
 	
-	public Vector3D n;
-	public Vector3D c;
+	public Vector3f n;
+	public Vector3f c;
 	
-	public Triangle(Vector3D p0, Vector3D p1, Vector3D p2, Vector3D n, Vector3D c) {
+	public Triangle(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f n, Vector3f c) {
 		this.p0 = p0;
 		this.p1 = p1;
 		this.p2 = p2;
@@ -33,30 +34,35 @@ public class Triangle {
 		
 //		System.out.println("Created triangle: "+p0+"; "+p1+"; "+p2+"; c="+c);
 	}
+
+	private Vector3f fromCoords(String str) {
+		Vector3f v = new Vector3f();
+		return v;
+	}
 	
 	public Triangle(String text) {
 		String[] parts = text.split(";");
 		if(parts.length < 5) {
-			p0 = new Vector3D();
-			p1 = new Vector3D();
-			p2 = new Vector3D();
+			p0 = new Vector3f();
+			p1 = new Vector3f();
+			p2 = new Vector3f();
 
-			n = new Vector3D();
-			c = new Vector3D();
+			n = new Vector3f();
+			c = new Vector3f();
 			return;
 		}
 		
-		p0 = Vector3D.fromCoords(parts[0]);
-		p1 = Vector3D.fromCoords(parts[1]);
-		p2 = Vector3D.fromCoords(parts[2]);
+		p0 = fromCoords(parts[0]);
+		p1 = fromCoords(parts[1]);
+		p2 = fromCoords(parts[2]);
 
-		n = Vector3D.fromCoords(parts[3]);
-		c = Vector3D.fromCoords(parts[4]);
+		n = fromCoords(parts[3]);
+		c = fromCoords(parts[4]);
 		
 //		System.out.println("Created triangle: "+p0+"; "+p1+"; "+p2+"; c="+c);
 	}
 	
-	public void render(Vector3D lRot) {
+	public void render(Vector3f lRot) {
 		
 		double r = c.x;
 		double g = c.y;
