@@ -2,10 +2,9 @@ package objects;
 
 import org.joml.Matrix4f;
 
+import shaders.Materials;
 import shaders.ShaderProgram;
 import shaders.Uniform;
-
-import java.awt.Color;
 
 public class Renderer {
 
@@ -13,28 +12,24 @@ public class Renderer {
 	public Transform transform;
 	private ShaderProgram shader;
 	
-	public Color[] colors;
-	
 	private Uniform matrixUniform;
-	private Uniform colorsUniform;
 	private Uniform useColorsUniform;
 
 	private boolean visible = true;
+
+	public Materials materials;
 	
 	public Renderer(Mesh mesh, Transform transform) {
 		this.mesh = mesh;
 		this.transform = transform;
+		materials = new Materials();
 	}
 	
 	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
 		matrixUniform = new Uniform(shader, "transformMatrix");
-		colorsUniform = new Uniform(shader, "colors");
-		useColorsUniform = new Uniform(shader, "useColors");
-	}
-	
-	public void setColors(Color[] colors) {
-		this.colors = colors;
+		useColorsUniform = new Uniform(shader, "useColor");
+		materials.setShader(shader);
 	}
 	
 	public boolean isVisible() {
@@ -50,11 +45,12 @@ public class Renderer {
 		shader.bind();
 		Matrix4f matrix = transform.getTransformMatrix();
 		matrixUniform.setMatrix4f(matrix);
-		if(colors != null) {
-			colorsUniform.setColorArray(colors);
-			useColorsUniform.setBoolean(true);
-		} else {
+		if(materials.getMaterial(0) != null) {
+			// colorsUniform.setColorArray(colors);
 			useColorsUniform.setBoolean(false);
+			materials.bind();
+		} else {
+			useColorsUniform.setBoolean(true);
 		}
 		mesh.render();
 	}

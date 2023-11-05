@@ -63,6 +63,8 @@ void main()
 	
 	vec3 lighting = ambientColor + diffuse + globalDiffuse;
 	
+	vec4 color = cMat.color;
+
 	for(int i = 0; i < 16; i++) {
 		vec3 dir = normalize(lights[i].position - fragPos);
 		
@@ -76,19 +78,19 @@ void main()
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;
 
-		lighting = lighting + mix(diff, specular, cMat.smoothness);
+		color = color * vec4(diff.xyz, 1.0) * vec4(specular.xyz, 1.0); // mix(diff, specular, 0.5);
 	}
 	
-	vec4 color = cMat.color;
+	// vec4 color = cMat.color;
 	
 	// color = cMat.color * texture(cMat.texture, textCord);
-	if(cMat.textureIndex >= 0) {
-		// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
-		// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
-	} else {
-		color = cMat.color * texture(defaultTexture, textCord);
-	}
+	// if(cMat.textureIndex >= 0) {
+	// 	// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
+	// 	// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
+	// } else {
+	// 	color = cMat.color;
+	// }
 	
 	
-	fragColor = vertexColor * vec4(lighting.xyz, 1.0);
+	fragColor = color * vec4(lighting.xyz, 1.0);
 }

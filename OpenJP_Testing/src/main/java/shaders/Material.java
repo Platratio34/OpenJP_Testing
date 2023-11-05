@@ -3,26 +3,40 @@ package shaders;
 import java.awt.Color;
 
 public class Material {
-
-	private int matId;
 	
 	private Color color;
 	private float smoothness;
 	private int textureIndex;
-
-	private Materials materials;
 	
-	public Material(Materials materials) {
-		matId = -1;
+	public Material() {
 		color = Color.WHITE;
-		smoothness = 0.0f;
+		smoothness = 0.5f;
 		textureIndex = -1;
-		this.materials = materials;
+	}
+	public Material(Color color) {
+		this.color = color;
+		smoothness = 0.5f;
+		textureIndex = -1;
+	}
+	public Material(Color color, float smoothness) {
+		this.color = color;
+		this.smoothness = smoothness;
+		textureIndex = -1;
 	}
 	
 	public void setColor(Color color) {
 		this.color = color;
-		materials.updateMaterial(this);
+		// materials.updateMaterial(this);
+	}
+	public Color getColor() {
+		return color;
+	}
+
+	public void setSmoothness(float smoothness) {
+		this.smoothness = smoothness;
+	}
+	public float getSmoothnes() {
+		return smoothness;
 	}
 	
 	public void updateShader(ShaderProgram shader, String uniformName) {
@@ -31,7 +45,7 @@ public class Material {
 		shader.uniformSetInt1(uniformName+".textureIndex", textureIndex);
 	}
 
-	public int getMatId() {
-		return matId;
-	}
+	// public int getMatId() {
+	// 	return matId;
+	// }
 }
