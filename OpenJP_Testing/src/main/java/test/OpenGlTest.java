@@ -211,19 +211,19 @@ public class OpenGlTest {
         }
     }
 
-    public static void main(String[] args) {
-//    	OpenGlTest t = new OpenGlTest();
-//        try {
-//	        t.run();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+//     public static void main(String[] args) {
+// //    	OpenGlTest t = new OpenGlTest();
+// //        try {
+// //	        t.run();
+// //		} catch (Exception e) {
+// //			e.printStackTrace();
+// //		}
 
-    	TestWindow t = new TestWindow();
-    	try {
-	        t.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
+//     	TestWindow t = new TestWindow();
+//     	try {
+// 	        t.run();
+// 		} catch (Exception e) {
+// 			e.printStackTrace();
+// 		}
+//     }
 }
