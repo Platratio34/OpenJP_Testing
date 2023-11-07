@@ -95,7 +95,7 @@ public class Mesh {
 		if(components[0].contains("format=")) {
 			sI++;
 			String[] parts = components[0].substring(8).split(",");
-			vI = -1;
+			// vI = -1;
 			cI = -1;
 			nI = -1;
 			for(int i = 0; i < parts.length; i++) {

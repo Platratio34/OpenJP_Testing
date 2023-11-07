@@ -44,9 +44,9 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 	Transform p1;
 	Transform p2;
 	
-	Material mat1 = new Material(new Color(0.5f, 0.5f, 0.4f));
-	Material mat2 = new Material(new Color(0.0f, 0.75f, 0.4f));
-	Material mat3 = new Material(new Color(0.0f, 0.0f, 0.9f));
+	Material mat1 = new Material(new Color(0.5f, 0.5f, 0.4f), 0.0f);
+	Material mat2 = new Material(new Color(0.0f, 0.75f, 0.4f), 0.0f);
+	Material mat3 = new Material(new Color(0.0f, 0.0f, 0.9f), 0.0f);
 	
 	Window window;
 	
@@ -70,8 +70,8 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 		camera = window.camera;
 		lighting = window.lightingSettings;
 		
-        camera.transform.setPosition(0,1,3);
-        camera.transform.setRotation(25, -90, 0);
+        camera.transform.setPosition(3,5,3);
+        camera.transform.setRotation(45, -45, 0);
         
         try {
 			testMesh = Mesh.createFromResource("meshes/newCube.mesh");
@@ -88,7 +88,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t1.setPosition(0.0f, 0.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
-        Renderer r1 = new Renderer(testMesh, t1);
+        Renderer r1 = new Renderer(matCubeMesh, t1);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
         window.addRenderer(r1);
@@ -97,7 +97,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t2.setPosition(0.0f, 0.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
-        Renderer r2 = new Renderer(testMesh, t2);
+        Renderer r2 = new Renderer(matCubeMesh, t2);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
         window.addRenderer(r2);
@@ -106,7 +106,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t3.setPosition(0.0f, 1.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
-        Renderer r3 = new Renderer(testMesh, t3);
+        Renderer r3 = new Renderer(matCubeMesh, t3);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
         window.addRenderer(r3);
@@ -115,7 +115,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t4.setPosition(0.0f, 1.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
-        Renderer r4 = new Renderer(testMesh, t4);
+        Renderer r4 = new Renderer(matCubeMesh, t4);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);
         window.addRenderer(r4);
@@ -124,7 +124,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t1.setPosition(0.0f, 2.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
-        r1 = new Renderer(testMesh, t1);
+        r1 = new Renderer(matCubeMesh, t1);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
         window.addRenderer(r1);
@@ -133,7 +133,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t2.setPosition(0.0f, 2.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
-        r2 = new Renderer(testMesh, t2);
+        r2 = new Renderer(matCubeMesh, t2);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
         window.addRenderer(r2);
@@ -142,7 +142,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t3.setPosition(0.0f, 3.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
-        r3 = new Renderer(testMesh, t3);
+        r3 = new Renderer(matCubeMesh, t3);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
         window.addRenderer(r3);
@@ -151,7 +151,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         t4.setPosition(0.0f, 3.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
-        r4 = new Renderer(testMesh, t4);
+        r4 = new Renderer(matCubeMesh, t4);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);
         window.addRenderer(r4);
@@ -165,7 +165,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
     		Transform t = new Transform();
     		t.setPosition(x, -2, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		Renderer r = new Renderer(testMesh, t);
+    		Renderer r = new Renderer(matCubeMesh, t);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
 			window.addRenderer(r);
@@ -178,7 +178,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
     		Transform t = new Transform();
     		t.setPosition(x, -1, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		Renderer r = new Renderer(testMesh, t);
+    		Renderer r = new Renderer(matCubeMesh, t);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -191,7 +191,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
     		Transform t = new Transform();
     		t.setPosition(x, 0, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		Renderer r = new Renderer(testMesh, t);
+    		Renderer r = new Renderer(matCubeMesh, t);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -204,7 +204,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
     		Transform t = new Transform();
     		t.setPosition(x, 1, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		Renderer r = new Renderer(testMesh, t);
+    		Renderer r = new Renderer(matCubeMesh, t);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -217,7 +217,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
     		Transform t = new Transform();
     		t.setPosition(x, 2, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		Renderer r = new Renderer(testMesh, t);
+    		Renderer r = new Renderer(matCubeMesh, t);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -226,24 +226,24 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
         
 //        Transform t2 = new Transform();
 //        t2.setPosition(-2.0f, 1.5f, 0.0f);
-//        Renderer r2 = new Renderer(testMesh, t2);
+//        Renderer r2 = new Renderer(matCubeMesh, t2);
 //        r2.setShader(shader);
 //        renderers.put(1, r2);
         
-        lighting.setAbientLighting(Color.decode("0xf0f0f0"));
+        lighting.setAbientLighting(Color.decode("0x000000"));
 //        lighting.setLightPosition(new Vector3f(0.0f, -1.0f, 0.0f));
 //        lighting.setLightColor(Color.decode("0x800000"));
         
         Transform lT = new Transform();
-        lT.setPosition(0.0f, 2.0f, 0.0f);;
-        light = new Light(Color.decode("0x800000"),5,lT);
+        lT.setPosition(-2.0f, 4.0f, -2.0f);;
+        light = new Light(Color.decode("0x800000"),25,lT);
         lighting.addLight(light);
 
         lighting.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
-		lighting.setGlobalLightColor(Color.decode("0xf0f0f0"));
+		lighting.setGlobalLightColor(Color.decode("0x101010"));
 		
-		camera.transform.setPosition(0, 0, 6);
-		camera.transform.setRotation(75, 45, 0);
+		// camera.transform.setPosition(0, 0, 3);
+		// camera.transform.setRotation(75, 45, 0);
 		camera.recalculateMatrix();
 		
 		texture = new Texture2D(2, 2);
@@ -252,35 +252,37 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 
 		material = new Material();
 		material.setColor(new Color(0.5f, 0.5f, 0.4f));
-		material.setSmoothness(0.9f);
+		material.setSmoothness(0.5f);
 	}
 	
 	public void run() {
 		window.run();
         
         testMesh.dispose();
+		matCubeMesh.dispose();
 	}
 	
 	@Override
 	public void onLoop() {
 		t += window.deltaTime()*45;
 		if(t >= 360*2) t = 0;
-//		float y = (float)Math.sin(t)*10f;
-//        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
-
+		// System.out.println(camera.transform);
+		// float y = (float)Math.sin(t)*10f;
+        // lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
+		//
 		// colors2[0] = Color.getHSBColor(t/180f, 1, 1);
 		// colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
-        
+        //
 		// camera.transform.setPosition(0, 0, 6);
 		// camera.transform.setRotation(75, t/2f, 0);
         // camera.recalculateMatrix();
-        
+        //
         // light.transform.setPosition(0.0f, t/180f, 0.0f);
         // light.setColor(Color.getHSBColor(t/900f, 1, 1));
-        
+        //
         // p1.setRotation(0, t, 0);
 		// p2.setRotation(0, -t, 0);
-		
+		//
 		// for (Renderer renderer : boxes) {
 		// 	// Vector3f rot = renderer.transform.getRotation();
 		// 	renderer.transform.rotate(0, 0, 1);

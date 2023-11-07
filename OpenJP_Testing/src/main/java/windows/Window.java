@@ -102,7 +102,7 @@ public class Window {
 	
 	public void run() {
 		showWindow(true);
-//		GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		// GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
 		lastFrameTime = System.currentTimeMillis();
 		while(!GLFW.glfwWindowShouldClose(window)) loop();
         GLFW.glfwTerminate();

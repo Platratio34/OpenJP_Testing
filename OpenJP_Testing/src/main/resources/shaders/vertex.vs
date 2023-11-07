@@ -23,12 +23,11 @@ void main()
 {
     gl_Position = projectionMatrix * cameraMatrix * transformMatrix * vec4(position, 1.0);
     if(useColor) {
-    	vertexColor = vec4(color, 1.0);
     	matId = -1.0;
     } else {
-    	vertexColor = vec4(colors[int(color.x)], 1.0);
     	matId = color.x;
     }
+    vertexColor = vec4(color, 1.0);
     vertexNormal = normalize((transformMatrix * vec4(normal, 0.0)).xyz);
     fragPos = (transformMatrix * vec4(position, 1.0)).xyz;
     textCord = uv;

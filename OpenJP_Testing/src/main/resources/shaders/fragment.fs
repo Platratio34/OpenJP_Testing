@@ -66,9 +66,11 @@ void main()
 	vec4 color = cMat.color;
 
 	for(int i = 0; i < 16; i++) {
-		vec3 dir = normalize(lights[i].position - fragPos);
-		
+		if(lights[i].range <= 0.0) {
+			continue;
+		}
 		// Diffuse
+		vec3 dir = normalize(lights[i].position - fragPos);
 		float attn = 1.0 - min(distance(lights[i].position, fragPos)/lights[i].range, 1.0);
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
 
@@ -78,7 +80,8 @@ void main()
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;
 
-		color = color * vec4(diff.xyz, 1.0) * vec4(specular.xyz, 1.0); // mix(diff, specular, 0.5);
+		lighting = lighting + diff+ (specular * cMat.smoothness);
+		// lighting = lighting + diff;
 	}
 	
 	// vec4 color = cMat.color;
@@ -92,5 +95,6 @@ void main()
 	// }
 	
 	
-	fragColor = color * vec4(lighting.xyz, 1.0);
+	fragColor = cMat.color * vec4(lighting.xyz, 1.0);
+	// fragColor = vertexColor;
 }
