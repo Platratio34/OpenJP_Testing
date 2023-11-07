@@ -15,6 +15,8 @@ uniform vec3 lightColor;
 uniform vec3 globalLightDir;
 uniform vec3 globalLightColor;
 
+uniform vec3 cameraPos;
+
 struct light {
 	vec3 position;
 	vec3 color;
@@ -49,7 +51,7 @@ uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 0.0, -1);
+	material cMat = material(vertexColor, 1.0, -1);
 	if(matId >= 0.0) {
 		cMat = materials[int(matId)];
 	}
@@ -61,23 +63,38 @@ void main()
 	
 	vec3 lighting = ambientColor + diffuse + globalDiffuse;
 	
+	vec4 color = cMat.color;
+
 	for(int i = 0; i < 16; i++) {
+		if(lights[i].range <= 0.0) {
+			continue;
+		}
+		// Diffuse
 		vec3 dir = normalize(lights[i].position - fragPos);
 		float attn = 1.0 - min(distance(lights[i].position, fragPos)/lights[i].range, 1.0);
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
-		lighting = lighting + diff;
+
+		// Specular
+		vec3 viewDir = normalize(cameraPos - fragPos);
+		vec3 reflectDir = reflect(-viewDir, vertexNormal);
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+		vec3 specular = lights[i].color * spec;
+
+		lighting = lighting + diff+ (specular * cMat.smoothness);
+		// lighting = lighting + diff;
 	}
 	
-	vec4 color = cMat.color;
+	// vec4 color = cMat.color;
 	
 	// color = cMat.color * texture(cMat.texture, textCord);
-	if(cMat.textureIndex >= 0) {
-		// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
-		// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
-	} else {
-		color = cMat.color * texture(defaultTexture, textCord);
-	}
+	// if(cMat.textureIndex >= 0) {
+	// 	// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
+	// 	// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
+	// } else {
+	// 	color = cMat.color;
+	// }
 	
 	
-	fragColor = vertexColor * vec4(lighting.xyz, 1.0);
+	fragColor = cMat.color * vec4(lighting.xyz, 1.0);
+	// fragColor = vertexColor;
 }

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 public class ShaderProgram {
@@ -21,6 +22,8 @@ public class ShaderProgram {
     private int fragmentShaderId;
     private Texture2D defTexture;
 
+    private HashMap<String, Integer> knownUniforms;
+
     public ShaderProgram() throws Exception {
         programId = GL33.glCreateProgram();
         if (programId == 0) {
@@ -29,6 +32,7 @@ public class ShaderProgram {
         defTexture = new Texture2D(2,2);
         defTexture.fill(Color.WHITE);
         defTexture.updateTexture();
+        knownUniforms = new HashMap<String, Integer>();
         // int defTextureUniform = getUniform("defaultTexture");
         // Uniform.setTexture2D(defTextureUniform, defTexture);
 //        int textureId = GL33.glGenTexture();
@@ -127,11 +131,13 @@ public class ShaderProgram {
     }
 
 	public int getUniform(String name) throws UniformException {
+        if(knownUniforms.containsKey(name)) return knownUniforms.get(name);
 		int id = GL33.glGetUniformLocation(programId, name);
 		if(id < 0) {
-            // System.err.println("Could not find uniform '"+name+"' in shader");
-            throw new UniformException("Could not find uniform '"+name+"' in shader");
+            System.err.println("Could not find uniform '"+name+"' in shader");
+            // throw new UniformException("Could not find uniform '"+name+"' in shader");
 		}
+        knownUniforms.put(name, id);
 		return id;
 	}
 	

@@ -44,6 +44,15 @@ public class VAO {
 	public void storeNormalData(float[] normals) {
 		storeDataInAttributeList(2, normals);
 	}
+	// public void storeMatData(int[] materials) {
+	// 	bind();
+	// 	ABO abo = new ABO(GL30.GL_ARRAY_BUFFER);
+	// 	abo.fill(materials);
+	// 	abos.add(abo);
+	// 	GL30.glEnableVertexAttribArray(3);
+	// 	GL30.glVertexAttribPointer(3, 3, GL30.GL_INT, false, 0, 0);
+	// 	abo.unbind();
+	// }
 	
 	public void bind() {
 		GL30.glBindVertexArray(id);

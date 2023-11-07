@@ -42,7 +42,8 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import shaders.ShaderProgram;
-import vectorLibrary.Vector3D;
+// import vectorLibrary.Vector3D;
+import org.joml.Vector3f;
 
 public abstract class GL_Window {
 	
@@ -55,10 +56,10 @@ public abstract class GL_Window {
     private int fragmentShaderId;
     private ShaderProgram shader;
 
-    public Vector3D cPos;
-    public Vector3D cRot;
+    public Vector3f cPos;
+    public Vector3f cRot;
     
-    public Vector3D lRot;
+    public Vector3f lRot;
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -80,10 +81,10 @@ public abstract class GL_Window {
     private void init() {
     	
     	drawables = new ArrayList<GL_Drawable>();
-    	cPos = new Vector3D(0,0,0);
-    	cRot = new Vector3D(0,0,0);
+    	cPos = new Vector3f(0,0,0);
+    	cRot = new Vector3f(0,0,0);
     	
-    	lRot = new Vector3D(-45,0,0);
+    	lRot = new Vector3f(-45,0,0);
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();

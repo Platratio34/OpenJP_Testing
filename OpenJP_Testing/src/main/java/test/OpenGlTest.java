@@ -45,15 +45,17 @@ import oldObjects.Cube;
 import oldObjects.GL_Drawable;
 import oldObjects.Plane;
 import oldObjects.Triangle;
-import vectorLibrary.Vector2D;
-import vectorLibrary.Vector3D;
+// import vectorLibrary.Vector2D;
+import org.joml.Vector2f;
+// import vectorLibrary.Vector3D;
+import org.joml.Vector3f;
 
 public class OpenGlTest {
 	
 	// The window handle
     private long window;
     private ArrayList<GL_Drawable> drawables;
-    private Vector3D cPos;
+    private Vector3f cPos;
     private double dir = 0.1;
     
     private int programId;
@@ -80,7 +82,7 @@ public class OpenGlTest {
     private void init() {
     	
     	drawables = new ArrayList<GL_Drawable>();
-    	cPos = new Vector3D(0,0,-30);
+    	cPos = new Vector3f(0,0,-30);
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
@@ -120,18 +122,18 @@ public class OpenGlTest {
                 (vidmode.height() - HEIGHT) / 2
         );
         
-        drawables.add(new Plane(new Vector2D(30,30), new Vector3D(0,-5.1,0), new Vector3D(0,0,0), new Vector3D(0.1,0.5,0.05)));
-        drawables.add(new Plane(new Vector2D(10,10), new Vector3D(0,-5,0), new Vector3D(0,0,0), new Vector3D(0.2,0.2,0.2)));
+        drawables.add(new Plane(new Vector2f(30,30), new Vector3f(0,-5.1f,0), new Vector3f(0,0,0), new Vector3f(0.1f,0.5f,0.05f)));
+        drawables.add(new Plane(new Vector2f(10,10), new Vector3f(0,-5,0), new Vector3f(0,0,0), new Vector3f(0.2f,0.2f,0.2f)));
         
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,-3,-3), new Vector3D(0,0,0), 1));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,3,-3), new Vector3D(0,0,0), 1));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,-3,-3), new Vector3D(0,0,0), 1));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,3,-3), new Vector3D(0,0,0), 1));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,-3,-3), new Vector3f(0,0,0), 1));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,3,-3), new Vector3f(0,0,0), 1));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,-3,-3), new Vector3f(0,0,0), 1));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,3,-3), new Vector3f(0,0,0), 1));
 
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,-3,3), new Vector3D(0,0,0), 1f));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,3,3), new Vector3D(0,0,0), 1f));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,-3,3), new Vector3D(0,0,0), 1f));
-        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,3,3), new Vector3D(0,0,0), 1f));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,-3,3), new Vector3f(0,0,0), 1f));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,3,3), new Vector3f(0,0,0), 1f));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,-3,3), new Vector3f(0,0,0), 1f));
+        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,3,3), new Vector3f(0,0,0), 1f));
         
         Triangle[] cubeMesh = new Triangle[0];
         Triangle[] pyramidMesh = new Triangle[0];
@@ -142,16 +144,16 @@ public class OpenGlTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//        drawables.add(new Mesh(new Vector3D(-3,-3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-//        drawables.add(new Mesh(new Vector3D(-3,3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-//        drawables.add(new Mesh(new Vector3D(3,-3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-//        drawables.add(new Mesh(new Vector3D(3,3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
+//        drawables.add(new Mesh(new Vector3f(-3,-3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+//        drawables.add(new Mesh(new Vector3f(-3,3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+//        drawables.add(new Mesh(new Vector3f(3,-3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+//        drawables.add(new Mesh(new Vector3f(3,3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
 //
-//        drawables.add(new Mesh(new Vector3D(-3,-3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh));
-//        drawables.add(new Mesh(new Vector3D(-3,3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh));
-//        drawables.add(new Mesh(new Vector3D(3,-3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh));
-//        drawables.add(new Mesh(new Vector3D(3,3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh));
-//        drawables.add(new Cube(new Vector3D(1,1,1), new Vector3D(0,0,1), new Vector3D(0,0,0)));
+//        drawables.add(new Mesh(new Vector3f(-3,-3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh));
+//        drawables.add(new Mesh(new Vector3f(-3,3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh));
+//        drawables.add(new Mesh(new Vector3f(3,-3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh));
+//        drawables.add(new Mesh(new Vector3f(3,3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh));
+//        drawables.add(new Cube(new Vector3f(1,1,1), new Vector3f(0,0,1), new Vector3f(0,0,0)));
         
         
         // Make the OpenGL context current
@@ -198,7 +200,7 @@ public class OpenGlTest {
             
             glLoadIdentity();
             for(GL_Drawable d : drawables) {
-	            d.draw(cPos, new Vector3D(-45, pitch, 0), new Vector3D(45,0,0));
+	            d.draw(cPos, new Vector3f(-45, pitch, 0), new Vector3f(45,0,0));
             }
 
             glfwSwapBuffers(window); // swap the color buffers
@@ -209,19 +211,19 @@ public class OpenGlTest {
         }
     }
 
-    public static void main(String[] args) {
-//    	OpenGlTest t = new OpenGlTest();
-//        try {
-//	        t.run();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+//     public static void main(String[] args) {
+// //    	OpenGlTest t = new OpenGlTest();
+// //        try {
+// //	        t.run();
+// //		} catch (Exception e) {
+// //			e.printStackTrace();
+// //		}
 
-    	TestWindow t = new TestWindow();
-    	try {
-	        t.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
+//     	TestWindow t = new TestWindow();
+//     	try {
+// 	        t.run();
+// 		} catch (Exception e) {
+// 			e.printStackTrace();
+// 		}
+//     }
 }

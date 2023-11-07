@@ -2,10 +2,9 @@ package objects;
 
 import org.joml.Matrix4f;
 
+import shaders.Materials;
 import shaders.ShaderProgram;
 import shaders.Uniform;
-
-import java.awt.Color;
 
 public class Renderer {
 
@@ -13,28 +12,24 @@ public class Renderer {
 	public Transform transform;
 	private ShaderProgram shader;
 	
-	public Color[] colors;
-	
-	private int matrixUniform;
-	private int colorsUniform;
-	private int useColorsUniform;
+	private Uniform matrixUniform;
+	private Uniform useColorsUniform;
 
 	private boolean visible = true;
+
+	public Materials materials;
 	
 	public Renderer(Mesh mesh, Transform transform) {
 		this.mesh = mesh;
 		this.transform = transform;
+		materials = new Materials();
 	}
 	
 	public void setShader(ShaderProgram shader) {
 		this.shader = shader;
-		matrixUniform = shader.getUniform("transformMatrix");
-		colorsUniform = shader.getUniform("colors");
-		useColorsUniform = shader.getUniform("useColors");
-	}
-	
-	public void setColors(Color[] colors) {
-		this.colors = colors;
+		matrixUniform = new Uniform(shader, "transformMatrix");
+		useColorsUniform = new Uniform(shader, "useColor");
+		materials.setShader(shader);
 	}
 	
 	public boolean isVisible() {
@@ -49,12 +44,13 @@ public class Renderer {
 		if (!visible) return;
 		shader.bind();
 		Matrix4f matrix = transform.getTransformMatrix();
-		Uniform.setMatrix4f(matrixUniform, matrix);
-		if(colors != null) {
-			Uniform.setColorArray(colorsUniform, colors);
-			Uniform.setBoolean(useColorsUniform, true);
+		matrixUniform.setMatrix4f(matrix);
+		if(materials.getMaterial(0) != null) {
+			// colorsUniform.setColorArray(colors);
+			useColorsUniform.setBoolean(false);
+			materials.bind();
 		} else {
-			Uniform.setBoolean(useColorsUniform, false);
+			useColorsUniform.setBoolean(true);
 		}
 		mesh.render();
 	}

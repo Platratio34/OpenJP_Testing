@@ -5,7 +5,7 @@ import org.joml.Matrix4f;
 import shaders.ShaderProgram;
 import shaders.Uniform;
 
-public class Camera {
+public class Camera implements TransformUpdate {
 	
 	public float fov = (float)Math.toRadians(60);
 	public float nearZ = 0.01f;
@@ -13,29 +13,37 @@ public class Camera {
 	public float aspectRatio;
 	
 	private Matrix4f projectionMatrix;
-	private int projectionMatrixUniform;
+	private Uniform projectionMatrixUniform;
 	
 	public Transform transform;
-	private int transformMatrixUniform;
+	private Uniform transformMatrixUniform;
+	private Uniform posUniform;
 	
 	public Camera(ShaderProgram shader) {
 		transform = new Transform();
 		
-		projectionMatrixUniform = shader.getUniform("projectionMatrix");
-		transformMatrixUniform = shader.getUniform("cameraMatrix");
+		projectionMatrixUniform = new Uniform(shader, "projectionMatrix");
+		transformMatrixUniform = new Uniform(shader, "cameraMatrix");
+		posUniform = new Uniform(shader, "cameraPos");
 	}
 	
 	public void recaculatePerspective() {
 		projectionMatrix = new Matrix4f().perspective(fov, aspectRatio, nearZ, farZ);
-		Uniform.setMatrix4f(projectionMatrixUniform, projectionMatrix);
+		projectionMatrixUniform.setMatrix4f(projectionMatrix);
 	}
 	
 	public void recalculateMatrix() {
-		Uniform.setMatrix4f(transformMatrixUniform, transform.getTransformMatrixInverse());
+		transformMatrixUniform.setMatrix4f(transform.getTransformMatrixInverse());
+		posUniform.setVector3f(transform.getPosition());
 	}
 
 	public void updateAspectRation(int width, int height) {
 		aspectRatio = (float)width/(float)height;
 		recaculatePerspective();
+	}
+
+	@Override
+	public void onTransformUpdate(Transform transform) {
+		recalculateMatrix();
 	}
 }

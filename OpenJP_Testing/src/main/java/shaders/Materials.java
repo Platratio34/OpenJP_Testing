@@ -1,7 +1,6 @@
 package shaders;
 
 import objects.Texture2D;
-import java.awt.Color;
 
 public class Materials {
 	
@@ -13,34 +12,55 @@ public class Materials {
 	private Material[] materials;
 	private ShaderProgram shader;
 
-	private Texture2D defTexture;
 	private Texture2D[] textures;
 	
-	public Materials(ShaderProgram shader) {
-		this.shader = shader;
-
+	public Materials() {
 		materials = new Material[MAX_MATERIALS];
 		textures = new Texture2D[MAX_TEXTURES];
-
-        defTexture = new Texture2D(2,2);
-        defTexture.fill(Color.WHITE);
-        defTexture.updateTexture();
-        int defTextureUniform = shader.getUniform("defaultTexture");
-        Uniform.setTexture2D(defTextureUniform, defTexture);
 	}
 
-	public void updateMaterial(Material material) {
-		if (material.getMatId() < 1 || material.getMatId() > MAX_MATERIALS)
+	public void setShader(ShaderProgram shader) {
+		this.shader = shader;
+		
+		// Texture2D defTexture = new Texture2D(2,2);
+		// defTexture.fill(Color.WHITE);
+		// defTexture.updateTexture();
+		// Uniform defTextureUniform = new Uniform(shader, "defaultTexture");
+		// defTextureUniform.setTexture2D(defTexture);
+	}
+
+	public void setMaterial(int index, Material material) {
+		if (index < 0 || index >= MAX_MATERIALS)
 			throw new IndexOutOfBoundsException(
-					"Invalid Material ID: 0 < id < " + MAX_MATERIALS + "; id was " + material.getMatId());
-		materials[material.getMatId()] = material;
-		material.updateShader(shader, MATERIAL_UNIFORM_NAME + "[" + material.getMatId() + "]");
+					"Invalid Material ID: 0 <= id < " + MAX_MATERIALS + "; id was " + index);
+		materials[index] = material;
+	}
+	public Material getMaterial(int index) {
+		if (index < 0 || index >= MAX_MATERIALS)
+			throw new IndexOutOfBoundsException(
+					"Invalid Material ID: 0 <= id < " + MAX_MATERIALS + "; id was " + index);
+		return materials[index];
+	}
+
+	public void bind() {
+		for(int i = 0; i < materials.length; i++) {
+			if(materials[i] == null) break;
+			updateMaterial(i, materials[i]);
+		}
+	}
+
+	private void updateMaterial(int index, Material material) {
+		if (index < 0 || index >= MAX_MATERIALS)
+			throw new IndexOutOfBoundsException(
+					"Invalid Material ID: 0 <= id < " + MAX_MATERIALS + "; id was " + index);
+		// materials[material.getMatId()] = material;
+		material.updateShader(shader, MATERIAL_UNIFORM_NAME + "[" + index + "]");
 	}
 	
 	public void setTexture(int texId, Texture2D texture) {
 		textures[texId] = texture;
-		int uId = shader.getUniform(TEXTURES_UNIFORM_NAME + "[" + texId + "]");
-		Uniform.setTexture2D(uId, texture);
+		Uniform textureUniform = new Uniform(shader, TEXTURES_UNIFORM_NAME + "[" + texId + "]");
+		textureUniform.setTexture2D(texture);
 	}
 
 	public Texture2D getTexture(int texId) {

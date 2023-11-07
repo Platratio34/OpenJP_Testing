@@ -6,21 +6,22 @@ import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex3d;
 
-import vectorLibrary.Vector3D;
+// import vectorLibrary.Vector3D;
+import org.joml.Vector3f;
 
 public class Cube extends GL_Drawable{
 	
-	public Vector3D size;
+	public Vector3f size;
 	public float b;
-	private double r;
+	private float r;
 	
-	public Cube(Vector3D size, Vector3D pos, Vector3D rot, float b) {
+	public Cube(Vector3f size, Vector3f pos, Vector3f rot, float b) {
 		super(pos, rot);
 		this.size = size;
 		this.b = b;
 	}
 	@Override
-	public void onDraw(Vector3D lRot) {
+	public void onDraw(Vector3f lRot) {
 		r += 0.5;
 		r %= 360d;
 		rot.x = r;

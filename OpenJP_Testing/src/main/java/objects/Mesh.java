@@ -90,10 +90,14 @@ public class Mesh {
 		int vI = 0;
 		int cI = 1;
 		int nI = 2;
+		int mI = -1;
 		
 		if(components[0].contains("format=")) {
 			sI++;
 			String[] parts = components[0].substring(8).split(",");
+			// vI = -1;
+			cI = -1;
+			nI = -1;
 			for(int i = 0; i < parts.length; i++) {
 				if(parts[i].equals("vertex")) {
 					vI = i;
@@ -101,7 +105,9 @@ public class Mesh {
 					cI = i;
 				} else if(parts[i].equals("normal")) {
 					nI = i;
-				} 
+				} else if(parts[i].equals("mat")) {
+					mI = i;
+				}
 			}
 		}
 		
@@ -129,6 +135,8 @@ public class Mesh {
 				normals[arrI+1] = Float.parseFloat(parts[1]);
 				normals[arrI+2] = Float.parseFloat(parts[2]);
 //				System.out.print(String.format("n=%f,%f,%f; ", normals[arrI], normals[arrI+1], normals[arrI+2]));
+			} else if(type == mI) {
+				colors[arrI] = Float.parseFloat(parts[0]);
 			}
 			
 			type = (type+1)%3;

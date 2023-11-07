@@ -44,11 +44,11 @@ public class Transform implements TransformUpdate {
 		.rotateZ((float)Math.toRadians(rotation.z))
 		.scale(scale);
 		
-		matrixInverse.identity().translate(-position.x, -position.y, -position.z)
+		matrixInverse.identity()
 		.rotateX((float)Math.toRadians(rotation.x))
 		.rotateY((float)Math.toRadians(rotation.y))
 		.rotateZ((float)Math.toRadians(rotation.z))
-		.scale(scale);
+		.translate(-position.x, -position.y, -position.z);
 		
 		update();
 	}
@@ -132,5 +132,9 @@ public class Transform implements TransformUpdate {
 	}
 	public void removeUpdate(TransformUpdate updater) {
 		updaters.remove(updater);
+	}
+
+	public String toString() {
+		return "Transform: {pos: "+position+", rot: "+rotation+", scale: "+scale+"}";
 	}
 }

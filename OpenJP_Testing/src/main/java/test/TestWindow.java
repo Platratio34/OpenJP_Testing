@@ -5,7 +5,8 @@ import java.io.IOException;
 import oldObjects.GL_Window;
 import oldObjects.Mesh;
 import oldObjects.Triangle;
-import vectorLibrary.Vector3D;
+// import vectorLibrary.Vector3D;
+import org.joml.Vector3f;
 
 public class TestWindow extends GL_Window {
 	
@@ -28,32 +29,32 @@ public class TestWindow extends GL_Window {
 			e.printStackTrace();
 		}
 		
-//		drawables.add(new Plane(new Vector2D(30,30), new Vector3D(0,-5.1,0), new Vector3D(0,0,0), new Vector3D(0.1,0.5,0.05)));
-//        drawables.add(new Plane(new Vector2D(10,10), new Vector3D(0,-5,0), new Vector3D(0,0,0), new Vector3D(0.2,0.2,0.2)));
+//		drawables.add(new Plane(new Vector2D(30,30), new Vector3f(0,-5.1,0), new Vector3f(0,0,0), new Vector3f(0.1,0.5,0.05)));
+//        drawables.add(new Plane(new Vector2D(10,10), new Vector3f(0,-5,0), new Vector3f(0,0,0), new Vector3f(0.2,0.2,0.2)));
 //        
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,-3,-3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,3,-3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,-3,-3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,3,-3), new Vector3D(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,-3,-3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,3,-3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,-3,-3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,3,-3), new Vector3f(0,0,0), 1f));
 //
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,-3,3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(-3,3,3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,-3,3), new Vector3D(0,0,0), 1f));
-//        drawables.add(new Cube(new Vector3D(2,2,2), new Vector3D(3,3,3), new Vector3D(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,-3,3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(-3,3,3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,-3,3), new Vector3f(0,0,0), 1f));
+//        drawables.add(new Cube(new Vector3f(2,2,2), new Vector3f(3,3,3), new Vector3f(0,0,0), 1f));
 
-        drawables.add(new Mesh(new Vector3D(0,-5.1,0), new Vector3D(0,0,0), new Vector3D(30,30,30), plane2Mesh));
-        drawables.add(new Mesh(new Vector3D(0,-5,0), new Vector3D(0,0,0), new Vector3D(10,10,10), planeMesh));
+        drawables.add(new Mesh(new Vector3f(0,-5.1f,0), new Vector3f(0,0,0), new Vector3f(30,30,30), plane2Mesh));
+        drawables.add(new Mesh(new Vector3f(0,-5,0), new Vector3f(0,0,0), new Vector3f(10,10,10), planeMesh));
         
-        drawables.add(new Mesh(new Vector3D(-3,-3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-        drawables.add(new Mesh(new Vector3D(-3,-3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-        drawables.add(new Mesh(new Vector3D(3,-3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
-        drawables.add(new Mesh(new Vector3D(3,-3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), cubeMesh));
+        drawables.add(new Mesh(new Vector3f(-3,-3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+        drawables.add(new Mesh(new Vector3f(-3,-3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+        drawables.add(new Mesh(new Vector3f(3,-3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
+        drawables.add(new Mesh(new Vector3f(3,-3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), cubeMesh));
         
         pyramids = new Mesh[] {
-        		new Mesh(new Vector3D(-3,3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh),
-        		new Mesh(new Vector3D(-3,3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh),
-        		new Mesh(new Vector3D(3,3,-3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh),
-        		new Mesh(new Vector3D(3,3,3), new Vector3D(0,0,0), new Vector3D(2,2,2), pyramidMesh)
+        		new Mesh(new Vector3f(-3,3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh),
+        		new Mesh(new Vector3f(-3,3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh),
+        		new Mesh(new Vector3f(3,3,-3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh),
+        		new Mesh(new Vector3f(3,3,3), new Vector3f(0,0,0), new Vector3f(2,2,2), pyramidMesh)
         };
         drawables.add(pyramids[0]);
         drawables.add(pyramids[1]);
@@ -70,7 +71,7 @@ public class TestWindow extends GL_Window {
         System.out.println("Window loaded");
 	}
 	
-	private double rot = 0d;
+	private float rot = 0f;
 	
 	@Override
 	protected void onLoop() {
