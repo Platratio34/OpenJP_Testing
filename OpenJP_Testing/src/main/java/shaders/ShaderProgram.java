@@ -42,7 +42,7 @@ public class ShaderProgram {
     public void createVertexShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);
         if (res == null) {
-            throw new Exception("Could not load vertex shader from resources: " + filename);
+            throw new Exception("Could not load vertex shader from resources: " + filename + "; File could not be found");
             // System.err.println("Could not load vertex shader from resources: "+filename);
             // return;
         }
@@ -61,7 +61,7 @@ public class ShaderProgram {
     public void createFragmentShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);
         if (res == null) {
-            throw new Exception("Could not load fragment shader from resources: " + filename);
+            throw new Exception("Could not load fragment shader from resources: " + filename + "; File could not be found");
             // System.err.println("Could not load fragment shader from resources: "+filename);
             // return;
         }

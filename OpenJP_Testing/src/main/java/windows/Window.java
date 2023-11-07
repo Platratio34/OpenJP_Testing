@@ -1,14 +1,19 @@
 package windows;
 
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
@@ -42,6 +47,8 @@ public class Window {
 	private long frameNumber;
 
 	private KeyboardCallback keyboardCallback;
+	private MouseButtonCallback mouseButtonCallback;
+	private MouseCursorCallback mouseCursorCallback;
 	
 	public Window(String title) {
 		init();
@@ -98,6 +105,10 @@ public class Window {
 
 		keyboardCallback = new KeyboardCallback();
 		glfwSetKeyCallback(window, keyboardCallback);
+		mouseButtonCallback = new MouseButtonCallback();
+		glfwSetMouseButtonCallback(window, mouseButtonCallback);
+		mouseCursorCallback = new MouseCursorCallback();
+		glfwSetCursorPosCallback(window, mouseCursorCallback);
 	}
 	
 	public void run() {
@@ -182,29 +193,64 @@ public class Window {
 		targetFrameTime = 1000 / fps;
 	}
 
-	public void addKeyboardListener(KeyboardEventI listener) {
+	public void addKeyboardListener(KeyboardEvent listener) {
 		keyboardCallback.listeners.add(listener);
 	}
 
 	private class KeyboardCallback implements GLFWKeyCallbackI {
 
-		ArrayList<KeyboardEventI> listeners;
+		ArrayList<KeyboardEvent> listeners;
 
 		KeyboardCallback() {
-			listeners = new ArrayList<KeyboardEventI>();
+			listeners = new ArrayList<KeyboardEvent>();
 		}
 
 		@Override
 		public void invoke(long window, int key, int scancode, int action, int mods) {
-			for (KeyboardEventI listener : listeners) {
+			for (KeyboardEvent listener : listeners) {
 				listener.onKeyboardEvent(key, scancode, action, mods);
 			}
 		}
 
 	}
+	
 
-	public interface KeyboardEventI {
-		public void onKeyboardEvent(int key, int scancode, int action, int mods);
+	public void addMouseListener(MouseEvent listener) {
+		mouseButtonCallback.listeners.add(listener);
+		mouseCursorCallback.listeners.add(listener);
+	}
+
+	private class MouseButtonCallback implements GLFWMouseButtonCallbackI {
+
+		ArrayList<MouseEvent> listeners;
+
+		MouseButtonCallback() {
+			listeners = new ArrayList<MouseEvent>();
+		}
+
+		@Override
+		public void invoke(long window, int button, int action, int mods) {
+			for (MouseEvent listener : listeners) {
+				listener.onMouseButtonEvent(button, action, mods);
+			}
+		}
+
+	}
+	private class MouseCursorCallback implements GLFWCursorPosCallbackI {
+
+		ArrayList<MouseEvent> listeners;
+
+		MouseCursorCallback() {
+			listeners = new ArrayList<MouseEvent>();
+		}
+
+		@Override
+		public void invoke(long window, double xPos, double yPos) {
+			for (MouseEvent listener : listeners) {
+				listener.onMouseCursorEvent(xPos, yPos);
+			}
+		}
+
 	}
 	
 }

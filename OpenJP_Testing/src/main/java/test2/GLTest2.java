@@ -1,13 +1,18 @@
 package test2;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_3;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.joml.Vector2d;
 import org.joml.Vector3f;
 
 import lighting.Light;
@@ -19,8 +24,10 @@ import objects.Texture2D;
 import objects.Transform;
 import windows.Window;
 import windows.WindowLoopRunnable;
+import windows.KeyboardEvent;
+import windows.MouseEvent;
 
-public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
+public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 
 //	static ShaderProgram shader;
 //	static long window;
@@ -84,6 +91,10 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 	Light light;
 
 	Texture2D texture;
+
+	private boolean mouseB3Down = false;
+	private boolean moveMod = false;
+	private Vector2d mouseLPos = new Vector2d();
     
 	public static void main(String[] args) {
 		GLTest2 glTest = new GLTest2();
@@ -93,6 +104,7 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 		window = new Window("Open GL Test");
 		window.addLoopRunnable(this);
 		window.addKeyboardListener(this);
+		window.addMouseListener(this);
 		
 		camera = window.camera;
 		lighting = window.lightingSettings;
@@ -291,29 +303,31 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 	
 	@Override
 	public void onLoop() {
-		t += window.deltaTime()*45;
-		if(t >= 360*2) t = 0;
-//		float y = (float)Math.sin(t)*10f;
-//        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
+		t += window.deltaTime() * 45;
+		if (t >= 360 * 2)
+			t = 0;
+		//		float y = (float)Math.sin(t)*10f;
+		//        lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
 
-		// colors2[0] = Color.getHSBColor(t/180f, 1, 1);
-		// colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
-        
+		colors2[0] = Color.getHSBColor(t/180f, 1, 1);
+		colors3[0] = Color.getHSBColor(t/180f+0.5f, 1, 1);
+
 		// camera.transform.setPosition(0, 0, 6);
 		// camera.transform.setRotation(75, t/2f, 0);
-        // camera.recalculateMatrix();
-        
-        // light.transform.setPosition(0.0f, t/180f, 0.0f);
-        // light.setColor(Color.getHSBColor(t/900f, 1, 1));
-        
-        // p1.setRotation(0, t, 0);
-		// p2.setRotation(0, -t, 0);
-		
-		// for (Renderer renderer : boxes) {
-		// 	// Vector3f rot = renderer.transform.getRotation();
-		// 	renderer.transform.rotate(0, 0, 1);
-		// }
+		// camera.recalculateMatrix();
+
+		light.transform.setPosition(0.0f, t/180f, 0.0f);
+		light.setColor(Color.getHSBColor(t/900f, 1, 1));
+
+		p1.setRotation(0, t, 0);
+		p2.setRotation(0, -t, 0);
+
+		for (Renderer renderer : boxes) {
+			// Vector3f rot = renderer.transform.getRotation();
+			renderer.transform.rotate(0, 0, 1);
+		}
 	}
+	
 	@Override
 	public void onKeyboardEvent(int key, int scancode, int action, int mods) {
 		if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
@@ -327,6 +341,49 @@ public class GLTest2 implements WindowLoopRunnable, Window.KeyboardEventI {
 			} else {
 				testR.setVisible(!testR.isVisible());
 			}
+		} else if (key == GLFW_KEY_LEFT_SHIFT) {
+			if (action == GLFW_PRESS) {
+				moveMod = true;
+			} else if (action == GLFW_RELEASE) {
+				moveMod = false;
+			}
 		}
+	}
+	@Override
+	public void onMouseButtonEvent(int button, int action, int mods) {
+		if (button == GLFW_MOUSE_BUTTON_3) {
+			if(action == GLFW_PRESS) {
+				mouseB3Down = true;
+			} else if(action == GLFW_RELEASE) {
+				mouseB3Down = false;
+			}
+		}
+	}
+	@Override
+	public void onMouseCursorEvent(double xPos, double yPos) {
+		Vector2d pos = new Vector2d(xPos, yPos);
+		if (mouseB3Down) {
+			// System.out.println(pos);
+			// System.out.println("x: "+xPos+", y="+yPos);
+			// Vector2d diff = mouseLPos.sub(sub);
+			float dx = (float) (mouseLPos.x - xPos);
+			float dy = (float) (mouseLPos.y - yPos);
+			// diff.mul(0.01);
+			// System.out.println("dx: " + dx + ", dy=" + dy);
+			if (moveMod) {
+				float z = camera.transform.getPosition().z;
+				z += dy / 4f;
+				if (z <= 0.5f)
+					z = 0.5f;
+				if (z > 15)
+					z = 15f;
+				camera.transform.setPosition(0, 0, z);
+				// camera.transform.translate(0f, 0f, dy/4f);
+			} else {
+				camera.transform.rotate(dy, -dx, 0f);
+			}
+			camera.recalculateMatrix();
+		}
+		mouseLPos = pos;
 	}
 }
