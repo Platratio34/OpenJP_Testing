@@ -6,7 +6,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
@@ -22,6 +21,7 @@ import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
 import shaders.ShaderProgram;
+import shaders.Uniform;
 
 public class Window {
 	
@@ -37,6 +37,8 @@ public class Window {
 	
 	private HashMap<Integer, Renderer> renderers;
 	private int nextIdRend = 0;
+	private HashMap<Integer, Renderer> gizmos;
+	private int nextIdGizmo = 0;
 
 	private HashMap<Integer, WindowLoopRunnable> loopRunnables;
 	private int nextIdLR = 0;
@@ -49,6 +51,10 @@ public class Window {
 	private KeyboardCallback keyboardCallback;
 	private MouseButtonCallback mouseButtonCallback;
 	private MouseCursorCallback mouseCursorCallback;
+
+	private Uniform unlitUniform;
+
+	private boolean wireframeMode = false;
 	
 	public Window(String title) {
 		init();
@@ -56,6 +62,7 @@ public class Window {
 	
 	private void init() {
 		renderers = new HashMap<Integer, Renderer>();
+		gizmos = new HashMap<Integer, Renderer>();
 		loopRunnables = new HashMap<Integer, WindowLoopRunnable>();
 		
 		GLFWErrorCallback.createPrint(System.err).set();
@@ -67,7 +74,13 @@ public class Window {
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL33.GL_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_TRUE);
+		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
+		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
 		
+		long mon = GLFW.glfwGetPrimaryMonitor();
+		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(mon);
+		width = vidmode.width();
+		height = vidmode.height();
 		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
         GL.createCapabilities();
@@ -81,8 +94,8 @@ public class Window {
 			camera.updateAspectRation(width, height);
 		});
 		
-        GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		
+        // GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
         
         try {
 			shader = new ShaderProgram();
@@ -109,6 +122,8 @@ public class Window {
 		glfwSetMouseButtonCallback(window, mouseButtonCallback);
 		mouseCursorCallback = new MouseCursorCallback();
 		glfwSetCursorPosCallback(window, mouseCursorCallback);
+
+		unlitUniform = new Uniform(shader, "unlit");
 	}
 	
 	public void run() {
@@ -132,13 +147,28 @@ public class Window {
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
+        GL33.glEnable(GL33.GL_DEPTH_TEST);
+		
+		if (wireframeMode) {
+			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		} else {
+			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_FILL);
+		}
+		unlitUniform.setBoolean(wireframeMode);
 		
 		for (WindowLoopRunnable runnable : loopRunnables.values()) {
 			runnable.onLoop();
 		}
 		
 		for (Renderer renderer : renderers.values()) {
-        	renderer.render();
+			renderer.render();
+		}
+
+		GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		unlitUniform.setBoolean(true);
+        GL33.glDisable(GL33.GL_DEPTH_TEST);
+		for (Renderer renderer : gizmos.values()) {
+			renderer.render();
 		}
     	
     	GLFW.glfwSwapBuffers(window);
@@ -168,12 +198,21 @@ public class Window {
 	
 	public int addRenderer(Renderer renderer) {
 		renderer.setShader(shader);
-		while(renderers.containsKey(nextIdRend)) {
+		while (renderers.containsKey(nextIdRend)) {
 			nextIdRend++;
 		}
 		renderers.put(nextIdRend, renderer);
 		nextIdRend++;
-		return nextIdRend-1;
+		return nextIdRend - 1;
+	}
+	public int addGizmo(Renderer renderer) {
+		renderer.setShader(shader);
+		while(gizmos.containsKey(nextIdGizmo)) {
+			nextIdGizmo++;
+		}
+		gizmos.put(nextIdGizmo, renderer);
+		nextIdGizmo++;
+		return nextIdGizmo-1;
 	}
 
 	public int addLoopRunnable(WindowLoopRunnable loopRunnable) {
@@ -191,6 +230,10 @@ public class Window {
 	
 	public void setTargetFPS(int fps) {
 		targetFrameTime = 1000 / fps;
+	}
+
+	public void setWireframe(boolean wire) {
+		wireframeMode = wire;
 	}
 
 	public void addKeyboardListener(KeyboardEvent listener) {

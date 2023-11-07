@@ -7,20 +7,18 @@ import shaders.ShaderProgram;
 import shaders.Uniform;
 
 public class Renderer {
-
-	private Mesh mesh;
+    
 	public Transform transform;
-	private ShaderProgram shader;
+	protected ShaderProgram shader;
 	
-	private Uniform matrixUniform;
-	private Uniform useColorsUniform;
+	protected Uniform matrixUniform;
+	protected Uniform useColorsUniform;
 
-	private boolean visible = true;
+	protected boolean visible = true;
 
 	public Materials materials;
 	
-	public Renderer(Mesh mesh, Transform transform) {
-		this.mesh = mesh;
+	public Renderer(Transform transform) {
 		this.transform = transform;
 		materials = new Materials();
 	}
@@ -40,18 +38,19 @@ public class Renderer {
 		this.visible = visible;
 	}
 	
-	public void render() {
-		if (!visible) return;
-		shader.bind();
-		Matrix4f matrix = transform.getTransformMatrix();
-		matrixUniform.setMatrix4f(matrix);
-		if(materials.getMaterial(0) != null) {
-			// colorsUniform.setColorArray(colors);
-			useColorsUniform.setBoolean(false);
-			materials.bind();
-		} else {
-			useColorsUniform.setBoolean(true);
-		}
-		mesh.render();
-	}
+    public void render() {
+        if (!visible)
+            return;
+        shader.bind();
+        Matrix4f matrix = transform.getTransformMatrix();
+        matrixUniform.setMatrix4f(matrix);
+        if (materials.getMaterial(0) != null) {
+            // colorsUniform.setColorArray(colors);
+            useColorsUniform.setBoolean(false);
+            materials.bind();
+        } else {
+            useColorsUniform.setBoolean(true);
+        }
+    }
+    
 }

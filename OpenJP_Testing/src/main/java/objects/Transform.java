@@ -62,8 +62,9 @@ public class Transform implements TransformUpdate {
 		}
 		return matrix;
 	}
+
 	public Matrix4f getTransformMatrixInverse() {
-		if(parent != null) {
+		if (parent != null) {
 			Matrix4f out = new Matrix4f();
 			parent.getTransformMatrixInverse().mul(matrix, out);
 			return out;
@@ -71,6 +72,9 @@ public class Transform implements TransformUpdate {
 		return matrixInverse;
 	}
 	
+	public void setPosition(Vector3f pos) {
+		setPosition(pos.x, pos.y, pos.z);
+	}
 	public void setPosition(float x, float y, float z) {
 		position.x = x;
 		position.y = y;
@@ -80,11 +84,16 @@ public class Transform implements TransformUpdate {
 	public void translate(Vector3f ammount) {
 		translate(ammount.x, ammount.y, ammount.z);
 	}
+
 	public void translate(float x, float y, float z) {
 		position.x += x;
 		position.y += y;
 		position.z += z;
 		recalculateMatrix();
+	}
+	
+	public void setRotation(Vector3f rot) {
+		setRotation(rot.x, rot.y, rot.z);
 	}
 	public void setRotation(float x, float y, float z) {
 		rotation.x = x;
@@ -100,6 +109,10 @@ public class Transform implements TransformUpdate {
 		rotation.y += y;
 		rotation.z += z;
 		recalculateMatrix();
+	}
+	
+	public void setScale(Vector3f scale) {
+		setScale(scale.x, scale.y, scale.z);
 	}
 	public void setScale(float x, float y, float z) {
 		scale.x = x;
@@ -135,6 +148,30 @@ public class Transform implements TransformUpdate {
 	}
 
 	public String toString() {
-		return "Transform: {pos: "+position+", rot: "+rotation+", scale: "+scale+"}";
+		return "Transform: {pos: " + position + ", rot: " + rotation + ", scale: " + scale + "}";
+	}
+	
+	public Vector3f forward() {
+		return matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f));
+		// Vector3f v = new Vector3f();
+		// matrix.getRow(2, v);
+		// System.out.println(v);
+		// v = matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f));
+		// System.out.println(v);
+		// // return v.mul(-1);
+		// return v;
+	}
+
+	public Vector3f right() {
+		return matrix.normalizedPositiveX(new Vector3f(1.0f, 0.0f, 0.0f));
+		// Vector3f v = new Vector3f();
+		// matrix.getRow(0, v);
+		// return v;
+	}
+	public Vector3f up() {
+		return matrix.normalizedPositiveY(new Vector3f(1.0f, 0.0f, 0.0f));
+		// Vector3f v = new Vector3f();
+		// matrix.getRow(1, v);
+		// return v;
 	}
 }

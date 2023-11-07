@@ -17,6 +17,8 @@ uniform vec3 globalLightColor;
 
 uniform vec3 cameraPos;
 
+uniform bool unlit;
+
 struct light {
 	vec3 position;
 	vec3 color;
@@ -94,7 +96,11 @@ void main()
 	// 	color = cMat.color;
 	// }
 	
+	if(!unlit) {
+		fragColor = color * vec4(lighting.xyz, 1.0);
+	} else {
+		fragColor = color;
+	}
 	
-	fragColor = cMat.color * vec4(lighting.xyz, 1.0);
 	// fragColor = vertexColor;
 }

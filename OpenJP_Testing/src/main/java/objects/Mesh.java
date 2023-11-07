@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL33;
 import GLObjects.VAO;
 import oldObjects.Triangle;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 public class Mesh {
 
@@ -165,7 +166,13 @@ public class Mesh {
 	public static Mesh createFromResource(String resource) throws IOException {
 		// BufferedReader br = new BufferedReader(new FileReader(path));
 		ClassLoader classLoader = Triangle.class.getClassLoader();
-		BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
+		} catch (NullPointerException e) {
+			System.err.println("Could not load mesh from resource \""+resource+"\"");
+			return null;
+		}
 		String line = "";
 		String str = "";
 		while (line != null) {
