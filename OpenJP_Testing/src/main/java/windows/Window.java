@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL33;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
+import profileing.Profiler;
 import shaders.ShaderProgram;
 import shaders.Uniform;
 
@@ -47,6 +48,8 @@ public class Window {
 	private long frameTime;
 	private long targetFrameTime = 1000/30;
 	private long frameNumber;
+	private long[] frameTimes = new long[10];
+	private int frameTimeI = 0;
 
 	private KeyboardCallback keyboardCallback;
 	private MouseButtonCallback mouseButtonCallback;
@@ -55,6 +58,8 @@ public class Window {
 	private Uniform unlitUniform;
 
 	private boolean wireframeMode = false;
+
+	public Profiler profiler;
 	
 	public Window(String title) {
 		init();
@@ -64,6 +69,7 @@ public class Window {
 		renderers = new HashMap<Integer, Renderer>();
 		gizmos = new HashMap<Integer, Renderer>();
 		loopRunnables = new HashMap<Integer, WindowLoopRunnable>();
+		profiler = new Profiler();
 		
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -114,7 +120,6 @@ public class Window {
 		camera.aspectRatio = (float)width/(float)height;
 		camera.recaculatePerspective();
 
-		GL33.glEnable(GL33.GL_CULL_FACE);
 
 		keyboardCallback = new KeyboardCallback();
 		glfwSetKeyCallback(window, keyboardCallback);
@@ -124,6 +129,8 @@ public class Window {
 		glfwSetCursorPosCallback(window, mouseCursorCallback);
 
 		unlitUniform = new Uniform(shader, "unlit");
+
+		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	
 	public void run() {
@@ -136,45 +143,82 @@ public class Window {
 	
 	public void loop() {
 		frameNumber++;
+		profiler.startFrame();
+		profiler.start("time");
 		long time = System.currentTimeMillis();
 		frameTime = time - lastFrameTime;
 		lastFrameTime = time;
+		frameTimes[frameTimeI] = frameTime;
+		frameTimeI++;
+		if(frameTimeI >= frameTimes.length) frameTimeI = 0;
 //		System.out.println("Frame Time: "+frameTime+"ms");
-		if(frameTime > targetFrameTime * 2) System.err.println("F-"+frameNumber+"; Frame took "+frameTime+"ms to do; Target frame time: "+targetFrameTime+"ms");
+		if(frameTime > targetFrameTime * 2) {
+			long avg = 0;
+			for(int i = 0; i < frameTimes.length; i++) avg += frameTimes[i];
+			avg /= frameTimes.length;
+			System.err.println("F-"+frameNumber+"; Frame took "+frameTime+"ms to do; Target frame time: "+targetFrameTime+"ms; Average frame time: "+avg+"ms; "+profiler.getLastFrame(1));
+		}
+		profiler.end("time");
+
+		profiler.start("input");
 		GLFW.glfwPollEvents();
 		processInput();
+		profiler.end("input");
+
+		profiler.start("init");
 		shader.bind();
-		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
+		// GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
+		profiler.end("init");
+		
+		profiler.start("runnables");
+		for (WindowLoopRunnable runnable : loopRunnables.values()) {
+			runnable.onLoop();
+		}
+		profiler.end("runnables");
+		
+		profiler.start("render");
         GL33.glEnable(GL33.GL_DEPTH_TEST);
 		
 		if (wireframeMode) {
 			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+			GL33.glDisable(GL33.GL_CULL_FACE);
 		} else {
 			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_FILL);
+			GL33.glEnable(GL33.GL_CULL_FACE);
 		}
 		unlitUniform.setBoolean(wireframeMode);
-		
-		for (WindowLoopRunnable runnable : loopRunnables.values()) {
-			runnable.onLoop();
-		}
-		
+
 		for (Renderer renderer : renderers.values()) {
 			renderer.render();
 		}
+		profiler.end("render");
 
+		profiler.start("gizmos");
 		GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
 		unlitUniform.setBoolean(true);
         GL33.glDisable(GL33.GL_DEPTH_TEST);
+		GL33.glDisable(GL33.GL_CULL_FACE);
 		for (Renderer renderer : gizmos.values()) {
 			renderer.render();
 		}
+		profiler.end("gizmos");
     	
+		profiler.start("swap");
     	GLFW.glfwSwapBuffers(window);
+		profiler.end("swap");
+
+		profiler.endFrame();
+
+		long eTime = System.currentTimeMillis();
+		long pTime = eTime - time;
+		if(pTime > targetFrameTime) {
+			System.err.println("F-"+frameNumber+"; "+profiler.getLastFrame());
+		}
+		// System.out.println(eTime - time);
     	
     	try {
-    		long sleepTime = targetFrameTime - (System.currentTimeMillis() - lastFrameTime);
+    		long sleepTime = targetFrameTime - (eTime - lastFrameTime);
 //    		System.out.println("- Sleep time: "+sleepTime+"ms");
     		if(sleepTime > 2) Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {

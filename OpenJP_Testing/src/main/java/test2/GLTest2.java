@@ -9,8 +9,6 @@ import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL33;
-
 import lighting.Light;
 import lighting.LightingSettings;
 import objects.Camera;
@@ -71,6 +69,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	private boolean spin;
 	private boolean roll;
 	private boolean wire;
+	private boolean lightA;
     
 	public static void main(String[] args) {
 		GLTest2 glTest = new GLTest2();
@@ -103,7 +102,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t1.setPosition(0.0f, 0.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
-        MeshRenderer r1 = new MeshRenderer(matCubeMesh, t1);
+        MeshRenderer r1 = new MeshRenderer(t1, matCubeMesh);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
         window.addRenderer(r1);
@@ -112,7 +111,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t2.setPosition(0.0f, 0.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
-        MeshRenderer r2 = new MeshRenderer(matCubeMesh, t2);
+        MeshRenderer r2 = new MeshRenderer(t2, matCubeMesh);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
         window.addRenderer(r2);
@@ -121,7 +120,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t3.setPosition(0.0f, 1.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
-        MeshRenderer r3 = new MeshRenderer(matCubeMesh, t3);
+        MeshRenderer r3 = new MeshRenderer(t3, matCubeMesh);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
         window.addRenderer(r3);
@@ -130,7 +129,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t4.setPosition(0.0f, 1.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
-        MeshRenderer r4 = new MeshRenderer(matCubeMesh, t4);
+        MeshRenderer r4 = new MeshRenderer(t4, matCubeMesh);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);
         window.addRenderer(r4);
@@ -139,7 +138,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t1.setPosition(0.0f, 2.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
         t1.parent = p1;
-        r1 = new MeshRenderer(matCubeMesh, t1);
+        r1 = new MeshRenderer(t1, matCubeMesh);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
         window.addRenderer(r1);
@@ -148,7 +147,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t2.setPosition(0.0f, 2.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
         t2.parent = p1;
-        r2 = new MeshRenderer(matCubeMesh, t2);
+        r2 = new MeshRenderer(t2, matCubeMesh);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
         window.addRenderer(r2);
@@ -157,7 +156,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t3.setPosition(0.0f, 3.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
         t3.parent = p2;
-        r3 = new MeshRenderer(matCubeMesh, t3);
+        r3 = new MeshRenderer(t3, matCubeMesh);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
         window.addRenderer(r3);
@@ -166,7 +165,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         t4.setPosition(0.0f, 3.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
         t4.parent = p2;
-        r4 = new MeshRenderer(matCubeMesh, t4);
+        r4 = new MeshRenderer(t4, matCubeMesh);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);
         window.addRenderer(r4);
@@ -180,7 +179,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
     		Transform t = new Transform();
     		t.setPosition(x, -2, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(matCubeMesh, t);
+    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
 			window.addRenderer(r);
@@ -193,7 +192,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
     		Transform t = new Transform();
     		t.setPosition(x, -1, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(matCubeMesh, t);
+    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -206,7 +205,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
     		Transform t = new Transform();
     		t.setPosition(x, 0, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(matCubeMesh, t);
+    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -219,7 +218,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
     		Transform t = new Transform();
     		t.setPosition(x, 1, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(matCubeMesh, t);
+    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -232,7 +231,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
     		Transform t = new Transform();
     		t.setPosition(x, 2, z);
     		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(matCubeMesh, t);
+    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
             // r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
     		window.addRenderer(r);
@@ -272,6 +271,8 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		GizmoRenderer gR = new GizmoRenderer(lT, Color.YELLOW, "cube");
 		// MeshRenderer gR = new MeshRenderer(lT, matCubeMesh);
 		window.addGizmo(gR);
+
+		// window.setTargetFPS(15);
 	}
 	
 	public void run() {
@@ -365,6 +366,13 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		} else if (key == GLFW.GLFW_KEY_3 && action == GLFW.GLFW_PRESS) {
 			wire = !wire;
 			window.setWireframe(wire);
+		} else if (key == GLFW.GLFW_KEY_4 && action == GLFW.GLFW_PRESS) {
+			lightA = !lightA;
+			if(lightA) {
+				lighting.setGlobalLightColor(Color.WHITE);
+			} else {
+				lighting.setGlobalLightColor(Color.decode("0x101010"));
+			}
 		} else if (key == GLFW.GLFW_KEY_LEFT_SHIFT) {
 			if (action == GLFW.GLFW_PRESS) {
 				moveMod = true;

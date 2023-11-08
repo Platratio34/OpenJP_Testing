@@ -58,21 +58,32 @@ void main()
 		cMat = materials[int(matId)];
 	}
 	
+	vec4 color = cMat.color;
+
+	if(unlit) {
+		fragColor = color;
+		return;
+	}
+	
 	vec3 lightDir = normalize(lightPos - fragPos);
 	vec3 diffuse = lightColor * max(dot(vertexNormal, lightDir), 0.0);
 	
 	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
 	vec3 lighting = ambientColor + diffuse + globalDiffuse;
-	
-	vec4 color = cMat.color;
 
 	for(int i = 0; i < 16; i++) {
 		if(lights[i].range <= 0.0) {
 			continue;
 		}
+		vec3 dPos = lights[i].position - fragPos;
+		float dist = length(dPos);
+		if(lights[i].range < dist) {
+			continue;
+		}
+
 		// Diffuse
-		vec3 dir = normalize(lights[i].position - fragPos);
+		vec3 dir = normalize(dPos);
 		float attn = 1.0 - min(distance(lights[i].position, fragPos)/lights[i].range, 1.0);
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
 
@@ -82,7 +93,7 @@ void main()
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;
 
-		lighting = lighting + diff+ (specular * cMat.smoothness);
+		lighting = lighting + diff + (specular * cMat.smoothness);
 		// lighting = lighting + diff;
 	}
 	
@@ -96,11 +107,7 @@ void main()
 	// 	color = cMat.color;
 	// }
 	
-	if(!unlit) {
-		fragColor = color * vec4(lighting.xyz, 1.0);
-	} else {
-		fragColor = color;
-	}
+	fragColor = color * vec4(lighting.xyz, 1.0);
 	
 	// fragColor = vertexColor;
 }
