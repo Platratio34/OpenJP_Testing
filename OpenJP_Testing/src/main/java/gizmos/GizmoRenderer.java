@@ -1,18 +1,14 @@
-package objects;
+package gizmos;
 
 import java.awt.Color;
-import java.io.IOException;
-import java.util.HashMap;
 
-import org.lwjgl.opengl.GL33;
-
+import objects.Renderer;
+import objects.Transform;
 import shaders.Material;
 
 public class GizmoRenderer extends Renderer {
 
     private String type;
-
-    private static HashMap<String, Mesh> meshes = new HashMap<String, Mesh>();
 
     public GizmoRenderer(Transform transform, Color color, String type) {
         super(transform);
@@ -30,14 +26,7 @@ public class GizmoRenderer extends Renderer {
     
     public void setType(String type) {
         this.type = type;
-        if (!meshes.containsKey(type)) {
-            try {
-                meshes.put(type, Mesh.createFromResource("meshes/gizmos/" + type + ".mesh"));
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
+        Gizmos.preLoad(type);
     }
 
     public String getType() {
@@ -48,14 +37,6 @@ public class GizmoRenderer extends Renderer {
         if (!visible)
             return;
         super.render();
-        if (meshes.containsKey(type)) {
-            meshes.get(type).render();
-        }
-    }
-    
-    public static void dispose() {
-        for (Mesh mesh : meshes.values()) {
-            mesh.dispose();
-        }
+        Gizmos.render(type);
     }
 }

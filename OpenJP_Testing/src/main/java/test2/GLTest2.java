@@ -9,10 +9,13 @@ import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
+
+import gizmos.Gizmo;
+import gizmos.GizmoType;
+import gizmos.Gizmos;
 import lighting.Light;
 import lighting.LightingSettings;
 import objects.Camera;
-import objects.GizmoRenderer;
 import objects.Mesh;
 import objects.MeshRenderer;
 import objects.Texture2D;
@@ -96,7 +99,9 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		}
         
         p1 = new Transform();
+		window.addGizmo(new Gizmo(GizmoType.AXIS, Color.white, p1));
         p2 = new Transform();
+		window.addGizmo(new Gizmo(GizmoType.AXIS, Color.white, p2));
         
         Transform t1 = new Transform();
         t1.setPosition(0.0f, 0.0f, 0.0f);
@@ -268,9 +273,10 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		material.setColor(new Color(0.5f, 0.5f, 0.4f));
 		material.setSmoothness(0.5f);
 
-		GizmoRenderer gR = new GizmoRenderer(lT, Color.YELLOW, "cube");
-		// MeshRenderer gR = new MeshRenderer(lT, matCubeMesh);
-		window.addGizmo(gR);
+		Gizmo g = new Gizmo(GizmoType.CUBE, Color.yellow);
+		g.setParent(lT);
+		g.setSize(0.1f);
+		window.addGizmo(g);
 
 		// window.setTargetFPS(15);
 	}
@@ -280,7 +286,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         
         testMesh.dispose();
 		matCubeMesh.dispose();
-		GizmoRenderer.dispose();
+		Gizmos.dispose();
 	}
 	
 	@Override
@@ -373,6 +379,8 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 			} else {
 				lighting.setGlobalLightColor(Color.decode("0x101010"));
 			}
+		} else if (key == GLFW.GLFW_KEY_5 && action == GLFW.GLFW_PRESS) {
+			window.drawGizmos = !window.drawGizmos;
 		} else if (key == GLFW.GLFW_KEY_LEFT_SHIFT) {
 			if (action == GLFW.GLFW_PRESS) {
 				moveMod = true;

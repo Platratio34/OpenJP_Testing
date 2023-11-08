@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL33;
 import GLObjects.VAO;
 import oldObjects.Triangle;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 public class Mesh {
 
@@ -46,7 +45,7 @@ public class Mesh {
 		GL33.glEnableVertexAttribArray(3);
 		
 		if(indexMode) {
-			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLenght, GL33.GL_UNSIGNED_INT, 0);
+			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLenght, GL33.GL_UNSIGNED_INT, 4);
 		} else {
 			GL33.glDrawArrays(GL33.GL_TRIANGLES, 0, indexLenght);
 		}

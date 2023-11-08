@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 
+import gizmos.Gizmo;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
@@ -60,6 +61,8 @@ public class Window {
 	private boolean wireframeMode = false;
 
 	public Profiler profiler;
+
+	public boolean drawGizmos;
 	
 	public Window(String title) {
 		init();
@@ -194,15 +197,17 @@ public class Window {
 		}
 		profiler.end("render");
 
-		profiler.start("gizmos");
-		GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
-		unlitUniform.setBoolean(true);
-        GL33.glDisable(GL33.GL_DEPTH_TEST);
-		GL33.glDisable(GL33.GL_CULL_FACE);
-		for (Renderer renderer : gizmos.values()) {
-			renderer.render();
+		if(drawGizmos) {
+			profiler.start("gizmos");
+			// GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+			unlitUniform.setBoolean(true);
+			GL33.glDisable(GL33.GL_DEPTH_TEST);
+			// GL33.glDisable(GL33.GL_CULL_FACE);
+			for (Renderer renderer : gizmos.values()) {
+				renderer.render();
+			}
+			profiler.end("gizmos");
 		}
-		profiler.end("gizmos");
     	
 		profiler.start("swap");
     	GLFW.glfwSwapBuffers(window);
@@ -257,6 +262,9 @@ public class Window {
 		gizmos.put(nextIdGizmo, renderer);
 		nextIdGizmo++;
 		return nextIdGizmo-1;
+	}
+	public int addGizmo(Gizmo gizmo) {
+		return addGizmo(gizmo.renderer);
 	}
 
 	public int addLoopRunnable(WindowLoopRunnable loopRunnable) {

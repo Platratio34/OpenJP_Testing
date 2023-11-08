@@ -30,11 +30,13 @@ public class VAO {
 		ABO vbo = new ABO(GL30.GL_ARRAY_BUFFER);
 		vbo.fill(verticies);
 		abos.add(vbo);
+		GL30.glEnableVertexAttribArray(0);
+		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, false, 0, 0);
 		ABO ebo = new ABO(GL30.GL_ELEMENT_ARRAY_BUFFER);
 		ebo.fill(indicies);
 		abos.add(ebo);
-		GL30.glEnableVertexAttribArray(0);
-		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, false, 0, 0);
+		GL30.glEnableVertexAttribArray(4);
+		GL30.glVertexAttribPointer(4, 2, GL30.GL_UNSIGNED_INT, false, 0, 0);
 		vbo.unbind();
 	}
 	
