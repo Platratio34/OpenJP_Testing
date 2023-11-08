@@ -21,6 +21,7 @@ import objects.MeshRenderer;
 import objects.Texture2D;
 import objects.Transform;
 import shaders.Material;
+import util.BinMesh;
 import windows.Window;
 import windows.WindowLoopRunnable;
 import windows.KeyboardEvent;
@@ -33,7 +34,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 //	
 //	static int width = 800;
 //	static int height = 600;
-	Mesh testMesh;
+	// Mesh testMesh;
 	Mesh matCubeMesh;
 	
 	LightingSettings lighting;
@@ -75,6 +76,15 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	private boolean lightA;
     
 	public static void main(String[] args) {
+		// try {
+		// 	// util.BinMesh.meshResourceToBin("meshes/matCube.mesh", "matCube.bin");
+		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
+		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/axis.gizmo", "axis.gzb");
+		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/pyramid.gizmo", "pyramid.gzb");
+		// } catch (IOException e) {
+		// 	e.printStackTrace();
+		// }
+
 		GLTest2 glTest = new GLTest2();
 		glTest.run();
 	}
@@ -91,8 +101,9 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
         camera.transform.setRotation(45, -45, 0);
         
         try {
-			testMesh = Mesh.createFromResource("meshes/newCube.mesh");
-			matCubeMesh = Mesh.createFromResource("meshes/matCube.mesh");
+			// testMesh = Mesh.createFromResource("meshes/newCube.mesh");
+			// matCubeMesh = Mesh.createFromResource("meshes/matCube.mesh");
+			matCubeMesh = BinMesh.meshFromBinResource("meshes/matCube.bin");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -273,7 +284,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		material.setColor(new Color(0.5f, 0.5f, 0.4f));
 		material.setSmoothness(0.5f);
 
-		Gizmo g = new Gizmo(GizmoType.CUBE, Color.yellow);
+		Gizmo g = new Gizmo(GizmoType.PYRAMID, Color.yellow);
 		g.setParent(lT);
 		g.setSize(0.1f);
 		window.addGizmo(g);
@@ -284,7 +295,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	public void run() {
 		window.run();
         
-        testMesh.dispose();
+        // testMesh.dispose();
 		matCubeMesh.dispose();
 		Gizmos.dispose();
 	}
