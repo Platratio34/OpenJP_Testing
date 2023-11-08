@@ -1,4 +1,4 @@
-package windows;
+package input;
 
 public interface MouseEvent {
     public void onMouseButtonEvent(int button, int action, int mods);

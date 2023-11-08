@@ -18,6 +18,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 
 import gizmos.Gizmo;
+import input.InputSystem;
+import input.KeyboardEvent;
+import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
@@ -63,6 +66,8 @@ public class Window {
 	public Profiler profiler;
 
 	public boolean drawGizmos;
+
+	public InputSystem inputSystem;
 	
 	public Window(String title) {
 		init();
@@ -134,6 +139,9 @@ public class Window {
 		unlitUniform = new Uniform(shader, "unlit");
 
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+		inputSystem = new InputSystem();
+		addKeyboardListener(inputSystem);
 	}
 	
 	public void run() {
@@ -178,6 +186,7 @@ public class Window {
 		for (WindowLoopRunnable runnable : loopRunnables.values()) {
 			runnable.onLoop();
 		}
+		inputSystem.onTick();
 		profiler.end("runnables");
 		
 		profiler.start("render");

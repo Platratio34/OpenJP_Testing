@@ -13,6 +13,8 @@ import org.lwjgl.glfw.GLFW;
 import gizmos.Gizmo;
 import gizmos.GizmoType;
 import gizmos.Gizmos;
+import input.KeyboardEvent;
+import input.MouseEvent;
 import lighting.Light;
 import lighting.LightingSettings;
 import objects.Camera;
@@ -24,8 +26,6 @@ import shaders.Material;
 import util.BinMesh;
 import windows.Window;
 import windows.WindowLoopRunnable;
-import windows.KeyboardEvent;
-import windows.MouseEvent;
 
 public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 
@@ -289,7 +289,19 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		g.setSize(0.1f);
 		window.addGizmo(g);
 
+		// Gizmo cg = new Gizmo(GizmoType.PYRAMID, Color.white);
+		// cg.setParent(camera.transform);
+		// cg.transform.setScale(1.0f, 1.0f, 1.0f);
+		// window.addGizmo(cg);
+
 		// window.setTargetFPS(15);
+
+		window.inputSystem.addBind("spawn", GLFW.GLFW_KEY_SPACE);
+		window.inputSystem.addBind("spin", GLFW.GLFW_KEY_1);
+		window.inputSystem.addBind("roll", GLFW.GLFW_KEY_2);
+		window.inputSystem.addBind("wire", GLFW.GLFW_KEY_3);
+		window.inputSystem.addBind("light", GLFW.GLFW_KEY_4);
+		window.inputSystem.addBind("gizmos", GLFW.GLFW_KEY_5);
 	}
 	
 	public void run() {
@@ -306,15 +318,41 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		if (t >= 360 * 2)
 			t = 0;
 		
+		if (window.inputSystem.pressed("spin")) {
+			spin = !spin;
+		}
 		if (spin) {
 			p1.rotate(0f, window.deltaTime() * 45f, 0f);
 			p2.rotate(0f, window.deltaTime() * -45f, 0f);
+		}
+
+		if (window.inputSystem.pressed("roll")) {
+			roll = !roll;
 		}
 		if (roll) {
 			for (MeshRenderer renderer : boxes) {
 				renderer.transform.rotate(0, 0, window.deltaTime() * 20f);
 			}
 		}
+
+		if (window.inputSystem.pressed("wire")) {
+			wire = !wire;
+			window.setWireframe(wire);
+		}
+
+		if (window.inputSystem.pressed("light")) {
+			lightA = !lightA;
+			if (lightA) {
+				lighting.setGlobalLightColor(Color.WHITE);
+			} else {
+				lighting.setGlobalLightColor(Color.decode("0x101010"));
+			}
+		}
+		
+		if (window.inputSystem.pressed("gizmo")) {
+			window.drawGizmos = !window.drawGizmos;
+		}
+
 		// System.out.println(camera.transform);
 		// float y = (float)Math.sin(t)*10f;
 		// lighting.setLightPosition(new Vector3D(0.0, y, -1.0));
@@ -337,7 +375,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		// 	renderer.transform.rotate(0, 0, 1);
 		// }
 		if (moveDir.lengthSquared() > 0) {
-			Vector4f m = new Vector4f(moveDir.x , moveDir.y, moveDir.z, 0.0f);
+			Vector4f m = new Vector4f(moveDir.x, moveDir.y, moveDir.z, 0.0f);
 			m.mul(camera.transform.getTransformMatrix());
 			// camera.transform.getTransformMatrix().;
 			// System.out.println(m);
@@ -352,12 +390,8 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 			camera.transform.translate(camera.transform.up().mul(moveDir.y * ms * window.deltaTime()));
 			camera.recalculateMatrix();
 		}
-	}
-	
-	@Override
-	public void onKeyboardEvent(int key, int scancode, int action, int mods) {
-		if (key == GLFW.GLFW_KEY_SPACE && action == GLFW.GLFW_PRESS) {
-			// System.out.println("Space was pressed");
+		
+		if (window.inputSystem.pressed("spawn")) {
 			if (testR == null) {
 				Transform t = new Transform();
 				t.setPosition(0, 2, 0);
@@ -369,7 +403,12 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 			} else {
 				testR.setVisible(!testR.isVisible());
 			}
-		} else if (key == GLFW.GLFW_KEY_1 && action == GLFW.GLFW_PRESS) {
+		}
+	}
+	
+	@Override
+	public void onKeyboardEvent(int key, int scancode, int action, int mods) {
+		if (key == GLFW.GLFW_KEY_1 && action == GLFW.GLFW_PRESS) {
 			spin = !spin;
 		} else if (key == GLFW.GLFW_KEY_2 && action == GLFW.GLFW_PRESS) {
 			// if (roll) {
