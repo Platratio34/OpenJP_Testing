@@ -226,9 +226,9 @@ public class Window {
 
 		long eTime = System.currentTimeMillis();
 		long pTime = eTime - time;
-		if(pTime > targetFrameTime) {
-			System.err.println("F-"+frameNumber+"; "+profiler.getLastFrame());
-		}
+		// if(pTime > targetFrameTime*1.5f) {
+		// 	System.err.println("F-"+frameNumber+"; "+profiler.getLastFrame());
+		// }
 		// System.out.println(eTime - time);
     	
     	try {

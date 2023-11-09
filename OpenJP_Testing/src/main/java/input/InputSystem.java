@@ -38,26 +38,34 @@ public class InputSystem implements KeyboardEvent {
     }
 
     public boolean pressed(String bind) {
-        if (!binds.containsKey(bind))
+        if (!binds.containsKey(bind)) {
+            System.err.println("No bind with name \""+bind+"\"");
             return false;
+        }
         return binds.get(bind).pressed;
     }
 
     public boolean down(String bind) {
-        if (!binds.containsKey(bind))
+        if (!binds.containsKey(bind)) {
+            System.err.println("No bind with name \""+bind+"\"");
             return false;
+        }
         return binds.get(bind).down;
     }
 
     public boolean released(String bind) {
-        if (!binds.containsKey(bind))
+        if (!binds.containsKey(bind)) {
+            System.err.println("No bind with name \""+bind+"\"");
             return false;
+        }
         return binds.get(bind).released;
     }
     
     public float axis(String axis) {
-        if (!axies.containsKey(axis))
+        if (!axies.containsKey(axis)){
+            System.err.println("No axis with name \""+axis+"\"");
             return 0.0f;
+        }
         return axies.get(axis).getAxis();
     }
     

@@ -91,7 +91,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	public GLTest2() {
 		window = new Window("Open GL Test");
 		window.addLoopRunnable(this);
-		window.addKeyboardListener(this);
+		// window.addKeyboardListener(this);
 		window.addMouseListener(this);
 		
 		camera = window.camera;
@@ -301,7 +301,12 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		window.inputSystem.addBind("roll", GLFW.GLFW_KEY_2);
 		window.inputSystem.addBind("wire", GLFW.GLFW_KEY_3);
 		window.inputSystem.addBind("light", GLFW.GLFW_KEY_4);
-		window.inputSystem.addBind("gizmos", GLFW.GLFW_KEY_5);
+		window.inputSystem.addBind("gizmo", GLFW.GLFW_KEY_5);
+
+		window.inputSystem.addAxis("forward/backward", GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_S);
+		window.inputSystem.addAxis("left/right", GLFW.GLFW_KEY_A, GLFW.GLFW_KEY_D);
+		window.inputSystem.addAxis("up/down", GLFW.GLFW_KEY_Q, GLFW.GLFW_KEY_E);
+		window.inputSystem.addBind("moveMod", GLFW.GLFW_KEY_LEFT_SHIFT);
 	}
 	
 	public void run() {
@@ -374,15 +379,18 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		// 	// Vector3f rot = renderer.transform.getRotation();
 		// 	renderer.transform.rotate(0, 0, 1);
 		// }
+		moveDir.x = window.inputSystem.axis("forward/backward");
+		moveDir.z = window.inputSystem.axis("left/right") * -1f;
+		moveDir.y = window.inputSystem.axis("up/down");
 		if (moveDir.lengthSquared() > 0) {
-			Vector4f m = new Vector4f(moveDir.x, moveDir.y, moveDir.z, 0.0f);
-			m.mul(camera.transform.getTransformMatrix());
+			// Vector4f m = new Vector4f(moveDir.x, moveDir.y, moveDir.z, 0.0f);
+			// m.mul(camera.transform.getTransformMatrix());
 			// camera.transform.getTransformMatrix().;
 			// System.out.println(m);
 			// camera.transform.forward();
 			// camera.transform.translate(m.x, m.y, m.z);
 			float ms = moveSpeed;
-			if (moveMod) {
+			if (window.inputSystem.down("moveMod")) {
 				ms *= 2f;
 			}
 			camera.transform.translate(camera.transform.forward().mul(moveDir.x * -1f * ms * window.deltaTime()));

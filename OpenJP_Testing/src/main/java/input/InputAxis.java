@@ -31,6 +31,6 @@ public class InputAxis {
     }
 
     public float getAxis() {
-        return (pos?1.0f:0.0f) + (neg?-1.0f:0.0f);
+        return ( pos ? 1.0f : 0.0f ) + ( neg ? -1.0f : 0.0f);
     }
 }
