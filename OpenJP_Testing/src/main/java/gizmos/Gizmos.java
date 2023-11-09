@@ -1,12 +1,8 @@
 package gizmos;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import oldObjects.Triangle;
 import util.BinMesh;
 
 public class Gizmos {

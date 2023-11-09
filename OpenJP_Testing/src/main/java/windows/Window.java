@@ -226,7 +226,7 @@ public class Window {
 		profiler.endFrame();
 
 		long eTime = System.currentTimeMillis();
-		long pTime = eTime - time;
+		// long pTime = eTime - time;
 		// if(pTime > targetFrameTime*1.5f) {
 		// 	System.err.println("F-"+frameNumber+"; "+profiler.getLastFrame());
 		// }

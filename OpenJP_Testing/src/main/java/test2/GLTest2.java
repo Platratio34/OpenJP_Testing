@@ -7,14 +7,12 @@ import java.util.ArrayList;
 
 import org.joml.Vector2d;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 import gizmos.Gizmo;
 import gizmos.GizmoType;
 import gizmos.Gizmos;
 import gizmos.OriginGizmo;
-import input.KeyboardEvent;
 import input.MouseEvent;
 import lighting.Light;
 import lighting.LightingSettings;
@@ -28,7 +26,7 @@ import util.BinMesh;
 import windows.Window;
 import windows.WindowLoopRunnable;
 
-public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
+public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 
 //	static ShaderProgram shader;
 //	static long window;
@@ -63,7 +61,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	Texture2D texture;
 
 	private boolean mouseB3Down = false;
-	private boolean moveMod = false;
+	// private boolean moveMod = false;
 	private Vector2d mouseLPos = new Vector2d();
 
 	Material material;
@@ -422,99 +420,6 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		}
 	}
 	
-	@Override
-	public void onKeyboardEvent(int key, int scancode, int action, int mods) {
-		if (key == GLFW.GLFW_KEY_1 && action == GLFW.GLFW_PRESS) {
-			spin = !spin;
-		} else if (key == GLFW.GLFW_KEY_2 && action == GLFW.GLFW_PRESS) {
-			// if (roll) {
-			// 	for (Renderer renderer : boxes) {
-			// 		Vector3f rot = renderer.transform.getRotation();
-			// 		rot.z = 0f;
-			// 		renderer.transform.setRotation(rot);
-			// 	}
-			// }
-			roll = !roll;
-		} else if (key == GLFW.GLFW_KEY_3 && action == GLFW.GLFW_PRESS) {
-			wire = !wire;
-			window.setWireframe(wire);
-		} else if (key == GLFW.GLFW_KEY_4 && action == GLFW.GLFW_PRESS) {
-			lightA = !lightA;
-			if(lightA) {
-				lighting.setGlobalLightColor(Color.WHITE);
-			} else {
-				lighting.setGlobalLightColor(Color.decode("0x101010"));
-			}
-		} else if (key == GLFW.GLFW_KEY_5 && action == GLFW.GLFW_PRESS) {
-			window.drawGizmos = !window.drawGizmos;
-		} else if (key == GLFW.GLFW_KEY_LEFT_SHIFT) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveMod = true;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				moveMod = false;
-			}
-		} else if (key == GLFW.GLFW_KEY_W) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.x = 1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.x > 0) {
-					moveDir.x = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.forward());
-			// camera.recalculateMatrix();
-		} else if (key == GLFW.GLFW_KEY_S) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.x = -1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.x < 0) {
-					moveDir.x = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.forward().mul(-1));
-			// camera.recalculateMatrix();
-		} else if (key == GLFW.GLFW_KEY_A) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.z = -1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.z < 0) {
-					moveDir.z = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.right().mul(-1));
-			// camera.recalculateMatrix();
-		} else if (key == GLFW.GLFW_KEY_D) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.z = 1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.z > 0) {
-					moveDir.z = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.right());
-			// camera.recalculateMatrix();
-		} else if (key == GLFW.GLFW_KEY_Q) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.y = 1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.y > 0) {
-					moveDir.y = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.up());
-			// camera.recalculateMatrix();
-		} else if (key == GLFW.GLFW_KEY_E) {
-			if (action == GLFW.GLFW_PRESS) {
-				moveDir.y = -1;
-			} else if (action == GLFW.GLFW_RELEASE) {
-				if (moveDir.y < 0) {
-					moveDir.y = 0;
-				}
-			}
-			// camera.transform.translate(camera.transform.up().mul(-1));
-			// camera.recalculateMatrix();
-		}
-	}
 	@Override
 	public void onMouseButtonEvent(int button, int action, int mods) {
 		if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
