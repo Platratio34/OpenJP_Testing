@@ -73,6 +73,10 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 	private boolean roll;
 	private boolean wire;
 	private boolean lightA;
+
+	private Mesh testMesh;
+
+	private Transform tMt;
     
 	public static void main(String[] args) {
 		// try {
@@ -99,13 +103,14 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		camera = window.camera;
 		lighting = window.lightingSettings;
 		
-        camera.transform.setPosition(3,5,3);
-        camera.transform.setRotation(45, -45, 0);
+        // camera.transform.setPosition(3,5,3);
+        // camera.transform.setRotation(0, -45, 0);
         
         try {
 			// testMesh = Mesh.createFromResource("meshes/newCube.mesh");
 			// matCubeMesh = Mesh.createFromResource("meshes/matCube.mesh");
 			matCubeMesh = BinMesh.meshFromBinResource("meshes/matCube.bin");
+			testMesh = Mesh.createFromFile("testMesh.mesh");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -300,6 +305,11 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		// window.addGizmo(cg);
 
 		// window.setTargetFPS(15);
+		tMt = new Transform();
+		tMt.setPosition(0.0f, 10.0f, 0.0f);
+		MeshRenderer r = new MeshRenderer(tMt, testMesh);
+		r.materials.setMaterial(0, mat1);
+		window.addRenderer(r);
 
 		window.inputSystem.addBind("spawn", GLFW.GLFW_KEY_SPACE);
 		window.inputSystem.addBind("spin", GLFW.GLFW_KEY_1);
@@ -307,6 +317,8 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		window.inputSystem.addBind("wire", GLFW.GLFW_KEY_3);
 		window.inputSystem.addBind("light", GLFW.GLFW_KEY_4);
 		window.inputSystem.addBind("gizmo", GLFW.GLFW_KEY_5);
+		window.inputSystem.addBind("reload", GLFW.GLFW_KEY_R);
+		window.inputSystem.addBind("testMove", GLFW.GLFW_KEY_F);
 
 		window.inputSystem.addAxis("forward/backward", GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_S);
 		window.inputSystem.addAxis("left/right", GLFW.GLFW_KEY_A, GLFW.GLFW_KEY_D);
@@ -388,12 +400,6 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		moveDir.z = window.inputSystem.axis("left/right") * -1f;
 		moveDir.y = window.inputSystem.axis("up/down");
 		if (moveDir.lengthSquared() > 0) {
-			// Vector4f m = new Vector4f(moveDir.x, moveDir.y, moveDir.z, 0.0f);
-			// m.mul(camera.transform.getTransformMatrix());
-			// camera.transform.getTransformMatrix().;
-			// System.out.println(m);
-			// camera.transform.forward();
-			// camera.transform.translate(m.x, m.y, m.z);
 			float ms = moveSpeed;
 			if (window.inputSystem.down("moveMod")) {
 				ms *= 2f;
@@ -417,6 +423,18 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 			} else {
 				testR.setVisible(!testR.isVisible());
 			}
+		}
+
+		if (window.inputSystem.pressed("reload")) {
+			try {
+				Mesh.createFromFile("testMesh.mesh", testMesh);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (window.inputSystem.pressed("testMove")) {
+			tMt.translate(tMt.forward());
 		}
 	}
 	

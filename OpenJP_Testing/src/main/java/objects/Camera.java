@@ -27,8 +27,9 @@ public class Camera implements TransformUpdate {
 		posUniform = new Uniform(shader, "cameraPos");
 	}
 	
-	public void recaculatePerspective() {
-		projectionMatrix = new Matrix4f().perspective(fov, aspectRatio, nearZ, farZ);
+	public void recalculatePerspective() {
+		// projectionMatrix = new Matrix4f().perspective(fov, aspectRatio, nearZ, farZ);
+		projectionMatrix = new Matrix4f().setPerspective(fov, aspectRatio, nearZ, farZ);
 		projectionMatrixUniform.setMatrix4f(projectionMatrix);
 	}
 	
@@ -39,7 +40,7 @@ public class Camera implements TransformUpdate {
 
 	public void updateAspectRation(int width, int height) {
 		aspectRatio = (float)width/(float)height;
-		recaculatePerspective();
+		recalculatePerspective();
 	}
 
 	@Override

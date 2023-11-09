@@ -127,7 +127,7 @@ public class Window {
         
         camera = new Camera(shader);
 		camera.aspectRatio = (float)width/(float)height;
-		camera.recaculatePerspective();
+		camera.recalculatePerspective();
 
 
 		keyboardCallback = new KeyboardCallback();

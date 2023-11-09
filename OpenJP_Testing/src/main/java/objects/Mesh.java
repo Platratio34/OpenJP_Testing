@@ -3,6 +3,7 @@ package objects;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.File;
 
 import org.lwjgl.opengl.GL33;
 
@@ -14,23 +15,32 @@ public class Mesh {
 
 	
 	private VAO vao;
-	private int indexLenght;
+	private int indexLength;
 	private boolean indexMode = false;
 	
+	public Mesh() {
+		vao = new VAO();
+	}
+
 	public Mesh(float[] vertices) {
 		vao = new VAO();
 		
 		vao.storeDataInAttributeList(0, vertices);
-		indexLenght = vertices.length;
+		indexLength = vertices.length;
 	}
-	public Mesh(float[] vertices, int[] indicies) {
+
+	public Mesh(float[] vertices, int[] indices) {
 		vao = new VAO();
-		
-		vao.storeVertexIndexData( vertices, indicies);
-		indexLenght = indicies.length;
+
+		vao.storeVertexIndexData(vertices, indices);
+		indexLength = indices.length;
 		indexMode = true;
 	}
 	
+	public void setVertices(float[] vertices) {
+		vao.storeDataInAttributeList(0, vertices);
+		indexLength = vertices.length;
+	}
 	public void setColors(float[] colors) {
 		vao.storeColorData(colors);
 	}
@@ -45,9 +55,9 @@ public class Mesh {
 		GL33.glEnableVertexAttribArray(3);
 		
 		if(indexMode) {
-			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLenght, GL33.GL_UNSIGNED_INT, 4);
+			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLength, GL33.GL_UNSIGNED_INT, 4);
 		} else {
-			GL33.glDrawArrays(GL33.GL_TRIANGLES, 0, indexLenght);
+			GL33.glDrawArrays(GL33.GL_TRIANGLES, 0, indexLength);
 		}
 		
 		GL33.glDisableVertexAttribArray(0);
@@ -61,30 +71,34 @@ public class Mesh {
 	}
 	
 	public static Mesh createFromSingleArray(float[] array) {
-		float[] vert = new float[array.length/3];
-		float[] color = new float[array.length/3];
-		float[] norm = new float[array.length/3];
-		
-		for(int i = 0; i < vert.length/3; i++) {
-			int vI = (i*3)*3;
-			vert[i*3] = array[vI];
-			vert[i*3+1] = array[vI+1];
-			vert[i*3+2] = array[vI+2];
-			int cI = (i*3 + 1)*3;
-			color[i*3] = array[cI];
-			color[i*3+1] = array[cI+1];
-			color[i*3+2] = array[cI+2];
-			int nI = (i*3 + 2)*3;
-			norm[i*3] = array[nI];
-			norm[i*3+1] = array[nI+1];
-			norm[i*3+2] = array[nI+2];
+		float[] vert = new float[array.length / 3];
+		float[] color = new float[array.length / 3];
+		float[] norm = new float[array.length / 3];
+
+		for (int i = 0; i < vert.length / 3; i++) {
+			int vI = (i * 3) * 3;
+			vert[i * 3] = array[vI];
+			vert[i * 3 + 1] = array[vI + 1];
+			vert[i * 3 + 2] = array[vI + 2];
+			int cI = (i * 3 + 1) * 3;
+			color[i * 3] = array[cI];
+			color[i * 3 + 1] = array[cI + 1];
+			color[i * 3 + 2] = array[cI + 2];
+			int nI = (i * 3 + 2) * 3;
+			norm[i * 3] = array[nI];
+			norm[i * 3 + 1] = array[nI + 1];
+			norm[i * 3 + 2] = array[nI + 2];
 		}
 		Mesh mesh = new Mesh(vert);
 		mesh.setColors(color);
 		mesh.setNormals(norm);
 		return mesh;
 	}
+
 	public static Mesh createFromString(String str) {
+		return createFromString(str, new Mesh());
+	}
+	public static Mesh createFromString(String str, Mesh mesh) {
 		String[] components = str.split(";");
 		int sI = 0;
 		int vI = 0;
@@ -146,13 +160,20 @@ public class Mesh {
 			}
 		}
 
-		Mesh mesh = new Mesh(verts);
+		mesh.setVertices(verts);
 		mesh.setColors(colors);
 		mesh.setNormals(normals);
 		return mesh;
 	}
+
 	public static Mesh createFromFile(String path) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(path));
+		return createFromFile(path, new Mesh());
+	}
+
+	public static Mesh createFromFile(String path, Mesh mesh) throws IOException {
+		File f = new File(path);
+		System.out.println(f.getAbsolutePath());
+		BufferedReader br = new BufferedReader(new FileReader(f));
 		String line = "";
 		String str = "";
 		while (line != null) {
@@ -160,7 +181,7 @@ public class Mesh {
 			line = br.readLine();
 		}
 		br.close();
-		return createFromString(str);
+		return createFromString(str, mesh);
 	}
 	public static Mesh createFromResource(String resource) throws IOException {
 		// BufferedReader br = new BufferedReader(new FileReader(path));
