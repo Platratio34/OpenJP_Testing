@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 
 import gizmos.Gizmo;
+import gizmos.OriginGizmo;
 import input.InputSystem;
 import input.KeyboardEvent;
 import input.MouseEvent;
@@ -274,6 +275,12 @@ public class Window {
 	}
 	public int addGizmo(Gizmo gizmo) {
 		return addGizmo(gizmo.renderer);
+	}
+	public void addOriginGizmo(OriginGizmo gizmo) {
+		System.out.println("Adding origin gizmo");
+		addGizmo(gizmo.renderer);
+		addGizmo(gizmo.getYRenderer());
+		addGizmo(gizmo.getZRenderer());
 	}
 
 	public int addLoopRunnable(WindowLoopRunnable loopRunnable) {

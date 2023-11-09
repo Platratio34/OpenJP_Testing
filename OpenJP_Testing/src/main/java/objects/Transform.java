@@ -11,6 +11,9 @@ public class Transform implements TransformUpdate {
 	private Vector3f rotation;
 	private Vector3f scale;
 	
+	/**
+	 * Parent transform
+	 */
 	public Transform parent;
 	
 	private Matrix4f matrix;
@@ -81,10 +84,20 @@ public class Transform implements TransformUpdate {
 		position.z = z;
 		recalculateMatrix();
 	}
+
+	/**
+	 * Move the transform an offset
+	 * @param ammount offset to apply
+	 */
 	public void translate(Vector3f ammount) {
 		translate(ammount.x, ammount.y, ammount.z);
 	}
-
+	/**
+	 * Move the transform by an offset
+	 * @param x x component of offset
+	 * @param y y component of offset
+	 * @param z z component of offset
+	 */
 	public void translate(float x, float y, float z) {
 		position.x += x;
 		position.y += y;
@@ -101,9 +114,20 @@ public class Transform implements TransformUpdate {
 		rotation.z = z;
 		recalculateMatrix();
 	}
+
+	/**
+	 * Rotate the transform by an offset
+	 * @param ammount offset to rotate by
+	 */
 	public void rotate(Vector3f ammount) {
 		rotate(ammount.x, ammount.y, ammount.z);
 	}
+	/**
+	 * Rotate the transform by an offset
+	 * @param x x component of offset
+	 * @param y y component of offset
+	 * @param z z component of offset
+	 */
 	public void rotate(float x, float y, float z) {
 		rotation.x += x;
 		rotation.y += y;
@@ -151,6 +175,10 @@ public class Transform implements TransformUpdate {
 		return "Transform: {pos: " + position + ", rot: " + rotation + ", scale: " + scale + "}";
 	}
 	
+	/**
+	 * Get the vector representing the forward direction of the transform
+	 * @return Identity vector facing positive Z
+	 */
 	public Vector3f forward() {
 		return matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f));
 		// Vector3f v = new Vector3f();
@@ -162,12 +190,21 @@ public class Transform implements TransformUpdate {
 		// return v;
 	}
 
+	/**
+	 * Get the vector representing the right direction of the transform
+	 * @return Identity vector facing positive X
+	 */
 	public Vector3f right() {
 		return matrix.normalizedPositiveX(new Vector3f(1.0f, 0.0f, 0.0f));
 		// Vector3f v = new Vector3f();
 		// matrix.getRow(0, v);
 		// return v;
 	}
+
+	/**
+	 * Get the vector representing the up direction of the transform
+	 * @return Identity vector facing positive Y
+	 */
 	public Vector3f up() {
 		return matrix.normalizedPositiveY(new Vector3f(1.0f, 0.0f, 0.0f));
 		// Vector3f v = new Vector3f();

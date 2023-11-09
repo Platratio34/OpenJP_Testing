@@ -7,9 +7,9 @@ public class InputAxis {
     // public float value;
 
     public int positive;
-    private boolean pos;
+    private float pos;
     public int negative;
-    private boolean neg;
+    private float neg;
 
     public InputAxis(int p, int n) {
         positive = p;
@@ -19,18 +19,18 @@ public class InputAxis {
     public void process(int key, int action) {
         if (key == positive) {
             if (action == GLFW.GLFW_PRESS)
-                pos = true;
+                pos = 1.0f;
             else if (action == GLFW.GLFW_RELEASE)
-                pos = false;
+                pos = 0.0f;
         } else if (key == negative) {
             if (action == GLFW.GLFW_PRESS)
-                neg = true;
+                neg = 1.0f;
             else if (action == GLFW.GLFW_RELEASE)
-                neg = false;
+                neg = 0.0f;
         }
     }
 
     public float getAxis() {
-        return ( pos ? 1.0f : 0.0f ) + ( neg ? -1.0f : 0.0f);
+        return pos - neg;
     }
 }

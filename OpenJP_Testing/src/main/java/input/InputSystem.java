@@ -12,11 +12,22 @@ public class InputSystem implements KeyboardEvent {
         axies = new HashMap<String, InputAxis>();
     }
 
+    /**
+     * Add a named keybind to input system
+     * @param name keybind name
+     * @param keycode key code (GLFW_KEY_*)
+     */
     public void addBind(String name, int keycode) {
         InputBind bind = new InputBind(keycode);
         binds.put(name, bind);
     }
 
+    /**
+     * Add a named axis to input system
+     * @param name axis name
+     * @param positive positive key code (GLFW_KEY_*)
+     * @param negative negative key code (GLFW_KEY_*)
+     */
     public void addAxis(String name, int positive, int negative) {
         axies.put(name, new InputAxis(positive, negative));
     }
@@ -37,6 +48,11 @@ public class InputSystem implements KeyboardEvent {
         }
     }
 
+    /**
+     * Check if named keybind was just pressed
+     * @param bind keybind name
+     * @return if the keybind was just pressed
+     */
     public boolean pressed(String bind) {
         if (!binds.containsKey(bind)) {
             System.err.println("No bind with name \""+bind+"\"");
@@ -45,6 +61,11 @@ public class InputSystem implements KeyboardEvent {
         return binds.get(bind).pressed;
     }
 
+    /**
+     * Check if a named keybind is currently down
+     * @param bind keybind name
+     * @return if the keybind is currently down
+     */
     public boolean down(String bind) {
         if (!binds.containsKey(bind)) {
             System.err.println("No bind with name \""+bind+"\"");
@@ -53,6 +74,11 @@ public class InputSystem implements KeyboardEvent {
         return binds.get(bind).down;
     }
 
+    /**
+     * Check if named keybind was just released
+     * @param bind keybind name
+     * @return if the keybind was just released
+     */
     public boolean released(String bind) {
         if (!binds.containsKey(bind)) {
             System.err.println("No bind with name \""+bind+"\"");
@@ -61,6 +87,11 @@ public class InputSystem implements KeyboardEvent {
         return binds.get(bind).released;
     }
     
+    /**
+     * Get the current value of named axis
+     * @param axis axis name
+     * @return axis value [-1.0,1.0]
+     */
     public float axis(String axis) {
         if (!axies.containsKey(axis)){
             System.err.println("No axis with name \""+axis+"\"");

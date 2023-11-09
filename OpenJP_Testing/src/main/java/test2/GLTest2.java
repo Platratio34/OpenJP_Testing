@@ -13,6 +13,7 @@ import org.lwjgl.glfw.GLFW;
 import gizmos.Gizmo;
 import gizmos.GizmoType;
 import gizmos.Gizmos;
+import gizmos.OriginGizmo;
 import input.KeyboardEvent;
 import input.MouseEvent;
 import lighting.Light;
@@ -78,9 +79,12 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 	public static void main(String[] args) {
 		// try {
 		// 	// util.BinMesh.meshResourceToBin("meshes/matCube.mesh", "matCube.bin");
-		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
-		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/axis.gizmo", "axis.gzb");
-		// 	util.BinMesh.gizmoResourceToBin("meshes/gizmos/pyramid.gizmo", "pyramid.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/origin.gizmo", "origin.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originX.gizmo", "originX.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originY.gizmo", "originY.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originZ.gizmo", "originZ.gzb");
+		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/pyramid.gizmo", "pyramid.gzb");
 		// } catch (IOException e) {
 		// 	e.printStackTrace();
 		// }
@@ -289,6 +293,9 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 		g.setSize(0.1f);
 		window.addGizmo(g);
 
+		OriginGizmo g2 = new OriginGizmo();
+		window.addOriginGizmo(g2);
+
 		// Gizmo cg = new Gizmo(GizmoType.PYRAMID, Color.white);
 		// cg.setParent(camera.transform);
 		// cg.transform.setScale(1.0f, 1.0f, 1.0f);
@@ -408,6 +415,7 @@ public class GLTest2 implements WindowLoopRunnable, KeyboardEvent, MouseEvent {
 				// testR.
 				// testR.setColors(colors);
 				window.addRenderer(testR);
+				System.out.println(t.forward());
 			} else {
 				testR.setVisible(!testR.isVisible());
 			}
