@@ -24,6 +24,8 @@ public class ShaderProgram {
 
     private HashMap<String, Integer> knownUniforms;
 
+    public static final int CAMERA_UNIFORM_BLOCK = 0;
+
     public ShaderProgram() throws Exception {
         programId = GL33.glCreateProgram();
         if (programId == 0) {
@@ -42,6 +44,8 @@ public class ShaderProgram {
 
     public void createVertexShader(String shaderCode) throws Exception {
         vertexShaderId = createShader(shaderCode, GL33.GL_VERTEX_SHADER);
+        // int blockid = GL33.glGetUniformBlockIndex(programId, "Camera");
+        // GL33.glUniformBlockBinding(programId, blockid, CAMERA_UNIFORM_BLOCK);
     }
     public void createVertexShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);

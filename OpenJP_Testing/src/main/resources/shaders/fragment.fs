@@ -17,6 +17,13 @@ uniform vec3 globalLightColor;
 
 uniform vec3 cameraPos;
 
+layout(std140, binding = 0) uniform Camera
+{
+    mat4 cameraProjection;
+    mat4 cameraTransform;
+    vec3 cameraPosition;
+};
+
 uniform bool unlit;
 
 struct light {
@@ -88,7 +95,7 @@ void main()
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
 
 		// Specular
-		vec3 viewDir = normalize(cameraPos - fragPos);
+		vec3 viewDir = normalize(cameraPosition - fragPos);
 		vec3 reflectDir = reflect(-viewDir, vertexNormal);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;

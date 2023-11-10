@@ -16,12 +16,20 @@ uniform mat4 projectionMatrix;
 uniform mat4 cameraMatrix;
 uniform mat4 transformMatrix;
 
+layout(std140, binding = 0) uniform Camera
+{
+    mat4 cameraProjection;
+    mat4 cameraTransform;
+    vec3 cameraPosition;
+};
+
 uniform vec3[8] colors;
 uniform bool useColor;
 
 void main()
 {
     gl_Position = projectionMatrix * cameraMatrix * transformMatrix * vec4(position, 1.0);
+    // gl_Position = cameraProjection * cameraTransform * transformMatrix * vec4(position, 1.0);
     if(useColor) {
     	matId = -1.0;
     } else {

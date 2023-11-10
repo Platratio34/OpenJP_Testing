@@ -103,14 +103,15 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		camera = window.camera;
 		lighting = window.lightingSettings;
 		
-        // camera.transform.setPosition(3,5,3);
-        // camera.transform.setRotation(0, -45, 0);
+        camera.transform.setPosition(3,5,3);
+        camera.transform.setRotation(35, -45, 0);
         
         try {
 			// testMesh = Mesh.createFromResource("meshes/newCube.mesh");
 			// matCubeMesh = Mesh.createFromResource("meshes/matCube.mesh");
 			matCubeMesh = BinMesh.meshFromBinResource("meshes/matCube.bin");
-			testMesh = Mesh.createFromFile("testMesh.mesh");
+			// testMesh = Mesh.createFromFile("testMesh.mesh");
+			testMesh = matCubeMesh;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -324,6 +325,8 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		window.inputSystem.addAxis("left/right", GLFW.GLFW_KEY_A, GLFW.GLFW_KEY_D);
 		window.inputSystem.addAxis("up/down", GLFW.GLFW_KEY_Q, GLFW.GLFW_KEY_E);
 		window.inputSystem.addBind("moveMod", GLFW.GLFW_KEY_LEFT_SHIFT);
+
+		window.drawGizmos = true;
 	}
 	
 	public void run() {

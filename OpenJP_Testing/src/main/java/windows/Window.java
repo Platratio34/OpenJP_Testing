@@ -202,6 +202,8 @@ public class Window {
 		}
 		unlitUniform.setBoolean(wireframeMode);
 
+		camera.bindUBO();
+
 		for (Renderer renderer : renderers.values()) {
 			renderer.render();
 		}
@@ -218,6 +220,7 @@ public class Window {
 			}
 			profiler.end("gizmos");
 		}
+		// camera.unbindUBO();
     	
 		profiler.start("swap");
     	GLFW.glfwSwapBuffers(window);
