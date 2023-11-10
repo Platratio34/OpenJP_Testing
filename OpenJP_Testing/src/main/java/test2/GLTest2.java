@@ -407,7 +407,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 			if (window.inputSystem.down("moveMod")) {
 				ms *= 2f;
 			}
-			camera.transform.translate(camera.transform.forward().mul(moveDir.x * -1f * ms * window.deltaTime()));
+			camera.transform.translate(camera.transform.forward().mul(moveDir.x * ms * window.deltaTime()));
 			camera.transform.translate(camera.transform.right().mul(moveDir.z * ms * window.deltaTime()));
 			camera.transform.translate(camera.transform.up().mul(moveDir.y * ms * window.deltaTime()));
 			camera.recalculateMatrix();
@@ -472,7 +472,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 			// 	camera.transform.setPosition(0, 0, z);
 			// 	// camera.transform.translate(0f, 0f, dy/4f);
 			// } else {
-				camera.transform.rotate(-dy, -dx, 0f);
+				camera.transform.rotate(-dy, -dx, 0);
 			// }
 			camera.recalculateMatrix();
 		}
