@@ -47,6 +47,9 @@ public class Mesh {
 	public void setNormals(float[] normals) {
 		vao.storeNormalData(normals);
 	}
+	public void setUVs(float[] uvs) {
+		vao.storeUVData(uvs);
+	}
 	
 	public void render() {
 		vao.bind();

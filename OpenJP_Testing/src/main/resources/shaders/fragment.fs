@@ -23,6 +23,7 @@ layout(std140, binding = 1) uniform Camera
 };
 
 uniform bool unlit;
+uniform bool wire;
 
 struct light {
 	vec3 position;
@@ -36,7 +37,9 @@ struct material {
 	vec4 color;
 	float smoothness;
 	// sampler2D texture;
-	int textureIndex;
+	// int textureIndex;
+	bool textured;
+	sampler2D texture;
 };
 
 uniform material[16] materials;
@@ -58,14 +61,20 @@ uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 1.0, -1);
-	if(matId >= 0.0) {
-		cMat = materials[int(matId)];
-	}
+	vec4 color = vertexColor;
+	float smoothness = 0.0;
 	
-	vec4 color = cMat.color;
+	if(matId >= 0.0) {
+		// material cMat = materials[int(matId)];
+		color = materials[int(matId)].color;
+		smoothness = materials[int(matId)].smoothness;
+		if(materials[int(matId)].textured && !wire) {
+			// color = texture(materials[int(matId)].texture, textCord);
+			color = vec4(textCord.x, textCord.y, 0.0, 1.0);
+		}
+	}
 
-	if(unlit) {
+	if(unlit || wire) {
 		fragColor = color;
 		return;
 	}
@@ -98,7 +107,7 @@ void main()
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;
 
-		lighting = lighting + diff + (specular * cMat.smoothness);
+		lighting = lighting + diff + (specular * smoothness);
 		// lighting = lighting + diff;
 	}
 	

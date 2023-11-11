@@ -79,17 +79,17 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 	private Transform tMt;
     
 	public static void main(String[] args) {
-		// try {
-		// 	// util.BinMesh.meshResourceToBin("meshes/matCube.mesh", "matCube.bin");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/origin.gizmo", "origin.gzb");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originX.gizmo", "originX.gzb");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originY.gizmo", "originY.gzb");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originZ.gizmo", "originZ.gzb");
-		// 	// util.BinMesh.gizmoResourceToBin("meshes/gizmos/pyramid.gizmo", "pyramid.gzb");
-		// } catch (IOException e) {
-		// 	e.printStackTrace();
-		// }
+		try {
+			util.BinMesh.meshResourceToBin("meshes/matCube.mesh", "src/main/resources/meshes/matCube.bin");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/origin.gizmo", "origin.gzb");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originX.gizmo", "originX.gzb");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originY.gizmo", "originY.gzb");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originZ.gizmo", "originZ.gzb");
+			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/pyramid.gizmo", "pyramid.gzb");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		GLTest2 glTest = new GLTest2();
 		glTest.run();
@@ -99,6 +99,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		window.addLoopRunnable(this);
 		// window.addKeyboardListener(this);
 		window.addMouseListener(this);
+		window.unlitMode = true;
 		
 		camera = window.camera;
 		lighting = window.lightingSettings;
@@ -261,6 +262,12 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
     		window.addRenderer(r);
 			boxes.add(r);
         }
+
+		Texture2D tex = new Texture2D(2,2);
+		tex.setPixel(0, 0, Color.red);
+		tex.setPixel(1, 1, Color.red);
+		tex.updateTexture();
+		mat1.setTexture(tex);
         
 //        Transform t2 = new Transform();
 //        t2.setPosition(-2.0f, 1.5f, 0.0f);
@@ -366,12 +373,13 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		}
 
 		if (window.inputSystem.pressed("light")) {
-			lightA = !lightA;
-			if (lightA) {
-				lighting.setGlobalLightColor(Color.WHITE);
-			} else {
-				lighting.setGlobalLightColor(Color.decode("0x101010"));
-			}
+			// lightA = !lightA;
+			window.unlitMode = !window.unlitMode;
+			// if (lightA) {
+			// 	lighting.setGlobalLightColor(Color.WHITE);
+			// } else {
+			// 	lighting.setGlobalLightColor(Color.decode("0x101010"));
+			// }
 		}
 		
 		if (window.inputSystem.pressed("gizmo")) {

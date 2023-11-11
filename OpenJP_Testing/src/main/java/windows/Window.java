@@ -61,6 +61,8 @@ public class Window {
 	private Uniform unlitUniform;
 
 	private boolean wireframeMode = false;
+	public boolean unlitMode = false;
+	private Uniform wireUniform;
 
 	public Profiler profiler;
 
@@ -144,6 +146,7 @@ public class Window {
 		// GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
 
 		unlitUniform = new Uniform(shader, "unlit");
+		wireUniform = new Uniform(shader, "wire");
 
 		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -208,7 +211,8 @@ public class Window {
 			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_FILL);
 			GL33.glEnable(GL33.GL_CULL_FACE);
 		}
-		unlitUniform.setBoolean(wireframeMode);
+		wireUniform.setBoolean(wireframeMode);
+		unlitUniform.setBoolean(unlitMode);
 
 		camera.bindUBO();
 

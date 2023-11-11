@@ -46,6 +46,9 @@ public class VAO {
 	public void storeNormalData(float[] normals) {
 		storeDataInAttributeList(2, normals);
 	}
+	public void storeUVData(float[] uvs) {
+		storeDataInAttributeList(3, uvs);
+	}
 	// public void storeMatData(int[] materials) {
 	// 	bind();
 	// 	ABO abo = new ABO(GL30.GL_ARRAY_BUFFER);

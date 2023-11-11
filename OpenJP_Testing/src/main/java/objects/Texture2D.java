@@ -18,6 +18,7 @@ public class Texture2D {
 		width = w;
 		height = h;
 		pixels = new Color[w*h];
+		fill(Color.white);
 	}
 	
 	public void setPixel(int x, int y, Color color) {

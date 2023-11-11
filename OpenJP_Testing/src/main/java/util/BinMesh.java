@@ -22,6 +22,7 @@ public class BinMesh {
 	private static final int SECTION_COLOR = 0x02;
 	private static final int SECTION_NORM = 0x03;
 	private static final int SECTION_INDICES = 0x04;
+	private static final int SECTION_UV = 0x05;
 
 	public static byte[] floatToBin(float f) {
 		int bits = Float.floatToIntBits(f);
@@ -64,61 +65,78 @@ public class BinMesh {
     public static byte[] meshToBin(String str) {
         
 		String[] components = str.split(";");
-		int sI = 0;
-		int vI = 0;
-		int cI = 1;
-		int nI = 2;
-		int mI = -1;
+		int startLine = 0;
+		int vertexSection = 0;
+		int colorSection = 1;
+		int normalSection = 2;
+		int matSection = -1;
+		int uvSection = -1;
+
+		int numTypes = 0;
 		
 		if(components[0].contains("format=")) {
-			sI++;
-			String[] parts = components[0].substring(8).split(",");
-			// vI = -1;
-			cI = -1;
-			nI = -1;
+			startLine++;
+			String[] parts = components[0].substring(7).split(",");
+			vertexSection = -1;
+			colorSection = -1;
+			normalSection = -1;
 			for(int i = 0; i < parts.length; i++) {
 				if(parts[i].equals("vertex")) {
-					vI = i;
+					vertexSection = i;
+					numTypes++;
 				} else if(parts[i].equals("color")) {
-					cI = i;
+					colorSection = i;
+					numTypes++;
 				} else if(parts[i].equals("normal")) {
-					nI = i;
+					normalSection = i;
+					numTypes++;
 				} else if(parts[i].equals("mat")) {
-					mI = i;
+					matSection = i;
+					numTypes++;
+				} else if(parts[i].equals("uv")) {
+					uvSection = i;
+					numTypes++;
 				}
 			}
 		}
 		
-		int vlength = components.length - sI;
-		float[] verts = new float[vlength];
-		float[] colors = new float[vlength];
-		float[] normals = new float[vlength];
+		int vlength = (components.length - startLine)/numTypes;
+		float[] verts = new float[vlength*3];
+		float[] colors = new float[vlength*3];
+		float[] normals = new float[vlength*3];
+		float[] uvs = new float[vlength*2];
+		int uvsI = 0;
 		
-		int type = 0;
+		int section = 0;
 		int arrI = 0;
-        for (int i = sI; i < components.length; i++) {
+        for (int i = startLine; i < components.length; i++) {
 			String[] parts = components[i].split(",");
-            if (type == vI) {
+            if (section == vertexSection) {
                 verts[arrI] = Float.parseFloat(parts[0]);
                 verts[arrI + 1] = Float.parseFloat(parts[1]);
                 verts[arrI + 2] = Float.parseFloat(parts[2]);
                 //				System.out.print(String.format("v=%f,%f,%f; ", verts[arrI], verts[arrI+1], verts[arrI+2]));
-            } else if (type == cI) {
+            } else if (section == colorSection) {
                 colors[arrI] = Float.parseFloat(parts[0]);
                 colors[arrI + 1] = Float.parseFloat(parts[1]);
                 colors[arrI + 2] = Float.parseFloat(parts[2]);
                 //				System.out.print(String.format("c=%f,%f,%f; ", colors[arrI], colors[arrI+1], colors[arrI+2]));
-            } else if (type == nI) {
+            } else if (section == normalSection) {
                 normals[arrI] = Float.parseFloat(parts[0]);
                 normals[arrI + 1] = Float.parseFloat(parts[1]);
                 normals[arrI + 2] = Float.parseFloat(parts[2]);
                 //				System.out.print(String.format("n=%f,%f,%f; ", normals[arrI], normals[arrI+1], normals[arrI+2]));
-            } else if (type == mI) {
+            } else if (section == matSection) {
                 colors[arrI] = Float.parseFloat(parts[0]);
+            } else if (section == uvSection) {
+                uvs[uvsI] = Float.parseFloat(parts[0]);
+                uvs[uvsI + 1] = Float.parseFloat(parts[1]);
+				uvsI += 2;
+                //				System.out.print(String.format("n=%f,%f,%f; ", normals[arrI], normals[arrI+1], normals[arrI+2]));
             }
 
-            type = (type + 1) % 3;
-            if (type == 0) {
+            section = (section + 1) % numTypes;
+            if (section == 0) {
                 arrI += 3;
                 //				System.out.println("");
             }
@@ -136,11 +154,11 @@ public class BinMesh {
 		// Section header for vertices
 		out.write(SECTION_VERT);
 		out.write(TYPE_FLOAT);
-		out.write(vlength / 0x100);
-		out.write(vlength % 0x100);
+		out.write(verts.length / 0x100);
+		out.write(verts.length % 0x100);
 		
 		// Write vertices
-		for (int i = 0; i < vlength; i++) {
+		for (int i = 0; i < verts.length; i++) {
 			byte[] b = floatToBin(verts[i]);
 			out.write(b[0]);
 			out.write(b[1]);
@@ -151,11 +169,11 @@ public class BinMesh {
 		// Section header for colors
 		out.write(SECTION_COLOR);
 		out.write(TYPE_FLOAT);
-		out.write(vlength / 0x100);
-		out.write(vlength % 0x100);
+		out.write(colors.length / 0x100);
+		out.write(colors.length % 0x100);
 		
 		// Write colors
-		for (int i = 0; i < vlength; i++) {
+		for (int i = 0; i < colors.length; i++) {
 			byte[] b = floatToBin(colors[i]);
 			out.write(b[0]);
 			out.write(b[1]);
@@ -166,16 +184,33 @@ public class BinMesh {
 		// Section header for normals
 		out.write(SECTION_NORM);
 		out.write(TYPE_FLOAT);
-		out.write(vlength / 0x100);
-		out.write(vlength % 0x100);
+		out.write(normals.length / 0x100);
+		out.write(normals.length % 0x100);
 		
 		// Write normals
-		for (int i = 0; i < vlength; i++) {
+		for (int i = 0; i < normals.length; i++) {
 			byte[] b = floatToBin(normals[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
 			out.write(b[3]);
+		}
+		
+		if(uvSection != -1) {
+			// Section header for uvs
+			out.write(SECTION_UV);
+			out.write(TYPE_FLOAT);
+			out.write(uvs.length / 0x100);
+			out.write(uvs.length % 0x100);
+			
+			// Write normals
+			for (int i = 0; i < uvs.length; i++) {
+				byte[] b = floatToBin(uvs[i]);
+				out.write(b[0]);
+				out.write(b[1]);
+				out.write(b[2]);
+				out.write(b[3]);
+			}
 		}
 		
 		// File end section header
@@ -222,6 +257,7 @@ public class BinMesh {
 		float[] vertices = null;
 		float[] colors = null;
 		float[] normals = null;
+		float[] uvs = null;
 
 		int cSection = (int) bytes[4];
 		int pointer = 4;
@@ -241,12 +277,12 @@ public class BinMesh {
 				}
 				if (cSection == SECTION_VERT) {
 					vertices = arr;
-				}
-				if (cSection == SECTION_COLOR) {
+				} else if (cSection == SECTION_COLOR) {
 					colors = arr;
-				}
-				if (cSection == SECTION_NORM) {
+				} else if (cSection == SECTION_NORM) {
 					normals = arr;
+				} else if (cSection == SECTION_UV) {
+					uvs = arr;
 				}
 			}
 			pointer += length*4; // move pointer to next header
@@ -262,6 +298,9 @@ public class BinMesh {
 		Mesh mesh = new Mesh(vertices);
 		mesh.setColors(colors);
 		mesh.setNormals(normals);
+		if(uvs != null) {
+			mesh.setUVs(uvs);
+		}
 		return mesh;
 	}
 

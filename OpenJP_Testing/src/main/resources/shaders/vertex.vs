@@ -36,4 +36,5 @@ void main()
     vertexNormal = normalize((transformMatrix * vec4(normal, 0.0)).xyz);
     fragPos = (transformMatrix * vec4(position, 1.0)).xyz;
     textCord = uv;
+    // textCord = vec2(0.0, 0.0);
 }
