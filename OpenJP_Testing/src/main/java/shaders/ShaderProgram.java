@@ -1,7 +1,7 @@
 package shaders;
 
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
 
 import objects.Texture2D;
 
@@ -26,26 +26,28 @@ public class ShaderProgram {
 
     public static final int CAMERA_UNIFORM_BLOCK = 1;
 
+    private Uniform defaultTextUniform;
+
     public ShaderProgram() throws Exception {
-        programId = GL33.glCreateProgram();
+        programId = GL44.glCreateProgram();
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
-        defTexture = new Texture2D(2,2);
-        defTexture.fill(Color.WHITE);
-        defTexture.updateTexture();
+        defTexture = new Texture2D(1,1);
+        // defTexture.fill(Color.WHITE);
+        // defTexture.updateTexture();
         knownUniforms = new HashMap<String, Integer>();
         // int defTextureUniform = getUniform("defaultTexture");
         // Uniform.setTexture2D(defTextureUniform, defTexture);
-//        int textureId = GL33.glGenTexture();
-//        GL33.glActiveTexture(GL33.GL_TEXTURE0);
-//        GL33.glBindTexture()
+//        int textureId = GL44.glGenTexture();
+//        GL44.glActiveTexture(GL44.GL_TEXTURE0);
+//        GL44.glBindTexture()
     }
 
     public void createVertexShader(String shaderCode) throws Exception {
-        vertexShaderId = createShader(shaderCode, GL33.GL_VERTEX_SHADER);
-        // int blockid = GL33.glGetUniformBlockIndex(programId, "Camera");
-        // GL33.glUniformBlockBinding(programId, blockid, CAMERA_UNIFORM_BLOCK);
+        vertexShaderId = createShader(shaderCode, GL44.GL_VERTEX_SHADER);
+        // int blockid = GL44.glGetUniformBlockIndex(programId, "Camera");
+        // GL44.glUniformBlockBinding(programId, blockid, CAMERA_UNIFORM_BLOCK);
     }
     public void createVertexShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);
@@ -63,7 +65,7 @@ public class ShaderProgram {
     }
 
     public void createFragmentShader(String shaderCode) throws Exception {
-        fragmentShaderId = createShader(shaderCode, GL33.GL_FRAGMENT_SHADER);
+        fragmentShaderId = createShader(shaderCode, GL44.GL_FRAGMENT_SHADER);
     }
 
     public void createFragmentShaderResource(String filename) throws Exception {
@@ -82,62 +84,67 @@ public class ShaderProgram {
     }
 
     protected int createShader(String shaderCode, int shaderType) throws Exception {
-        int shaderId = GL33.glCreateShader(shaderType);
+        int shaderId = GL44.glCreateShader(shaderType);
         if (shaderId == 0) {
             throw new Exception("Error creating shader. Type: " + shaderType);
         }
 
-        GL33.glShaderSource(shaderId, shaderCode);
-        GL33.glCompileShader(shaderId);
+        GL44.glShaderSource(shaderId, shaderCode);
+        GL44.glCompileShader(shaderId);
 
-        if (GL33.glGetShaderi(shaderId, GL33.GL_COMPILE_STATUS) == 0) {
-            throw new Exception("Error compiling Shader code: " + GL33.glGetShaderInfoLog(shaderId, 1024));
+        if (GL44.glGetShaderi(shaderId, GL44.GL_COMPILE_STATUS) == 0) {
+            throw new Exception("Error compiling Shader code: " + GL44.glGetShaderInfoLog(shaderId, 1024));
         }
 
-        GL33.glAttachShader(programId, shaderId);
+        GL44.glAttachShader(programId, shaderId);
 
         return shaderId;
     }
 
     public void link() throws Exception {
         
-    	GL33.glLinkProgram(programId);
-        if (GL33.glGetProgrami(programId, GL33.GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + GL33.glGetProgramInfoLog(programId, 1024));
+    	GL44.glLinkProgram(programId);
+        if (GL44.glGetProgrami(programId, GL44.GL_LINK_STATUS) == 0) {
+            throw new Exception("Error linking Shader code: " + GL44.glGetProgramInfoLog(programId, 1024));
         }
 
         if (vertexShaderId != 0) {
-        	GL33.glDetachShader(programId, vertexShaderId);
+        	GL44.glDetachShader(programId, vertexShaderId);
         }
         if (fragmentShaderId != 0) {
-        	GL33.glDetachShader(programId, fragmentShaderId);
+        	GL44.glDetachShader(programId, fragmentShaderId);
         }
 
-        GL33.glValidateProgram(programId);
-        if (GL33.glGetProgrami(programId, GL33.GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning validating Shader code: " + GL33.glGetProgramInfoLog(programId, 1024));
+        GL44.glValidateProgram(programId);
+        if (GL44.glGetProgrami(programId, GL44.GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating Shader code: " + GL44.glGetProgramInfoLog(programId, 1024));
+        }
+
+        if (defaultTextUniform == null) {
+            defaultTextUniform = new Uniform(this, "defaultTexture");
+            defaultTextUniform.setTexture2D(defTexture);
         }
 
     }
 
     public void bind() {
-    	GL33.glUseProgram(programId);
+    	GL44.glUseProgram(programId);
     }
 
     public void unbind() {
-    	GL33.glUseProgram(0);
+    	GL44.glUseProgram(0);
     }
 
     public void cleanup() {
         unbind();
         if (programId != 0) {
-        	GL33.glDeleteProgram(programId);
+        	GL44.glDeleteProgram(programId);
         }
     }
 
 	public int getUniform(String name) throws UniformException {
         if(knownUniforms.containsKey(name)) return knownUniforms.get(name);
-		int id = GL33.glGetUniformLocation(programId, name);
+		int id = GL44.glGetUniformLocation(programId, name);
 		if(id < 0) {
             System.err.println("Could not find uniform '"+name+"' in shader");
             // throw new UniformException("Could not find uniform '"+name+"' in shader");
@@ -162,6 +169,6 @@ public class ShaderProgram {
 		Uniform.setVector3f(getUniform(name), val);
 	}
 	public void uniformSetInt1(String name, int val) throws UniformException {
-		GL33.glUniform1i(getUniform(name), val);
+		GL44.glUniform1i(getUniform(name), val);
 	}
 }

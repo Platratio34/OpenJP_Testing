@@ -1,22 +1,15 @@
 package shaders;
 
-import objects.Texture2D;
-
 public class Materials {
 	
 	private static final String MATERIAL_UNIFORM_NAME = "materials";
 	private static final int MAX_MATERIALS = 16;
-	private static final String TEXTURES_UNIFORM_NAME = "textures";
-	private static final int MAX_TEXTURES = 16;
 	
 	private Material[] materials;
 	private ShaderProgram shader;
-
-	private Texture2D[] textures;
 	
 	public Materials() {
 		materials = new Material[MAX_MATERIALS];
-		textures = new Texture2D[MAX_TEXTURES];
 	}
 
 	public void setShader(ShaderProgram shader) {
@@ -62,9 +55,5 @@ public class Materials {
 	// 	Uniform textureUniform = new Uniform(shader, TEXTURES_UNIFORM_NAME + "[" + texId + "]");
 	// 	textureUniform.setTexture2D(texture, texId);
 	// }
-
-	public Texture2D getTexture(int texId) {
-		return textures[texId];
-	}
 	
 }

@@ -1,6 +1,6 @@
 package GLObjects;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL44;
 
 public class EBO {
 
@@ -8,26 +8,26 @@ public class EBO {
 	private int length;
 	
 	public EBO(int[] indicies) {
-		id = GL30.glGenBuffers();
+		id = GL44.glGenBuffers();
 		storeIndexData(indicies);
 	}
 	
 	public void storeIndexData(int[] indicies) {
 		bind();
 		
-		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indicies, GL30.GL_STATIC_DRAW);
+		GL44.glBufferData(GL44.GL_ELEMENT_ARRAY_BUFFER, indicies, GL44.GL_STATIC_DRAW);
 		length = indicies.length;
 	}
 	
 	public void bind() {
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, id);
+		GL44.glBindBuffer(GL44.GL_ELEMENT_ARRAY_BUFFER, id);
 	}
 	public static void unbind() {
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
+		GL44.glBindBuffer(GL44.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
 	public void dispose() {
-		GL30.glDeleteBuffers(id);
+		GL44.glDeleteBuffers(id);
 	}
 
 	public int getLength() {

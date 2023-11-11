@@ -4,7 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL44;
 
 public class ABO {
 	
@@ -13,7 +13,7 @@ public class ABO {
 	
 	public ABO(int type) {
 		this.type = type;
-		id = GL30.glGenBuffers();
+		id = GL44.glGenBuffers();
 	}
 	
 	public void fill(int[] data) {
@@ -21,7 +21,7 @@ public class ABO {
 		buffer.put(data);
 		buffer.flip();
 		bind();
-		GL30.glBufferData(type, buffer, GL30.GL_STATIC_DRAW);
+		GL44.glBufferData(type, buffer, GL44.GL_STATIC_DRAW);
 //		MemoryUtil.memFree(buffer);
 	}
 	public void fill(float[] data) {
@@ -29,18 +29,18 @@ public class ABO {
 		buffer.put(data);
 		buffer.flip();
 		bind();
-		GL30.glBufferData(type, buffer, GL30.GL_STATIC_DRAW);
+		GL44.glBufferData(type, buffer, GL44.GL_STATIC_DRAW);
 //		MemoryUtil.memFree(buffer);
 	}
 	
 	public void bind() {
-		GL30.glBindBuffer(type, id);
+		GL44.glBindBuffer(type, id);
 	}
 	public void unbind() {
-		GL30.glBindBuffer(type, 0);
+		GL44.glBindBuffer(type, 0);
 	}
 	
 	public void dispose() {
-		GL30.glDeleteBuffers(id);
+		GL44.glDeleteBuffers(id);
 	}
 }

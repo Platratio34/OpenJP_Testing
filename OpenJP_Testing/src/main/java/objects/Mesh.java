@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.File;
 
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
 
 import GLObjects.VAO;
 import oldObjects.Triangle;
@@ -53,19 +53,19 @@ public class Mesh {
 	
 	public void render() {
 		vao.bind();
-		GL33.glEnableVertexAttribArray(0);
-		GL33.glEnableVertexAttribArray(1);
-		GL33.glEnableVertexAttribArray(3);
+		GL44.glEnableVertexAttribArray(0);
+		GL44.glEnableVertexAttribArray(1);
+		GL44.glEnableVertexAttribArray(3);
 		
 		if(indexMode) {
-			GL33.glDrawElements(GL33.GL_TRIANGLES, indexLength, GL33.GL_UNSIGNED_INT, 4);
+			GL44.glDrawElements(GL44.GL_TRIANGLES, indexLength, GL44.GL_UNSIGNED_INT, 4);
 		} else {
-			GL33.glDrawArrays(GL33.GL_TRIANGLES, 0, indexLength);
+			GL44.glDrawArrays(GL44.GL_TRIANGLES, 0, indexLength);
 		}
 		
-		GL33.glDisableVertexAttribArray(0);
-		GL33.glDisableVertexAttribArray(1);
-		GL33.glDisableVertexAttribArray(3);
+		GL44.glDisableVertexAttribArray(0);
+		GL44.glDisableVertexAttribArray(1);
+		GL44.glDisableVertexAttribArray(3);
 		VAO.unbind();
 	}
 	

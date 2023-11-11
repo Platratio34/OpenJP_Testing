@@ -4,7 +4,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.awt.Color;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -13,7 +12,7 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
 import org.lwjgl.opengl.GLUtil;
 
 import gizmos.Gizmo;
@@ -24,7 +23,6 @@ import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
-import objects.Texture2D;
 import profileing.Profiler;
 import shaders.ShaderProgram;
 import shaders.Uniform;
@@ -87,11 +85,11 @@ public class Window {
 		
 		GLFW.glfwInit();
 		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
-		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 5);
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL33.GL_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL33.GL_TRUE);
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL44.GL_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL44.GL_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
 		
@@ -102,17 +100,17 @@ public class Window {
 		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
         GL.createCapabilities();
-		GL33.glEnable(GL33.GL_DEPTH_TEST);
-		GL33.glEnable(GL33.GL_TEXTURE_2D);
+		GL44.glEnable(GL44.GL_DEPTH_TEST);
+		GL44.glEnable(GL44.GL_TEXTURE_2D);
 		
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
 		GLUtil.setupDebugMessageCallback();
 		
-        GL33.glViewport(0,0,width,height);
+        GL44.glViewport(0,0,width,height);
         GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
 			width = w;
 			height = h;
-			GL33.glViewport(0, 0, width, height);
+			GL44.glViewport(0, 0, width, height);
 			camera.updateAspectRation(width, height);
 		});
 		
@@ -131,12 +129,12 @@ public class Window {
 			shader.createFragmentShaderResource("shaders/fragment.fs");
 			shader.link();
 			shader.bind();
-			Texture2D tex = new Texture2D(1, 1);
+			// Texture2D tex = new Texture2D(1, 1);
 			// tex.fill(Color.blue);
 			// tex.setPixel(0, 0, Color.green);
 			// tex.setPixel(1, 1, Color.red);
-			tex.updateTexture();
-			Uniform.setTexture2D(shader.getUniform("defaultTexture"), tex, 31);
+			// tex.updateTexture();
+			// Uniform.setTexture2D(shader.getUniform("defaultTexture"), tex, 31);
 		} catch (Exception e) {
 			e.printStackTrace();
             throw new IllegalStateException("Unable to initialize Shader");
@@ -161,7 +159,7 @@ public class Window {
 		unlitUniform = new Uniform(shader, "unlit");
 		wireUniform = new Uniform(shader, "wire");
 
-		GL33.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL44.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		inputSystem = new InputSystem();
 		addKeyboardListener(inputSystem);
@@ -169,7 +167,7 @@ public class Window {
 	
 	public void run() {
 		showWindow(true);
-		// GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
+		// GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_LINE);
 		lastFrameTime = System.currentTimeMillis();
 		while(!GLFW.glfwWindowShouldClose(window)) loop();
         GLFW.glfwTerminate();
@@ -186,7 +184,7 @@ public class Window {
 		frameTimeI++;
 		if(frameTimeI >= frameTimes.length) frameTimeI = 0;
 //		System.out.println("Frame Time: "+frameTime+"ms");
-		if(frameTime > targetFrameTime * 2) {
+		if(frameNumber > 1 && frameTime > targetFrameTime * 2) {
 			long avg = 0;
 			for(int i = 0; i < frameTimes.length; i++) avg += frameTimes[i];
 			avg /= frameTimes.length;
@@ -203,8 +201,8 @@ public class Window {
 		shader.bind();
 		// Uniform objectMatrix = new Uniform(shader, "transformMatrix");
 		// Uniform useColor = new Uniform(shader, "useColor");
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
-		// GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
+		GL44.glClear(GL44.GL_COLOR_BUFFER_BIT | GL44.GL_DEPTH_BUFFER_BIT);
+		// GL44.glClear(GL44.GL_COLOR_BUFFER_BIT);
 		profiler.end("init");
 		
 		profiler.start("runnables");
@@ -215,14 +213,14 @@ public class Window {
 		profiler.end("runnables");
 		
 		profiler.start("render");
-        GL33.glEnable(GL33.GL_DEPTH_TEST);
+        GL44.glEnable(GL44.GL_DEPTH_TEST);
 		
 		if (wireframeMode) {
-			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
-			GL33.glDisable(GL33.GL_CULL_FACE);
+			GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_LINE);
+			GL44.glDisable(GL44.GL_CULL_FACE);
 		} else {
-			GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_FILL);
-			GL33.glEnable(GL33.GL_CULL_FACE);
+			GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_FILL);
+			GL44.glEnable(GL44.GL_CULL_FACE);
 		}
 		wireUniform.setBoolean(wireframeMode);
 		unlitUniform.setBoolean(unlitMode);
@@ -237,7 +235,7 @@ public class Window {
 		if(drawGizmos) {
 			profiler.start("gizmos");
 			unlitShader.bind();
-			GL33.glDisable(GL33.GL_DEPTH_TEST);
+			GL44.glDisable(GL44.GL_DEPTH_TEST);
 			for (Renderer renderer : gizmos.values()) {
 				renderer.render();
 			}

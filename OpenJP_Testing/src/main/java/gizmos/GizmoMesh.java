@@ -1,6 +1,6 @@
 package gizmos;
 
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
 
 import GLObjects.VAO;
 
@@ -26,17 +26,17 @@ public class GizmoMesh {
 
     public void render() {
         vao.bind();
-		GL33.glEnableVertexAttribArray(0);
-		GL33.glEnableVertexAttribArray(4);
+		GL44.glEnableVertexAttribArray(0);
+		GL44.glEnableVertexAttribArray(4);
 		
 		if(indexMode) {
-			GL33.glDrawElements(GL33.GL_LINES, indexLength, GL33.GL_UNSIGNED_INT, 0);
+			GL44.glDrawElements(GL44.GL_LINES, indexLength, GL44.GL_UNSIGNED_INT, 0);
 		} else {
-			GL33.glDrawArrays(GL33.GL_LINES, 0, indexLength);
+			GL44.glDrawArrays(GL44.GL_LINES, 0, indexLength);
 		}
 		
-		GL33.glDisableVertexAttribArray(0);
-		GL33.glDisableVertexAttribArray(4);
+		GL44.glDisableVertexAttribArray(0);
+		GL44.glDisableVertexAttribArray(4);
 		VAO.unbind();
     }
 	

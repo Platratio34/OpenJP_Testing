@@ -2,7 +2,7 @@ package GLObjects;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL44;
 
 public class VAO {
 	
@@ -11,7 +11,7 @@ public class VAO {
 	private ArrayList<ABO> abos;
 	
 	public VAO() {
-		id = GL30.glGenVertexArrays();
+		id = GL44.glGenVertexArrays();
 		abos = new ArrayList<ABO>();
 	}
 	
@@ -21,26 +21,26 @@ public class VAO {
 
 	public void storeDataInAttributeList(int attrib, float[] data, int size) {
 		bind();
-		ABO abo = new ABO(GL30.GL_ARRAY_BUFFER);
+		ABO abo = new ABO(GL44.GL_ARRAY_BUFFER);
 		abo.fill(data);
 		abos.add(abo);
-		GL30.glEnableVertexAttribArray(attrib);
-		GL30.glVertexAttribPointer(attrib, size, GL30.GL_FLOAT, false, 0, 0);
+		GL44.glEnableVertexAttribArray(attrib);
+		GL44.glVertexAttribPointer(attrib, size, GL44.GL_FLOAT, false, 0, 0);
 		abo.unbind();
 	}
 	
 	public void storeVertexIndexData(float[] verticies, int[] indicies) {
 		bind();
-		ABO vbo = new ABO(GL30.GL_ARRAY_BUFFER);
+		ABO vbo = new ABO(GL44.GL_ARRAY_BUFFER);
 		vbo.fill(verticies);
 		abos.add(vbo);
-		GL30.glEnableVertexAttribArray(0);
-		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, false, 0, 0);
-		ABO ebo = new ABO(GL30.GL_ELEMENT_ARRAY_BUFFER);
+		GL44.glEnableVertexAttribArray(0);
+		GL44.glVertexAttribPointer(0, 3, GL44.GL_FLOAT, false, 0, 0);
+		ABO ebo = new ABO(GL44.GL_ELEMENT_ARRAY_BUFFER);
 		ebo.fill(indicies);
 		abos.add(ebo);
-		GL30.glEnableVertexAttribArray(4);
-		GL30.glVertexAttribPointer(4, 2, GL30.GL_UNSIGNED_INT, false, 0, 0);
+		GL44.glEnableVertexAttribArray(4);
+		GL44.glVertexAttribPointer(4, 2, GL44.GL_UNSIGNED_INT, false, 0, 0);
 		vbo.unbind();
 	}
 	
@@ -55,23 +55,23 @@ public class VAO {
 	}
 	// public void storeMatData(int[] materials) {
 	// 	bind();
-	// 	ABO abo = new ABO(GL30.GL_ARRAY_BUFFER);
+	// 	ABO abo = new ABO(GL44.GL_ARRAY_BUFFER);
 	// 	abo.fill(materials);
 	// 	abos.add(abo);
-	// 	GL30.glEnableVertexAttribArray(3);
-	// 	GL30.glVertexAttribPointer(3, 3, GL30.GL_INT, false, 0, 0);
+	// 	GL44.glEnableVertexAttribArray(3);
+	// 	GL44.glVertexAttribPointer(3, 3, GL44.GL_INT, false, 0, 0);
 	// 	abo.unbind();
 	// }
 	
 	public void bind() {
-		GL30.glBindVertexArray(id);
+		GL44.glBindVertexArray(id);
 	}
 	public static void unbind() {
-		GL30.glBindVertexArray(0);
+		GL44.glBindVertexArray(0);
 	}
 	
 	public void dispose() {
-		GL30.glDeleteVertexArrays(id);
+		GL44.glDeleteVertexArrays(id);
 		for (ABO abo : abos) {
 			abo.dispose();
 		}

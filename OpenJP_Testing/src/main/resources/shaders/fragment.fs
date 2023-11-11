@@ -1,5 +1,6 @@
 #version 310 es
 precision mediump float;
+#extension GL_ARB_bindless_texture : require
 
 in vec4 vertexColor;
 in vec3 vertexNormal;
@@ -39,14 +40,14 @@ struct material {
 	// sampler2D texture;
 	// int textureIndex;
 	bool textured;
-	sampler2D texture;
+	uvec2 texture;
 };
 
 uniform material[16] materials;
 // uniform sampler2DArray textures;
 // uniform sampler2D textures[16];
 
-uniform sampler2D defaultTexture;
+uniform uvec2 defaultTexture;
 
 // vec4 getSampleFromArray(sampler2D textures[16], int ndx, vec2 uv) {
 //     vec4 color = vec4(0);
@@ -70,7 +71,8 @@ void main()
 		smoothness = materials[int(matId)].smoothness;
 		if(materials[int(matId)].textured && !wire) {
 			// color = texture(materials[int(matId)].texture, textCord);
-			color = color * texture(defaultTexture, textCord);
+			color = color * texture(sampler2D(defaultTexture), textCord);
+			// color = color * texture(defaultTexture, textCord);
 			// color = vec4(textCord.xy, 0.0, 1.0);
 		}
 	}

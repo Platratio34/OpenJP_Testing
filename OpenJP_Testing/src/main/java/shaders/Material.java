@@ -50,7 +50,7 @@ public class Material {
 		if(texture != null) {
 			// texture.updateTexture();
 			int textureUniform = shader.getUniform(uniformName+".texture");
-        	Uniform.setTexture2D(textureUniform, texture, index);
+        	Uniform.setTexture2D(textureUniform, texture);
 			shader.uniformSetInt1(uniformName+".textured", 1);
 		} else {
 			shader.uniformSetInt1(uniformName+".textured", 0);

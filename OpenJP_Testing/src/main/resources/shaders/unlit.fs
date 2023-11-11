@@ -1,5 +1,6 @@
 #version 310 es
 precision mediump float;
+#extension GL_ARB_bindless_texture : require
 
 in vec4 vertexColor;
 in vec3 vertexNormal;
@@ -22,7 +23,7 @@ struct material {
 	// sampler2D texture;
 	// int textureIndex;
 	bool textured;
-	sampler2D texture;
+	uvec2 texture;
 };
 
 uniform material[16] materials;

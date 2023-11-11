@@ -1,6 +1,6 @@
 package objects;
 
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL44;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
@@ -28,9 +28,9 @@ public class UBO {
 	public UBO(long words, int target) {
 		this.words = words;
 		this.binding = target;
-		bufferId = GL33.glGenBuffers();
+		bufferId = GL44.glGenBuffers();
 		bind();
-		GL33.glBufferData(GL33.GL_UNIFORM_BUFFER, words * WORD_LENGTH, GL33.GL_DYNAMIC_DRAW);
+		GL44.glBufferData(GL44.GL_UNIFORM_BUFFER, words * WORD_LENGTH, GL44.GL_DYNAMIC_DRAW);
 		unbind();
 		bindTarget();
 		// System.out.println("Created UBO @ buffer "+bufferId+" for binding "+binding+" with length "+words+" words");
@@ -46,7 +46,7 @@ public class UBO {
 			return;
 		}
 		bind();
-		GL33.glBufferSubData(GL33.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
+		GL44.glBufferSubData(GL44.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
 		unbind();
 	}
 	public void set(long startWord, FloatBuffer buffer) {
@@ -55,28 +55,28 @@ public class UBO {
 			return;
 		}
 		bind();
-		GL33.glBufferSubData(GL33.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
+		GL44.glBufferSubData(GL44.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
 		unbind();
 	}
 	
 	
 	public void bind() {
-		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, bufferId);
+		GL44.glBindBuffer(GL44.GL_UNIFORM_BUFFER, bufferId);
 	}
 	public void bindTarget() {
 		bindTarget(binding);
 	}
 	public void bindTarget(int binding) {
-		GL33.glBindBufferRange(GL33.GL_UNIFORM_BUFFER, binding, bufferId, 0, words * WORD_LENGTH);
+		GL44.glBindBufferRange(GL44.GL_UNIFORM_BUFFER, binding, bufferId, 0, words * WORD_LENGTH);
 	}
 	public void unbind() {
-		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
+		GL44.glBindBuffer(GL44.GL_UNIFORM_BUFFER, 0);
 	}
 
 	public static int getCurrentUBOBound() {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			IntBuffer buffer = stack.mallocInt(1);
-			GL33.glGetIntegerv(GL33.GL_UNIFORM_BUFFER, buffer);
+			GL44.glGetIntegerv(GL44.GL_UNIFORM_BUFFER, buffer);
 			return buffer.get(0);
 		} catch(Exception e) {
             e.printStackTrace();
