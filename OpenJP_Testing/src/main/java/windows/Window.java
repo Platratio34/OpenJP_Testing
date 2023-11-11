@@ -1,8 +1,5 @@
 package windows;
 
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
@@ -25,7 +22,6 @@ import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
-import objects.UBO;
 import profileing.Profiler;
 import shaders.ShaderProgram;
 import shaders.Uniform;
@@ -126,17 +122,19 @@ public class Window {
         
         lightingSettings = new LightingSettings(shader);
         
-        camera = new Camera(shader);
+        camera = new Camera();
 		camera.aspectRatio = (float)width/(float)height;
 		camera.recalculatePerspective();
 
 
 		keyboardCallback = new KeyboardCallback();
-		glfwSetKeyCallback(window, keyboardCallback);
+		GLFW.glfwSetKeyCallback(window, keyboardCallback);
 		mouseButtonCallback = new MouseButtonCallback();
-		glfwSetMouseButtonCallback(window, mouseButtonCallback);
+		GLFW.glfwSetMouseButtonCallback(window, mouseButtonCallback);
 		mouseCursorCallback = new MouseCursorCallback();
-		glfwSetCursorPosCallback(window, mouseCursorCallback);
+		GLFW.glfwSetCursorPosCallback(window, mouseCursorCallback);
+
+		// GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
 
 		unlitUniform = new Uniform(shader, "unlit");
 
