@@ -15,9 +15,7 @@ uniform vec3 lightColor;
 uniform vec3 globalLightDir;
 uniform vec3 globalLightColor;
 
-uniform vec3 cameraPos;
-
-layout(std140, binding = 0) uniform Camera
+layout(std140, binding = 1) uniform Camera
 {
     mat4 cameraProjection;
     mat4 cameraTransform;

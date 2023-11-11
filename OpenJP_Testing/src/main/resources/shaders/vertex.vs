@@ -12,11 +12,9 @@ out vec3 fragPos;
 out vec2 textCord;
 out float matId;
 
-uniform mat4 projectionMatrix;
-uniform mat4 cameraMatrix;
 uniform mat4 transformMatrix;
 
-layout(std140, binding = 0) uniform Camera
+layout(std140, binding = 1) uniform Camera
 {
     mat4 cameraProjection;
     mat4 cameraTransform;
@@ -28,8 +26,7 @@ uniform bool useColor;
 
 void main()
 {
-    gl_Position = projectionMatrix * cameraMatrix * transformMatrix * vec4(position, 1.0);
-    // gl_Position = cameraProjection * cameraTransform * transformMatrix * vec4(position, 1.0);
+    gl_Position = cameraProjection * cameraTransform * transformMatrix * vec4(position, 1.0);
     if(useColor) {
     	matId = -1.0;
     } else {

@@ -25,6 +25,7 @@ import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
+import objects.UBO;
 import profileing.Profiler;
 import shaders.ShaderProgram;
 import shaders.Uniform;
@@ -280,7 +281,7 @@ public class Window {
 		return addGizmo(gizmo.renderer);
 	}
 	public void addOriginGizmo(OriginGizmo gizmo) {
-		System.out.println("Adding origin gizmo");
+		// System.out.println("Adding origin gizmo");
 		addGizmo(gizmo.renderer);
 		addGizmo(gizmo.getYRenderer());
 		addGizmo(gizmo.getZRenderer());

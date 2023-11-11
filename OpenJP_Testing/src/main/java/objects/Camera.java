@@ -4,7 +4,6 @@ import org.joml.Matrix4f;
 
 import shaders.CameraUBO;
 import shaders.ShaderProgram;
-import shaders.Uniform;
 
 public class Camera implements TransformUpdate {
 	
@@ -14,35 +13,30 @@ public class Camera implements TransformUpdate {
 	public float aspectRatio;
 	
 	private Matrix4f projectionMatrix;
-	private Uniform projectionMatrixUniform;
 	
 	public Transform transform;
-	private Uniform transformMatrixUniform;
-	private Uniform posUniform;
 
-	private CameraUBO ubo;
+	public CameraUBO ubo;
 	
+	@Deprecated
 	public Camera(ShaderProgram shader) {
 		transform = new Transform();
-		
-		projectionMatrixUniform = new Uniform(shader, "projectionMatrix");
-		transformMatrixUniform = new Uniform(shader, "cameraMatrix");
-		posUniform = new Uniform(shader, "cameraPos");
+
+		ubo = new CameraUBO();
+	}
+	public Camera() {
+		transform = new Transform();
 
 		ubo = new CameraUBO();
 	}
 	
 	public void recalculatePerspective() {
-		// projectionMatrix = new Matrix4f().perspective(fov, aspectRatio, nearZ, farZ);
 		projectionMatrix = new Matrix4f().setPerspective(fov, aspectRatio, nearZ, farZ);
-		projectionMatrixUniform.setMatrix4f(projectionMatrix);
 		ubo.setProjectionMatrix(projectionMatrix);
 	}
 	
 	public void recalculateMatrix() {
-		transformMatrixUniform.setMatrix4f(transform.getTransformMatrixInverse());
 		ubo.setTransformMatrix(transform.getTransformMatrixInverse());
-		posUniform.setVector3f(transform.getPosition());
 		ubo.setPosition(transform.getPosition());
 	}
 
@@ -56,6 +50,8 @@ public class Camera implements TransformUpdate {
 		recalculateMatrix();
 	}
 
-	public void bindUBO() {ubo.bind();}
-	public void unbindUBO() {ubo.unbind();}
+	/**
+	 * Bind the camera UBO for rendering
+	 */
+	public void bindUBO() {ubo.bindTarget();}
 }

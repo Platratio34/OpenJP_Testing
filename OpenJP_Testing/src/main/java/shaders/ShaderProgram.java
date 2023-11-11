@@ -24,7 +24,7 @@ public class ShaderProgram {
 
     private HashMap<String, Integer> knownUniforms;
 
-    public static final int CAMERA_UNIFORM_BLOCK = 0;
+    public static final int CAMERA_UNIFORM_BLOCK = 1;
 
     public ShaderProgram() throws Exception {
         programId = GL33.glCreateProgram();

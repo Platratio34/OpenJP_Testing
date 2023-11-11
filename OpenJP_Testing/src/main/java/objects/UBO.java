@@ -1,54 +1,86 @@
 package objects;
 
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class UBO {
 	
-	private int id;
+	private int bufferId;
 	private long words;
+	private int binding;
 
+	/** Length of a word in bytes */
 	public static final long WORD_LENGTH = 4l;
-	
-	public static final long FLOAT_SIZE = 1l;
+
+	/** Length of a float in std140 in words */
+	public static final long FLOAT_SIZE = 1l; 
+	/** Length of a Vector3f in std140 in words */
+	public static final long VEC3_SIZE = FLOAT_SIZE * 4;
+	/** Length of a Vector4f in std140 in words */
 	public static final long VEC4_SIZE = FLOAT_SIZE * 4;
+	/** Length of a Matrix4f in std140 in words */
 	public static final long MAT4_SIZE = FLOAT_SIZE * 4 * 4;
 	
 	public UBO(long words, int target) {
 		this.words = words;
-		id = GL33.glGenBuffers();
+		this.binding = target;
+		bufferId = GL33.glGenBuffers();
 		bind();
 		GL33.glBufferData(GL33.GL_UNIFORM_BUFFER, words * WORD_LENGTH, GL33.GL_DYNAMIC_DRAW);
 		unbind();
-		GL33.glBindBufferBase(GL33.GL_UNIFORM_BUFFER, target, id);
+		bindTarget();
+		// System.out.println("Created UBO @ buffer "+bufferId+" for binding "+binding+" with length "+words+" words");
+	}
+
+	public int getBufferId() {
+		return bufferId;
 	}
 	
 	public void set(long startWord, ByteBuffer buffer) {
-		if(startWord > words) {
+		if(startWord >= words) {
 			System.err.println("Tried to set outside of UBO; length="+words+", start="+startWord);
 			return;
 		}
 		bind();
-		GL33.glBufferSubData(id, startWord*WORD_LENGTH, buffer);
+		GL33.glBufferSubData(GL33.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
 		unbind();
 	}
 	public void set(long startWord, FloatBuffer buffer) {
-		if(startWord > words) {
+		if(startWord >= words) {
 			System.err.println("Tried to set outside of UBO; length="+words+", start="+startWord);
 			return;
 		}
 		bind();
-		GL33.glBufferSubData(id, startWord*WORD_LENGTH, buffer);
+		GL33.glBufferSubData(GL33.GL_UNIFORM_BUFFER, startWord*WORD_LENGTH, buffer);
 		unbind();
 	}
 	
+	
 	public void bind() {
-		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, id);
-		// System.out.println("UBO bound");
+		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, bufferId);
+	}
+	public void bindTarget() {
+		bindTarget(binding);
+	}
+	public void bindTarget(int binding) {
+		GL33.glBindBufferRange(GL33.GL_UNIFORM_BUFFER, binding, bufferId, 0, words * WORD_LENGTH);
 	}
 	public void unbind() {
 		GL33.glBindBuffer(GL33.GL_UNIFORM_BUFFER, 0);
+	}
+
+	public static int getCurrentUBOBound() {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			IntBuffer buffer = stack.mallocInt(1);
+			GL33.glGetIntegerv(GL33.GL_UNIFORM_BUFFER, buffer);
+			return buffer.get(0);
+		} catch(Exception e) {
+            e.printStackTrace();
+        }
+		return -1;
 	}
 }
