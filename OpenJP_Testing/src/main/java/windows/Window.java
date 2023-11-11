@@ -34,6 +34,7 @@ public class Window {
 	private int height = 600;
 
 	public ShaderProgram shader;
+	public ShaderProgram unlitShader;
 	public LightingSettings lightingSettings;
 	
 	public Camera camera;
@@ -110,6 +111,12 @@ public class Window {
         // GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
         
         try {
+			unlitShader = new ShaderProgram();
+			unlitShader.createVertexShaderResource("shaders/vertex.vs");
+			unlitShader.createFragmentShaderResource("shaders/unlit.fs");
+			unlitShader.link();
+			unlitShader.bind();
+
 			shader = new ShaderProgram();
 			shader.createVertexShaderResource("shaders/vertex.vs");
 			shader.createFragmentShaderResource("shaders/fragment.fs");
@@ -178,6 +185,8 @@ public class Window {
 
 		profiler.start("init");
 		shader.bind();
+		// Uniform objectMatrix = new Uniform(shader, "transformMatrix");
+		// Uniform useColor = new Uniform(shader, "useColor");
 		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 		// GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 		profiler.end("init");
@@ -210,6 +219,7 @@ public class Window {
 
 		if(drawGizmos) {
 			profiler.start("gizmos");
+			unlitShader.bind();
 			// GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
 			unlitUniform.setBoolean(true);
 			GL33.glDisable(GL33.GL_DEPTH_TEST);
@@ -267,7 +277,7 @@ public class Window {
 		return nextIdRend - 1;
 	}
 	public int addGizmo(Renderer renderer) {
-		renderer.setShader(shader);
+		renderer.setShader(unlitShader);
 		while(gizmos.containsKey(nextIdGizmo)) {
 			nextIdGizmo++;
 		}
