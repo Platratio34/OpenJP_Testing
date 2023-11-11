@@ -64,9 +64,10 @@ public class Uniform {
 		GL33.glUniform1f(uniform, val);
 	}
 
-	public void setTexture2D(Texture2D texture) { setTexture2D(uniformId, texture); }
-	public static void setTexture2D(int uniform, Texture2D texture) {
+	public void setTexture2D(Texture2D texture, int index) { setTexture2D(uniformId, texture, index); }
+	public static void setTexture2D(int uniform, Texture2D texture, int index) {
 		if(uniform < 0) return;
-		GL33.glUniform1i(uniform, texture.getId());
+		GL33.glUniform1i(uniform, index);
+		texture.activateBind(index);
 	}
 }

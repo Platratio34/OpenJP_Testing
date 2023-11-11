@@ -100,6 +100,7 @@ public class ShaderProgram {
     }
 
     public void link() throws Exception {
+        
     	GL33.glLinkProgram(programId);
         if (GL33.glGetProgrami(programId, GL33.GL_LINK_STATUS) == 0) {
             throw new Exception("Error linking Shader code: " + GL33.glGetProgramInfoLog(programId, 1024));

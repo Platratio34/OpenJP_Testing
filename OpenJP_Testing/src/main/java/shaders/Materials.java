@@ -54,14 +54,14 @@ public class Materials {
 			throw new IndexOutOfBoundsException(
 					"Invalid Material ID: 0 <= id < " + MAX_MATERIALS + "; id was " + index);
 		// materials[material.getMatId()] = material;
-		material.updateShader(shader, MATERIAL_UNIFORM_NAME + "[" + index + "]");
+		material.updateShader(shader, MATERIAL_UNIFORM_NAME + "[" + index + "]", index);
 	}
 	
-	public void setTexture(int texId, Texture2D texture) {
-		textures[texId] = texture;
-		Uniform textureUniform = new Uniform(shader, TEXTURES_UNIFORM_NAME + "[" + texId + "]");
-		textureUniform.setTexture2D(texture);
-	}
+	// public void setTexture(int texId, Texture2D texture) {
+	// 	textures[texId] = texture;
+	// 	Uniform textureUniform = new Uniform(shader, TEXTURES_UNIFORM_NAME + "[" + texId + "]");
+	// 	textureUniform.setTexture2D(texture, texId);
+	// }
 
 	public Texture2D getTexture(int texId) {
 		return textures[texId];

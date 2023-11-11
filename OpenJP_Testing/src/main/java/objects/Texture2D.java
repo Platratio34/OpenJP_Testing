@@ -19,6 +19,8 @@ public class Texture2D {
 		height = h;
 		pixels = new Color[w*h];
 		fill(Color.white);
+
+		// updateTexture();
 	}
 	
 	public void setPixel(int x, int y, Color color) {
@@ -48,17 +50,20 @@ public class Texture2D {
 		ByteBuffer buff = ByteBuffer.allocateDirect(4*width*height);
 		for(int i = 0; i < pixels.length; i++) {
 			Color c = pixels[i];
+			// System.out.println(c);
 			buff.put((byte)c.getRed());
 			buff.put((byte)c.getGreen());
 			buff.put((byte)c.getBlue());
 			buff.put((byte)c.getAlpha());
 		}
 		buff.flip();
-		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA, width, height, 0, GL33.GL_RGBA, GL33.GL_UNSIGNED_BYTE, buff);
+		// System.out.println(buff);
+		// GL33.glPixelStorei(GL33.GL_UNPACK_ALIGNMENT, 1);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
 		GL33.glTexParameteri(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
+		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA, width, height, 0, GL33.GL_RGBA, GL33.GL_UNSIGNED_BYTE, buff);
 		GL33.glGenerateMipmap(GL33.GL_TEXTURE_2D);
-		unbind();
+		// unbind();
 	}
 	public void bind() {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
@@ -67,8 +72,8 @@ public class Texture2D {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
 	}
 	public void activateBind(int index) {
-		GL33.glActiveTexture(GL33.GL_TEXTURE0+index);
 		bind();
+		GL33.glActiveTexture(GL33.GL_TEXTURE0+index);
 	}
 	
 	public int getId() {

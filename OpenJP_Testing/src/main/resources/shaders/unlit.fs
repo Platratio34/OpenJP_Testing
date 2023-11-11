@@ -20,7 +20,9 @@ struct material {
 	vec4 color;
 	float smoothness;
 	// sampler2D texture;
-	int textureIndex;
+	// int textureIndex;
+	bool textured;
+	sampler2D texture;
 };
 
 uniform material[16] materials;
@@ -31,10 +33,16 @@ uniform sampler2D defaultTexture;
 
 void main()
 {
-	material cMat = material(vertexColor, 1.0, -1);
+	vec4 color = vertexColor;
+	
 	if(matId >= 0.0) {
-		cMat = materials[int(matId)];
+		// material cMat = materials[int(matId)];
+		color = materials[int(matId)].color;
+		// if(materials[int(matId)].textured && !wire) {
+		// 	// color = texture(materials[int(matId)].texture, textCord);
+		// 	color = vec4(textCord.x, textCord.y, 0.0, 1.0);
+		// }
 	}
 	
-	fragColor = cMat.color;
+	fragColor = color;
 }

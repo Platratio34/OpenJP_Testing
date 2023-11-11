@@ -4,6 +4,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.awt.Color;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -13,6 +14,7 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GLUtil;
 
 import gizmos.Gizmo;
 import gizmos.OriginGizmo;
@@ -22,6 +24,7 @@ import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
+import objects.Texture2D;
 import profileing.Profiler;
 import shaders.ShaderProgram;
 import shaders.Uniform;
@@ -99,7 +102,11 @@ public class Window {
 		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        GL33.glEnable(GL33.GL_DEPTH_TEST);
+		GL33.glEnable(GL33.GL_DEPTH_TEST);
+		GL33.glEnable(GL33.GL_TEXTURE_2D);
+		
+		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
+		GLUtil.setupDebugMessageCallback();
 		
         GL33.glViewport(0,0,width,height);
         GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
@@ -124,6 +131,12 @@ public class Window {
 			shader.createFragmentShaderResource("shaders/fragment.fs");
 			shader.link();
 			shader.bind();
+			Texture2D tex = new Texture2D(1, 1);
+			// tex.fill(Color.blue);
+			// tex.setPixel(0, 0, Color.green);
+			// tex.setPixel(1, 1, Color.red);
+			tex.updateTexture();
+			Uniform.setTexture2D(shader.getUniform("defaultTexture"), tex, 31);
 		} catch (Exception e) {
 			e.printStackTrace();
             throw new IllegalStateException("Unable to initialize Shader");
@@ -224,10 +237,7 @@ public class Window {
 		if(drawGizmos) {
 			profiler.start("gizmos");
 			unlitShader.bind();
-			// GL33.glPolygonMode(GL33.GL_FRONT_AND_BACK, GL33.GL_LINE);
-			unlitUniform.setBoolean(true);
 			GL33.glDisable(GL33.GL_DEPTH_TEST);
-			// GL33.glDisable(GL33.GL_CULL_FACE);
 			for (Renderer renderer : gizmos.values()) {
 				renderer.render();
 			}

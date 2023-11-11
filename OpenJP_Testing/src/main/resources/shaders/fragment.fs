@@ -70,7 +70,8 @@ void main()
 		smoothness = materials[int(matId)].smoothness;
 		if(materials[int(matId)].textured && !wire) {
 			// color = texture(materials[int(matId)].texture, textCord);
-			color = vec4(textCord.x, textCord.y, 0.0, 1.0);
+			color = color * texture(defaultTexture, textCord);
+			// color = vec4(textCord.xy, 0.0, 1.0);
 		}
 	}
 

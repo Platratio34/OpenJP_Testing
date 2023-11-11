@@ -77,6 +77,8 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 	private Mesh testMesh;
 
 	private Transform tMt;
+
+	public static GLTest2 glTest;
     
 	public static void main(String[] args) {
 		try {
@@ -91,10 +93,12 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 			e.printStackTrace();
 		}
 
-		GLTest2 glTest = new GLTest2();
+		glTest = new GLTest2();
 		glTest.run();
 	}
+
 	public GLTest2() {
+		
 		window = new Window("Open GL Test");
 		window.addLoopRunnable(this);
 		// window.addKeyboardListener(this);
@@ -249,23 +253,62 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
     		window.addRenderer(r);
 			boxes.add(r);
         }
-        for(int i = 0; i < num; i++) {
-        	float a = i/rConst;
-    		float x = (float)Math.sin(a) * 5;
-    		float z = (float)Math.cos(a) * 5;
-    		Transform t = new Transform();
-    		t.setPosition(x, 2, z);
-    		t.setRotation(0, i/(num/360f) + 90f, 0);
-    		MeshRenderer r = new MeshRenderer(t, matCubeMesh);
-            // r.setColors(colors);
+		for (int i = 0; i < num; i++) {
+			float a = i / rConst;
+			float x = (float) Math.sin(a) * 5;
+			float z = (float) Math.cos(a) * 5;
+			Transform t = new Transform();
+			t.setPosition(x, 2, z);
+			t.setRotation(0, i / (num / 360f) + 90f, 0);
+			MeshRenderer r = new MeshRenderer(t, matCubeMesh);
+			// r.setColors(colors);
 			r.materials.setMaterial(0, mat1);
-    		window.addRenderer(r);
+			window.addRenderer(r);
 			boxes.add(r);
-        }
+		}
 
-		Texture2D tex = new Texture2D(2,2);
-		tex.setPixel(0, 0, Color.red);
-		tex.setPixel(1, 1, Color.red);
+		int w = 32;
+		int h = w;
+		Texture2D tex = new Texture2D(w,h);
+		// tex.setPixel(0, 0, Color.green);
+		// tex.setPixel(1, 1, Color.red);
+		// tex.updateTexture();
+		// tex.setPixel(0, 0, Color.blue);
+		// tex.setPixel(1, 1, Color.red);
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				float r = 0f;
+				float g = 0f;
+				float b = 0f;
+				if (i % 3 == 0) {
+					if (j % 3 == 0) {
+						r = 1f;
+					} else if (j % 3 == 1) {
+						g = 1f;
+					} else if (j % 3 == 2) {
+						b = 1f;
+					}
+				} else if (i % 3 == 1) {
+					if (j % 3 == 0) {
+						g = 1f;
+					} else if (j % 3 == 1) {
+						b = 1f;
+					} else if (j % 3 == 2) {
+						r = 1f;
+					}
+				} else if (i % 3 == 2) {
+					if (j % 3 == 0) {
+						b = 1f;
+					} else if (j % 3 == 1) {
+						r = 1f;
+					} else if (j % 3 == 2) {
+						g = 1f;
+					}
+				}
+				tex.setPixel(i, j, new Color(r,g,b));
+				// tex.setPixel(i, j, new Color(i / (w*1f), j / (h*1f), 0f));
+			}
+		}
 		tex.updateTexture();
 		mat1.setTexture(tex);
         

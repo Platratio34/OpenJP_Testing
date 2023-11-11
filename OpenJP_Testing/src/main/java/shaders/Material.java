@@ -43,14 +43,14 @@ public class Material {
 		this.texture = texture;
 	}
 	
-	public void updateShader(ShaderProgram shader, String uniformName) {
+	public void updateShader(ShaderProgram shader, String uniformName, int index) {
 		shader.uniformSetColor4(uniformName+".color", color);
 		shader.uniformSetFloat(uniformName+".smoothness", smoothness);
 		// shader.uniformSetInt1(uniformName+".textureIndex", textureIndex);
 		if(texture != null) {
 			// texture.updateTexture();
 			int textureUniform = shader.getUniform(uniformName+".texture");
-        	Uniform.setTexture2D(textureUniform, texture);
+        	Uniform.setTexture2D(textureUniform, texture, index);
 			shader.uniformSetInt1(uniformName+".textured", 1);
 		} else {
 			shader.uniformSetInt1(uniformName+".textured", 0);
