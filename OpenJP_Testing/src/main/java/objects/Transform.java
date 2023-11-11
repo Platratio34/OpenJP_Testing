@@ -47,6 +47,7 @@ public class Transform implements TransformUpdate {
 		.rotateZ((float)Math.toRadians(rotation.z))
 		.scale(scale);
 		
+		// matrix.invertAffine(matrixInverse);
 		matrixInverse.identity()
 		.rotateX((float)Math.toRadians(rotation.x))
 		.rotateY((float)Math.toRadians(rotation.y))
@@ -180,7 +181,7 @@ public class Transform implements TransformUpdate {
 	 * @return Identity vector facing positive Z
 	 */
 	public Vector3f forward() {
-		return matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f));
+		return matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f)).negate();
 		// Vector3f v = new Vector3f();
 		// matrix.getRow(2, v);
 		// System.out.println(v);
