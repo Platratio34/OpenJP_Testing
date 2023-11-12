@@ -2,7 +2,7 @@ package objects;
 
 public class MeshRenderer extends Renderer {
 
-	private Mesh mesh;
+	protected Mesh mesh;
 	
 	@Deprecated
 	public MeshRenderer(Mesh mesh, Transform transform) {

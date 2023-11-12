@@ -25,6 +25,7 @@ import objects.Camera;
 import objects.Renderer;
 import profileing.Profiler;
 import shaders.ShaderProgram;
+import shaders.SkyBox;
 import shaders.Uniform;
 
 public class Window {
@@ -35,8 +36,12 @@ public class Window {
 	private int height = 600;
 
 	public ShaderProgram shader;
-	public ShaderProgram unlitShader;
 	public LightingSettings lightingSettings;
+
+	public ShaderProgram unlitShader;
+
+	public ShaderProgram skyboxShader;
+	private SkyBox skybox;
 	
 	public Camera camera;
 	
@@ -118,13 +123,19 @@ public class Window {
         // GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
         
         try {
-			unlitShader = new ShaderProgram();
+			unlitShader = new ShaderProgram("unlit");
 			unlitShader.createVertexShaderResource("shaders/vertex.vs");
 			unlitShader.createFragmentShaderResource("shaders/unlit.fs");
 			unlitShader.link();
 			unlitShader.bind();
+			
+			skyboxShader = new ShaderProgram("skybox");
+			skyboxShader.createVertexShaderResource("shaders/vertex.vs");
+			skyboxShader.createFragmentShaderResource("shaders/skybox.fs");
+			skyboxShader.link();
+			skyboxShader.bind();
 
-			shader = new ShaderProgram();
+			shader = new ShaderProgram("main");
 			shader.createVertexShaderResource("shaders/vertex.vs");
 			shader.createFragmentShaderResource("shaders/fragment.fs");
 			shader.link();
@@ -163,6 +174,10 @@ public class Window {
 
 		inputSystem = new InputSystem();
 		addKeyboardListener(inputSystem);
+
+		skybox = new SkyBox();
+		skybox.setShader(skyboxShader);
+		// addRenderer(sb);
 	}
 	
 	public void run() {
@@ -198,7 +213,6 @@ public class Window {
 		profiler.end("input");
 
 		profiler.start("init");
-		shader.bind();
 		// Uniform objectMatrix = new Uniform(shader, "transformMatrix");
 		// Uniform useColor = new Uniform(shader, "useColor");
 		GL44.glClear(GL44.GL_COLOR_BUFFER_BIT | GL44.GL_DEPTH_BUFFER_BIT);
@@ -206,6 +220,7 @@ public class Window {
 		profiler.end("init");
 		
 		profiler.start("runnables");
+		shader.bind();
 		for (WindowLoopRunnable runnable : loopRunnables.values()) {
 			runnable.onLoop();
 		}
@@ -213,7 +228,11 @@ public class Window {
 		profiler.end("runnables");
 		
 		profiler.start("render");
-        GL44.glEnable(GL44.GL_DEPTH_TEST);
+		camera.bindUBO();
+		
+		skybox.render();
+		shader.bind();
+		GL44.glEnable(GL44.GL_DEPTH_TEST);
 		
 		if (wireframeMode) {
 			GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_LINE);
@@ -225,7 +244,6 @@ public class Window {
 		wireUniform.setBoolean(wireframeMode);
 		unlitUniform.setBoolean(unlitMode);
 
-		camera.bindUBO();
 
 		for (Renderer renderer : renderers.values()) {
 			renderer.render();

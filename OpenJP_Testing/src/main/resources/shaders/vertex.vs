@@ -10,7 +10,7 @@ out vec4 vertexColor;
 out vec3 vertexNormal;
 out vec3 fragPos;
 out vec2 textCord;
-out float matId;
+flat out float matId;
 
 uniform mat4 transformMatrix;
 

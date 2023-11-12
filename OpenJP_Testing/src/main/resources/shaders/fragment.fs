@@ -6,7 +6,7 @@ in vec4 vertexColor;
 in vec3 vertexNormal;
 in vec3 fragPos;
 in vec2 textCord;
-in float matId;
+flat in float matId;
 
 out vec4 fragColor;
 

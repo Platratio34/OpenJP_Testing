@@ -27,11 +27,17 @@ public class ShaderProgram {
     public static final int CAMERA_UNIFORM_BLOCK = 1;
 
     private Uniform defaultTextUniform;
+    private String name;
 
     public ShaderProgram() throws Exception {
+        this("");
+    }
+
+    public ShaderProgram(String name) throws Exception {
+        this.name = name;
         programId = GL44.glCreateProgram();
         if (programId == 0) {
-            throw new Exception("Could not create Shader");
+            throw new Exception("Could not create Shader "+name);
         }
         defTexture = new Texture2D(2,2);
         // defTexture.fill(Color.WHITE);
@@ -144,7 +150,7 @@ public class ShaderProgram {
         if(knownUniforms.containsKey(name)) return knownUniforms.get(name);
 		int id = GL44.glGetUniformLocation(programId, name);
 		if(id < 0) {
-            System.err.println("Could not find uniform '"+name+"' in shader");
+            System.err.println("Could not find uniform '"+name+"' in shader "+this.name);
             // throw new UniformException("Could not find uniform '"+name+"' in shader");
 		}
         knownUniforms.put(name, id);
