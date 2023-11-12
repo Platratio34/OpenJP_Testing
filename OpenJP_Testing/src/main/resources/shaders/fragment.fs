@@ -40,14 +40,16 @@ struct material {
 	// sampler2D texture;
 	// int textureIndex;
 	bool textured;
-	uvec2 texture;
+	vec2 textureScale;
+	vec2 textureOffset;
+	layout(bindless_sampler) sampler2D texture;
 };
 
 uniform material[16] materials;
 // uniform sampler2DArray textures;
 // uniform sampler2D textures[16];
 
-uniform uvec2 defaultTexture;
+layout(bindless_sampler) uniform sampler2D defaultTexture;
 
 // vec4 getSampleFromArray(sampler2D textures[16], int ndx, vec2 uv) {
 //     vec4 color = vec4(0);
@@ -70,8 +72,11 @@ void main()
 		color = materials[int(matId)].color;
 		smoothness = materials[int(matId)].smoothness;
 		if(materials[int(matId)].textured && !wire) {
-			// color = texture(materials[int(matId)].texture, textCord);
-			color = color * texture(sampler2D(defaultTexture), textCord);
+			vec2 uv = textCord + materials[int(matId)].textureOffset;
+			uv = uv * materials[int(matId)].textureScale;
+			color = color * texture(materials[int(matId)].texture, uv);
+			// color = color * texture(sampler2D(defaultTexture), textCord);
+			// color = mix(color, texture(defaultTexture, textCord), 0.5);
 			// color = color * texture(defaultTexture, textCord);
 			// color = vec4(textCord.xy, 0.0, 1.0);
 		}

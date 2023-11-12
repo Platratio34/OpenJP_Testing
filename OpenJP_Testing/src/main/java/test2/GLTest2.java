@@ -18,6 +18,7 @@ import lighting.Light;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Mesh;
+import objects.MeshCache;
 import objects.MeshRenderer;
 import objects.Texture2D;
 import objects.Transform;
@@ -69,20 +70,20 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 	private Vector3f moveDir = new Vector3f();
 	private float moveSpeed = 1f;
 
-	private boolean spin;
-	private boolean roll;
+	private boolean spin = true;
+	private boolean roll = true;
 	private boolean wire;
-	private boolean lightA;
 
 	private Mesh testMesh;
 
 	private Transform tMt;
 
 	public static GLTest2 glTest;
+	private MeshRenderer floorRenderer;
     
 	public static void main(String[] args) {
 		try {
-			util.BinMesh.meshResourceToBin("meshes/matCube.mesh", "src/main/resources/meshes/matCube.bin");
+			util.BinMesh.meshResourceToBin("meshes/matPlane.mesh", "src/main/resources/meshes/plane.bin");
 			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/cube.gizmo", "cube.gzb");
 			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/origin.gizmo", "origin.gzb");
 			// util.BinMesh.gizmoResourceToBin("meshes/gizmos/originX.gizmo", "originX.gzb");
@@ -103,7 +104,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		window.addLoopRunnable(this);
 		// window.addKeyboardListener(this);
 		window.addMouseListener(this);
-		window.unlitMode = true;
+		// window.unlitMode = true;
 		
 		camera = window.camera;
 		lighting = window.lightingSettings;
@@ -111,16 +112,28 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         camera.transform.setPosition(3,5,3);
         camera.transform.setRotation(35, -45, 0);
         
-        try {
+		try {
+			MeshCache.load("meshes/matCube.bin");
+			MeshCache.load("meshes/plane.bin");
 			// testMesh = Mesh.createFromResource("meshes/newCube.mesh");
 			// matCubeMesh = Mesh.createFromResource("meshes/matCube.mesh");
-			matCubeMesh = BinMesh.meshFromBinResource("meshes/matCube.bin");
+			matCubeMesh = MeshCache.getMesh("meshes/matCube.bin");
 			// testMesh = Mesh.createFromFile("testMesh.mesh");
 			testMesh = matCubeMesh;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
 		}
+
+		Transform floor = new Transform();
+		floor.setPosition(0.0f, -4.0f, 0.0f);
+		floor.setScale(20, 20, 20);
+		floorRenderer = new MeshRenderer(floor, MeshCache.getMesh("meshes/plane.bin"));
+		floorRenderer.materials.setMaterial(0, new Material());
+		window.addRenderer(floorRenderer);
         
         p1 = new Transform();
 		window.addGizmo(new Gizmo(GizmoType.AXIS, Color.white, p1));
@@ -267,7 +280,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 			boxes.add(r);
 		}
 
-		int w = 32;
+		int w = 8;
 		int h = w;
 		Texture2D tex = new Texture2D(w,h);
 		// tex.setPixel(0, 0, Color.green);
@@ -311,6 +324,14 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		}
 		tex.updateTexture();
 		mat1.setTexture(tex);
+		try {
+			floorRenderer.materials.getMaterial(0)
+					.setTexture(Texture2D.loadFromPngResource("textures/checkerboard256.png"));
+			// floorRenderer.materials.getMaterial(0).setTextureScale(2, 2);
+			floorRenderer.materials.getMaterial(0).setTextureOffset(-0.5f, -0.5f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         
 //        Transform t2 = new Transform();
 //        t2.setPosition(-2.0f, 1.5f, 0.0f);
@@ -376,7 +397,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		window.inputSystem.addAxis("up/down", GLFW.GLFW_KEY_Q, GLFW.GLFW_KEY_E);
 		window.inputSystem.addBind("moveMod", GLFW.GLFW_KEY_LEFT_SHIFT);
 
-		window.drawGizmos = true;
+		// window.drawGizmos = true;
 	}
 	
 	public void run() {
@@ -441,7 +462,12 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		// camera.recalculateMatrix();
 		//
 		// light.transform.setPosition(0.0f, t/180f, 0.0f);
-		// light.setColor(Color.getHSBColor(t/900f, 1, 1));
+		light.setColor(Color.getHSBColor(t / 360f, 1, 1));
+		float s = 1 / ((t / 10f) % 16f);
+		if (t % 160 > 80)
+			s = 1 / (16 - (t / 10f) % 16f);
+		// floorRenderer.materials.getMaterial(0).setTextureScale(s, s);
+		floorRenderer.materials.getMaterial(0).setTextureOffset((t/360f)%2f, (t/360f)%2f);
 		//
 		// p1.setRotation(0, t, 0);
 		// p2.setRotation(0, -t, 0);

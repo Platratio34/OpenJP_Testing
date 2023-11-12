@@ -33,7 +33,7 @@ public class ShaderProgram {
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
-        defTexture = new Texture2D(1,1);
+        defTexture = new Texture2D(2,2);
         // defTexture.fill(Color.WHITE);
         // defTexture.updateTexture();
         knownUniforms = new HashMap<String, Integer>();
@@ -119,16 +119,14 @@ public class ShaderProgram {
         if (GL44.glGetProgrami(programId, GL44.GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating Shader code: " + GL44.glGetProgramInfoLog(programId, 1024));
         }
+    }
 
+    public void bind() {
+        GL44.glUseProgram(programId);
         if (defaultTextUniform == null) {
             defaultTextUniform = new Uniform(this, "defaultTexture");
             defaultTextUniform.setTexture2D(defTexture);
         }
-
-    }
-
-    public void bind() {
-    	GL44.glUseProgram(programId);
     }
 
     public void unbind() {

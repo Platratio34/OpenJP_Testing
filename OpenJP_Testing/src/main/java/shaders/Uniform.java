@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.ARBBindlessTexture;
 import org.lwjgl.opengl.GL44;
@@ -40,9 +41,17 @@ public class Uniform {
 	}
 	
 	public void setVector3f(Vector3f vector) { setVector3f(uniformId, vector); }
+
 	public static void setVector3f(int uniform, Vector3f vector) {
-		if(uniform < 0) return;
+		if (uniform < 0)
+			return;
 		GL44.glUniform3f(uniform, vector.x, vector.y, vector.z);
+	}
+	
+	public void setVector2f(Vector2f vector) { setVector2f(uniformId, vector); }
+	public static void setVector2f(int uniform, Vector2f vector) {
+		if(uniform < 0) return;
+		GL44.glUniform2f(uniform, vector.x, vector.y);
 	}
 	
 	public void setColorArray(Color[] array) { setColorArray(uniformId, array); }

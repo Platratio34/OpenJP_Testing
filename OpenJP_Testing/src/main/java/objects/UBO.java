@@ -24,6 +24,9 @@ public class UBO {
 	public static final long VEC4_SIZE = FLOAT_SIZE * 4;
 	/** Length of a Matrix4f in std140 in words */
 	public static final long MAT4_SIZE = FLOAT_SIZE * 4 * 4;
+
+	/** Length of a sampler2D reference in std140 in words */
+	public static final long SAMPLER_2D_SIZE = 8;
 	
 	public UBO(long words, int target) {
 		this.words = words;
