@@ -67,7 +67,7 @@ void main()
 	
 	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
-	vec3 lighting = ambientColor + diffuse + globalDiffuse;
+	vec3 lighting = ambientColor + globalDiffuse;
 
 	for(int i = 0; i < 16; i++) {
 		if(lights[i].range <= 0.0) {
