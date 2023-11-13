@@ -6,7 +6,7 @@ package objects;
 public interface TransformUpdate {
 
 	/**
-	 * Called whenever the transformation matricies are recalculated
+	 * Called whenever the transformation matrices are recalculated
 	 * @param transform the transform that was updated
 	 */
 	public void onTransformUpdate(Transform transform);

@@ -339,7 +339,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 //        r2.setShader(shader);
 //        renderers.put(1, r2);
         
-        lighting.setAbientLighting(Color.decode("0x000000"));
+        lighting.setAmbientLighting(Color.decode("0x000000"));
 //        lighting.setLightPosition(new Vector3f(0.0f, -1.0f, 0.0f));
 //        lighting.setLightColor(Color.decode("0x800000"));
         
@@ -463,9 +463,9 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 		//
 		// light.transform.setPosition(0.0f, t/180f, 0.0f);
 		light.setColor(Color.getHSBColor(t / 360f, 1, 1));
-		float s = 1 / ((t / 10f) % 16f);
-		if (t % 160 > 80)
-			s = 1 / (16 - (t / 10f) % 16f);
+		// float s = 1 / ((t / 10f) % 16f);
+		// if (t % 160 > 80)
+		// 	s = 1 / (16 - (t / 10f) % 16f);
 		// floorRenderer.materials.getMaterial(0).setTextureScale(s, s);
 		floorRenderer.materials.getMaterial(0).setTextureOffset((t/360f)%2f, (t/360f)%2f);
 		//

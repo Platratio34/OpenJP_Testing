@@ -1,9 +1,9 @@
-package profileing;
+package profiling;
 
 import java.util.HashMap;
 
 /**
- * Proflling frame
+ * Profiling frame
  */
 public class Frame {
     

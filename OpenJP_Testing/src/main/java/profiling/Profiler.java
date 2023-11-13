@@ -1,4 +1,4 @@
-package profileing;
+package profiling;
 
 import java.util.ArrayList;
 

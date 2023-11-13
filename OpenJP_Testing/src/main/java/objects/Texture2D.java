@@ -48,7 +48,7 @@ public class Texture2D {
 	 * Width and height should be multiples of 2.
 	 * @param w width
 	 * @param h height
-	 * @param pixles pixel colors (orderd x, y)
+	 * @param pixels pixel colors (ordered x, y)
 	 */
 	public Texture2D(int w, int h, Color[] pixels) {
 		//		System.out.println("Created texture with ID "+textureId);
@@ -198,7 +198,7 @@ public class Texture2D {
 	}
 	
 	/**
-	 * Load a texture from .png resouce file
+	 * Load a texture from .png resource file
 	 * @param path resource path
 	 * @return Texture from image file
 	 * @throws IOException if the file could not be found or read

@@ -23,11 +23,14 @@ import input.MouseEvent;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.Renderer;
-import profileing.Profiler;
+import profiling.Profiler;
 import shaders.ShaderProgram;
 import shaders.SkyBox;
 import shaders.Uniform;
 
+/**
+ * GLFW OpenGL window
+ */
 public class Window {
 	
 	private long window;
@@ -35,14 +38,29 @@ public class Window {
 	private int width = 800;
 	private int height = 600;
 
+	/**
+	 * Main shader (lit)
+	 */
 	public ShaderProgram shader;
+	/**
+	 * Main shader lighting settings
+	 */
 	public LightingSettings lightingSettings;
 
+	/**
+	 * Unlit shader
+	 */
 	public ShaderProgram unlitShader;
 
+	/**
+	 * Skybox shader
+	 */
 	public ShaderProgram skyboxShader;
 	private SkyBox skybox;
 	
+	/**
+	 * Main camera
+	 */
 	public Camera camera;
 	
 	private HashMap<Integer, Renderer> renderers;
@@ -67,15 +85,31 @@ public class Window {
 	private Uniform unlitUniform;
 
 	private boolean wireframeMode = false;
+	/**
+	 * If all objects should be rendered unlit
+	 */
 	public boolean unlitMode = false;
 	private Uniform wireUniform;
 
+	/**
+	 * Window profiler
+	 */
 	public Profiler profiler;
 
+	/**
+	 * If gizmos should be drawn
+	 */
 	public boolean drawGizmos;
 
+	/**
+	 * Window input system
+	 */
 	public InputSystem inputSystem;
 	
+	/**
+	 * Create a new window and initialize it
+	 * @param title
+	 */
 	public Window(String title) {
 		init();
 	}
@@ -85,9 +119,9 @@ public class Window {
 		gizmos = new HashMap<Integer, Renderer>();
 		loopRunnables = new HashMap<Integer, WindowLoopRunnable>();
 		profiler = new Profiler();
-		
+
 		GLFWErrorCallback.createPrint(System.err).set();
-		
+
 		GLFW.glfwInit();
 		GLFW.glfwDefaultWindowHints();
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -97,38 +131,37 @@ public class Window {
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL44.GL_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
-		
+
 		long mon = GLFW.glfwGetPrimaryMonitor();
-		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(mon);
-		width = vidmode.width();
-		height = vidmode.height();
+		GLFWVidMode vidMode = GLFW.glfwGetVideoMode(mon);
+		width = vidMode.width();
+		height = vidMode.height();
 		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
-        GL.createCapabilities();
+		GL.createCapabilities();
 		GL44.glEnable(GL44.GL_DEPTH_TEST);
 		GL44.glEnable(GL44.GL_TEXTURE_2D);
-		
+
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
 		GLUtil.setupDebugMessageCallback();
-		
-        GL44.glViewport(0,0,width,height);
-        GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
+
+		GL44.glViewport(0, 0, width, height);
+		GLFW.glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
 			width = w;
 			height = h;
 			GL44.glViewport(0, 0, width, height);
 			camera.updateAspectRatio(width, height);
 		});
-		
-		
-        // GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
-        
-        try {
+
+		// GLFW.glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
+
+		try {
 			unlitShader = new ShaderProgram("unlit");
 			unlitShader.createVertexShaderResource("shaders/vertex.vs");
 			unlitShader.createFragmentShaderResource("shaders/unlit.fs");
 			unlitShader.link();
 			unlitShader.bind();
-			
+
 			skyboxShader = new ShaderProgram("skybox");
 			skyboxShader.createVertexShaderResource("shaders/vertex.vs");
 			skyboxShader.createFragmentShaderResource("shaders/skybox.fs");
@@ -148,15 +181,14 @@ public class Window {
 			// Uniform.setTexture2D(shader.getUniform("defaultTexture"), tex, 31);
 		} catch (Exception e) {
 			e.printStackTrace();
-            throw new IllegalStateException("Unable to initialize Shader");
+			throw new IllegalStateException("Unable to initialize Shader");
 		}
-        
-        lightingSettings = new LightingSettings(shader);
-        
-        camera = new Camera();
-		camera.aspectRatio = (float)width/(float)height;
-		camera.recalculatePerspective();
 
+		lightingSettings = new LightingSettings(shader);
+
+		camera = new Camera();
+		camera.aspectRatio = (float) width / (float) height;
+		camera.recalculatePerspective();
 
 		keyboardCallback = new KeyboardCallback();
 		GLFW.glfwSetKeyCallback(window, keyboardCallback);
@@ -180,6 +212,9 @@ public class Window {
 		// addRenderer(sb);
 	}
 	
+	/**
+	 * Run the loop until window is closed
+	 */
 	public void run() {
 		showWindow(true);
 		// GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_LINE);
@@ -188,7 +223,7 @@ public class Window {
         GLFW.glfwTerminate();
 	}
 	
-	public void loop() {
+	private void loop() {
 		frameNumber++;
 		profiler.startFrame();
 		profiler.start("time");
@@ -197,13 +232,16 @@ public class Window {
 		lastFrameTime = time;
 		frameTimes[frameTimeI] = frameTime;
 		frameTimeI++;
-		if(frameTimeI >= frameTimes.length) frameTimeI = 0;
-//		System.out.println("Frame Time: "+frameTime+"ms");
-		if(frameNumber > 1 && frameTime > targetFrameTime * 2) {
+		if (frameTimeI >= frameTimes.length)
+			frameTimeI = 0;
+		//		System.out.println("Frame Time: "+frameTime+"ms");
+		if (frameNumber > 1 && frameTime > targetFrameTime * 2) {
 			long avg = 0;
-			for(int i = 0; i < frameTimes.length; i++) avg += frameTimes[i];
+			for (int i = 0; i < frameTimes.length; i++)
+				avg += frameTimes[i];
 			avg /= frameTimes.length;
-			System.err.println("F-"+frameNumber+"; Frame took "+frameTime+"ms to do; Target frame time: "+targetFrameTime+"ms; Average frame time: "+avg+"ms; "+profiler.getLastFrame(1));
+			System.err.println("F-" + frameNumber + "; Frame took " + frameTime + "ms to do; Target frame time: "
+					+ targetFrameTime + "ms; Average frame time: " + avg + "ms; " + profiler.getLastFrame(1));
 		}
 		profiler.end("time");
 
@@ -218,7 +256,7 @@ public class Window {
 		GL44.glClear(GL44.GL_COLOR_BUFFER_BIT | GL44.GL_DEPTH_BUFFER_BIT);
 		// GL44.glClear(GL44.GL_COLOR_BUFFER_BIT);
 		profiler.end("init");
-		
+
 		profiler.start("runnables");
 		shader.bind();
 		for (WindowLoopRunnable runnable : loopRunnables.values()) {
@@ -226,14 +264,14 @@ public class Window {
 		}
 		inputSystem.onTick();
 		profiler.end("runnables");
-		
+
 		profiler.start("render");
 		camera.bindUBO();
-		
+
 		skybox.render();
 		shader.bind();
 		GL44.glEnable(GL44.GL_DEPTH_TEST);
-		
+
 		if (wireframeMode) {
 			GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_LINE);
 			GL44.glDisable(GL44.GL_CULL_FACE);
@@ -244,13 +282,12 @@ public class Window {
 		wireUniform.setBoolean(wireframeMode);
 		unlitUniform.setBoolean(unlitMode);
 
-
 		for (Renderer renderer : renderers.values()) {
 			renderer.render();
 		}
 		profiler.end("render");
 
-		if(drawGizmos) {
+		if (drawGizmos) {
 			profiler.start("gizmos");
 			unlitShader.bind();
 			GL44.glDisable(GL44.GL_DEPTH_TEST);
@@ -260,9 +297,9 @@ public class Window {
 			profiler.end("gizmos");
 		}
 		// camera.unbindUBO();
-    	
+
 		profiler.start("swap");
-    	GLFW.glfwSwapBuffers(window);
+		GLFW.glfwSwapBuffers(window);
 		profiler.end("swap");
 
 		profiler.endFrame();
@@ -273,16 +310,21 @@ public class Window {
 		// 	System.err.println("F-"+frameNumber+"; "+profiler.getLastFrame());
 		// }
 		// System.out.println(eTime - time);
-    	
-    	try {
-    		long sleepTime = targetFrameTime - (eTime - lastFrameTime);
-//    		System.out.println("- Sleep time: "+sleepTime+"ms");
-    		if(sleepTime > 2) Thread.sleep(sleepTime);
+
+		try {
+			long sleepTime = targetFrameTime - (eTime - lastFrameTime);
+			//    		System.out.println("- Sleep time: "+sleepTime+"ms");
+			if (sleepTime > 2)
+				Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Set window visibility
+	 * @param show window visibility
+	 */
 	public void showWindow(boolean show) {
 		if(show) {
 			GLFW.glfwShowWindow(window);
@@ -292,11 +334,16 @@ public class Window {
 	}
 	
 	private void processInput() {
-	    if(GLFW.glfwGetKey(window, GLFW.GLFW_KEY_ESCAPE) == GLFW.GLFW_PRESS) {
-	    	GLFW.glfwSetWindowShouldClose(window, true);
-	    }
+		if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_ESCAPE) == GLFW.GLFW_PRESS) {
+			GLFW.glfwSetWindowShouldClose(window, true);
+		}
 	}
 	
+	/**
+	 * Add a renderer to be drawn in the window
+	 * @param renderer renderer to add
+	 * @return renderer id
+	 */
 	public int addRenderer(Renderer renderer) {
 		renderer.setShader(shader);
 		while (renderers.containsKey(nextIdRend)) {
@@ -306,18 +353,33 @@ public class Window {
 		nextIdRend++;
 		return nextIdRend - 1;
 	}
+
+	/**
+	 * Add a gizmo renderer to be drawn in the window
+	 * @param renderer gizmo renderer to add
+	 * @return gizmo id
+	 */
 	public int addGizmo(Renderer renderer) {
 		renderer.setShader(unlitShader);
-		while(gizmos.containsKey(nextIdGizmo)) {
+		while (gizmos.containsKey(nextIdGizmo)) {
 			nextIdGizmo++;
 		}
 		gizmos.put(nextIdGizmo, renderer);
 		nextIdGizmo++;
-		return nextIdGizmo-1;
+		return nextIdGizmo - 1;
 	}
+	/**
+	 * Add a gizmo to be drawn in the window
+	 * @param gizmo gizmo to add
+	 * @return gizmo id
+	 */
 	public int addGizmo(Gizmo gizmo) {
 		return addGizmo(gizmo.renderer);
 	}
+	/**
+	 * Add an origin gizmo to be drawn in window
+	 * @param gizmo origin gizmo to add
+	 */
 	public void addOriginGizmo(OriginGizmo gizmo) {
 		// System.out.println("Adding origin gizmo");
 		addGizmo(gizmo.renderer);
@@ -325,27 +387,48 @@ public class Window {
 		addGizmo(gizmo.getZRenderer());
 	}
 
+	/**
+	 * Add an on-tick runnable
+	 * @param loopRunnable runnable to add
+	 * @return runnable id
+	 */
 	public int addLoopRunnable(WindowLoopRunnable loopRunnable) {
-		while(renderers.containsKey(nextIdLR)) {
+		while (renderers.containsKey(nextIdLR)) {
 			nextIdLR++;
 		}
 		loopRunnables.put(nextIdRend, loopRunnable);
 		nextIdLR++;
-		return nextIdLR-1;
+		return nextIdLR - 1;
 	}
 	
+	/**
+	 * Time since last frame in seconds
+	 * @return last frame time in seconds
+	 */
 	public float deltaTime() {
-		return frameTime/1000f;
+		return frameTime / 1000f;
 	}
 	
+	/**
+	 * Set the target frame rate
+	 * @param fps target frames per second
+	 */
 	public void setTargetFPS(int fps) {
 		targetFrameTime = 1000 / fps;
 	}
 
+	/**
+	 * Set if renderers should be drawn in wireframe
+	 * @param wire draw in wireframe
+	 */
 	public void setWireframe(boolean wire) {
 		wireframeMode = wire;
 	}
 
+	/**
+	 * Add a keyboard listener
+	 * @param listener keyboard listener
+	 */
 	public void addKeyboardListener(KeyboardEvent listener) {
 		keyboardCallback.listeners.add(listener);
 	}
@@ -359,15 +442,19 @@ public class Window {
 		}
 
 		@Override
-		public void invoke(long window, int key, int scancode, int action, int mods) {
+		public void invoke(long window, int key, int scanCode, int action, int mods) {
 			for (KeyboardEvent listener : listeners) {
-				listener.onKeyboardEvent(key, scancode, action, mods);
+				listener.onKeyboardEvent(key, scanCode, action, mods);
 			}
 		}
 
 	}
 	
-
+	
+	/**
+	 * Add a mouse button and position listener
+	 * @param listener mouse listener
+	 */
 	public void addMouseListener(MouseEvent listener) {
 		mouseButtonCallback.listeners.add(listener);
 		mouseCursorCallback.listeners.add(listener);

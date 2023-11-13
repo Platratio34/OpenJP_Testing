@@ -20,11 +20,11 @@ public class Mesh {
 	 */
 	private VAO vao;
 	/**
-	 * Number of verticies or indiceis depending on mode
+	 * Number of vertices or indices depending on mode
 	 */
 	private int indexLength;
 	/**
-	 * If the mesh should be renderd using indicies
+	 * If the mesh should be rendered using indices
 	 */
 	private boolean indexMode = false;
 
@@ -38,7 +38,7 @@ public class Mesh {
 	/**
 	 * Create a new mesh in vertex mode
 	 * 
-	 * @param vertices flatend list of verticies, (orderd x, y, z)
+	 * @param vertices flattened list of vertices, (ordered x, y, z)
 	 */
 	public Mesh(float[] vertices) {
 		vao = new VAO();
@@ -50,8 +50,8 @@ public class Mesh {
 	/**
 	 * Create a new mesh in index mode
 	 * 
-	 * @param vertices flatend list of verticies, (orderd x, y, z)
-	 * @param indecies flatend list of indicies, (orderd v1, v2)
+	 * @param vertices flattened list of vertices, (ordered x, y, z)
+	 * @param indices flattened list of indices, (ordered v1, v2)
 	 */
 	public Mesh(float[] vertices, int[] indices) {
 		vao = new VAO();
@@ -62,12 +62,12 @@ public class Mesh {
 	}
 
 	/**
-	 * Set the verticies of the mesh
+	 * Set the vertices of the mesh
 	 * 
 	 * @param vertices
 	 */
 	public void setVertices(float[] vertices) {
-		vao.storeDataInAttributeList(VAO.ATRIB_VERTEX, vertices);
+		vao.storeDataInAttributeList(VAO.ATTRIB_VERTEX, vertices);
 		indexLength = vertices.length;
 	}
 
@@ -117,7 +117,7 @@ public class Mesh {
 	}
 
 	/**
-	 * Create the mesh from a slingle combined array
+	 * Create the mesh from a single combined array
 	 */
 	public static Mesh createFromSingleArray(float[] array) {
 		float[] vert = new float[array.length / 3];
@@ -155,10 +155,10 @@ public class Mesh {
 	}
 
 	/**
-	 * Initilize a mesh from a string
+	 * Initialize a mesh from a string
 	 * 
 	 * @param str  mesh string
-	 * @param mesh mesh to initizlie
+	 * @param mesh mesh to initialize
 	 * @return Mesh from the string
 	 */
 	public static Mesh createFromString(String str, Mesh mesh) {
@@ -188,10 +188,10 @@ public class Mesh {
 			}
 		}
 
-		int vlength = components.length - sI;
-		float[] verts = new float[vlength];
-		float[] colors = new float[vlength];
-		float[] normals = new float[vlength];
+		int vLength = components.length - sI;
+		float[] verts = new float[vLength];
+		float[] colors = new float[vLength];
+		float[] normals = new float[vLength];
 
 		int type = 0;
 		int arrI = 0;
@@ -244,11 +244,11 @@ public class Mesh {
 	}
 
 	/**
-	 * Initilize a new mesh from mesh file
+	 * Initialize a new mesh from mesh file
 	 * 
 	 * @param path path to plain text mesh file
-	 * @param mesh mesh to initilize
-	 * @return Mesh initilized from file
+	 * @param mesh mesh to initialize
+	 * @return Mesh initialized from file
 	 * @throws IOException If the file could not be found or read
 	 */
 	public static Mesh createFromFile(String path, Mesh mesh) throws IOException {

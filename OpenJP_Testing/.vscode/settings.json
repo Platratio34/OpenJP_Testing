@@ -1,4 +1,16 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "cSpell.words": [
+        "abos",
+        "Bindless",
+        "GLFW",
+        "GLSL",
+        "keybind",
+        "keybinds",
+        "lwjgl",
+        "OPENGL",
+        "verts",
+        "wireframe"
+    ]
 }

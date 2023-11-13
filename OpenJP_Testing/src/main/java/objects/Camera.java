@@ -10,7 +10,7 @@ import shaders.ShaderProgram;
  */
 public class Camera implements TransformUpdate {
 	
-	/** Field of veiw of the camera (degrees) */
+	/** Field of view of the camera (degrees) */
 	public float fov = (float)Math.toRadians(60);
 	/** Near clip plane depth */
 	public float nearZ = 0.01f;
@@ -58,7 +58,7 @@ public class Camera implements TransformUpdate {
 	}
 
 	/**
-	 * Update the aspect ratio of the camera. Recalcuates the perspective matrix.
+	 * Update the aspect ratio of the camera. Recalculates the perspective matrix.
 	 * @param width width of the camera
 	 * @param height height of the camera
 	 */

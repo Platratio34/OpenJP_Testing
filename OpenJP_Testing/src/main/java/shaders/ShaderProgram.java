@@ -39,7 +39,7 @@ public class ShaderProgram {
     public static int currentBoundShader = 0;
 
     /**
-     * Createa a new unamed shader program
+     * Create a new un-named shader program
      * @throws Exception if the shader program could not be created in OpenGL
      */
     public ShaderProgram() throws Exception {
@@ -67,12 +67,12 @@ public class ShaderProgram {
      */
     public void createVertexShader(String shaderCode) throws Exception {
         vertexShaderId = createShader(shaderCode, GL44.GL_VERTEX_SHADER);
-        // int blockid = GL44.glGetUniformBlockIndex(programId, "Camera");
-        // GL44.glUniformBlockBinding(programId, blockid, CAMERA_UNIFORM_BLOCK);
+        // int blockId = GL44.glGetUniformBlockIndex(programId, "Camera");
+        // GL44.glUniformBlockBinding(programId, blockId, CAMERA_UNIFORM_BLOCK);
     }
     /**
      * Create a vertex shader from GLSL resource file
-     * @param filename resouce path
+     * @param filename resource path
      * @throws Exception if the shader could not be created
      */
     public void createVertexShaderResource(String filename) throws Exception {
@@ -100,7 +100,7 @@ public class ShaderProgram {
     }
     /**
      * Create a fragment shader from GLSL resource file
-     * @param filename resouce path
+     * @param filename resource path
      * @throws Exception if the shader could not be created
      */
     public void createFragmentShaderResource(String filename) throws Exception {
@@ -196,7 +196,7 @@ public class ShaderProgram {
 
     /**
      * Get uniform ID from this shader program. <br><br>
-     * Chaches uniform IDs on first call for name.
+     * Caches uniform IDs on first call for name.
      * @param name uniform name
      * @return Uniform ID OR <code>0</code> if the uniform could not be found
      */

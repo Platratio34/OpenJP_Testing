@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryStack;
 import objects.Texture2D;
 
 /**
- * Uniform utility and refence class
+ * Uniform utility and reference class
  */
 public class Uniform {
 

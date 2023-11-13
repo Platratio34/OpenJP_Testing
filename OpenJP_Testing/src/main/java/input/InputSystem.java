@@ -2,15 +2,18 @@ package input;
 
 import java.util.HashMap;
 
+/**
+ * Keyboard bind input system
+ */
 public class InputSystem implements KeyboardEvent {
 
-    private HashMap<String, InputBind> binds;
-    private HashMap<String, InputAxis> axies;
+    private HashMap<String, InputBind> binds = new HashMap<String, InputBind>();
+    private HashMap<String, InputAxis> axes = new HashMap<String, InputAxis>();
 
-    public InputSystem() {
-        binds = new HashMap<String, InputBind>();
-        axies = new HashMap<String, InputAxis>();
-    }
+    /**
+     * Create an input system
+     */
+    public InputSystem() { }
 
     /**
      * Add a named keybind to input system
@@ -29,19 +32,24 @@ public class InputSystem implements KeyboardEvent {
      * @param negative negative key code (GLFW_KEY_*)
      */
     public void addAxis(String name, int positive, int negative) {
-        axies.put(name, new InputAxis(positive, negative));
+        axes.put(name, new InputAxis(positive, negative));
     }
 
     @Override
-    public void onKeyboardEvent(int key, int scancode, int action, int mods) {
+    public void onKeyboardEvent(int key, int scanCode, int action, int mods) {
         for (InputBind bind : binds.values()) {
             bind.process(key, action);
         }
-        for (InputAxis axis : axies.values()) {
+        for (InputAxis axis : axes.values()) {
             axis.process(key, action);
         }
     }
 
+    /**
+     * Reset keybinds.<br>
+     * <br>
+     * <b>Only call once at the end of each tick</b>
+     */
     public void onTick() {
         for (InputBind bind : binds.values()) {
             bind.reset();
@@ -93,11 +101,11 @@ public class InputSystem implements KeyboardEvent {
      * @return axis value [-1.0,1.0]
      */
     public float axis(String axis) {
-        if (!axies.containsKey(axis)){
+        if (!axes.containsKey(axis)){
             System.err.println("No axis with name \""+axis+"\"");
             return 0.0f;
         }
-        return axies.get(axis).getAxis();
+        return axes.get(axis).getAxis();
     }
     
 }

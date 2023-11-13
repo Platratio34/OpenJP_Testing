@@ -7,15 +7,15 @@ import util.BinMesh;
 import java.io.IOException;
 
 /**
- * Mesch cahce to reduce constant reloading meshes from file
+ * Mesh cache to reduce constant reloading meshes from file
  */
 public class MeshCache {
     
     private static HashMap<String, Mesh> meshes = new HashMap<String, Mesh>();
 
     /**
-     * Get mesh by resouce path
-     * @param path resouce path
+     * Get mesh by resource path
+     * @param path resource path
      * @return Mesh OR <code>null</code> if the mesh could not be loaded
      */
     public static Mesh getMesh(String path) {
@@ -34,8 +34,8 @@ public class MeshCache {
     }
 
     /**
-     * Load a mesh by resouce path
-     * @param path resouce path
+     * Load a mesh by resource path
+     * @param path resource path
      * @throws IOException if the file could not be found or loaded OR if the file type is unknown
      */
     public static void load(String path) throws IOException{

@@ -90,7 +90,7 @@ public class Material {
 		this.smoothness = smoothness;
 	}
 	/**
-	 * Get the material smoothenss
+	 * Get the material smoothness
 	 * @return Smoothness from <code>0.0f</code> (diffuse only) to <code>1.0f</code> (specular only)
 	 */
 	public float getSmoothness() {
@@ -105,22 +105,22 @@ public class Material {
 		this.texture = texture;
 	}
 	/**
-	 * Get the curret color texture of the material
-	 * @return Current texutre, may be <code>null</code>
+	 * Get the current color texture of the material
+	 * @return Current texture, may be <code>null</code>
 	 */
 	public Texture2D getTexture() {
 		return texture;
 	}
 
 	/**
-	 * Set the scale of the texture (multipied by uv cooridinate)
+	 * Set the scale of the texture (multiped by uv coordinate)
 	 * @param scale texture scale
 	 */
 	public void setTextureScale(Vector2f scale) {
 		textureScale = scale;
 	}
 	/**
-	 * Set the scale of the texture (multipied by uv cooridinate)
+	 * Set the scale of the texture (multiped by uv coordinate)
 	 * @param x x scale of texture
 	 * @param y y scale of texture
 	 */
@@ -137,14 +137,14 @@ public class Material {
 	}
 
 	/**
-	 * Set the offset of the texture (applied before scalling)
+	 * Set the offset of the texture (applied before scaling)
 	 * @param offset texture offset
 	 */
 	public void setTextureOffset(Vector2f offset) {
 		textureOffset = offset;
 	}
 	/**
-	 * Set the offset of the texture (applied before scalling)
+	 * Set the offset of the texture (applied before scaling)
 	 * @param x x offset of texture
 	 * @param y y offset of texture
 	 */
@@ -153,7 +153,7 @@ public class Material {
 		textureOffset.y = y;
 	}
 	/**
-	 * Get the curret offset of the texture
+	 * Get the current offset of the texture
 	 * @return texture offset
 	 */
 	public Vector2f getTextureOffset() {

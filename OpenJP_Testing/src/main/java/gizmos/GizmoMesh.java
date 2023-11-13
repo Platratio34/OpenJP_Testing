@@ -15,17 +15,17 @@ public class GizmoMesh {
      */
     private VAO vao;
     /**
-     * Number of verticies or indiceis depending on mode
+     * Number of vertices or indices depending on mode
      */
     private int indexLength;
     /**
-     * If the mesh should be renderd using indicies
+     * If the mesh should be rendered using indices
      */
     private boolean indexMode;
 
     /**
      * Create a new gizmo mesh in vertex mode
-     * @param points flatend list of verticies, (orderd x, y, z)
+     * @param points flattened list of vertices, (ordered x, y, z)
      */
     public GizmoMesh(float[] points) {
         vao = new VAO();
@@ -35,15 +35,15 @@ public class GizmoMesh {
     }
     /**
      * Create a new gizmo mesh in index mode
-     * @param points flatend list of verticies, (orderd x, y, z)
-     * @param indecies flatend list of indicies, (orderd v1, v2)
+     * @param points flattened list of vertices, (ordered x, y, z)
+     * @param indices flattened list of indices, (ordered v1, v2)
      */
-    public GizmoMesh(float[] points, int[] indecies) {
+    public GizmoMesh(float[] points, int[] indices) {
         vao = new VAO();
 
-        vao.storeVertexIndexData(points, indecies);
+        vao.storeVertexIndexData(points, indices);
         indexMode = true;
-        indexLength = indecies.length;
+        indexLength = indices.length;
     }
 
     /**

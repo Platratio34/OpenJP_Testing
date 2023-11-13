@@ -21,7 +21,7 @@ public class GizmoRenderer extends Renderer {
      * Create a gizmo render with given transform and color
      * @param transform gizmo transformation
      * @param color gizmo color
-     * @param type gizmo type (Ussaly somthing from <code>GizmoType</code>)
+     * @param type gizmo type (Usually something from <code>GizmoType</code>)
      */
     public GizmoRenderer(Transform transform, Color color, String type) {
         super(transform);
@@ -46,7 +46,7 @@ public class GizmoRenderer extends Renderer {
     
     /**
      * Set the gizmo type. May cause file read.
-     * @param type gizmo type (Ussaly somthing from <code>GizmoType</code>)
+     * @param type gizmo type (Usually something from <code>GizmoType</code>)
      */
     public void setType(String type) {
         this.type = type;

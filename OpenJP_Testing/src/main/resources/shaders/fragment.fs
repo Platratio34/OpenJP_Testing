@@ -11,8 +11,6 @@ flat in float matId;
 out vec4 fragColor;
 
 uniform vec3 ambientColor;
-uniform vec3 lightPos;
-uniform vec3 lightColor;
 uniform vec3 globalLightDir;
 uniform vec3 globalLightColor;
 
@@ -37,8 +35,6 @@ uniform light[16] lights;
 struct material {
 	vec4 color;
 	float smoothness;
-	// sampler2D texture;
-	// int textureIndex;
 	bool textured;
 	vec2 textureScale;
 	vec2 textureOffset;
@@ -46,21 +42,8 @@ struct material {
 };
 
 uniform material[16] materials;
-// uniform sampler2DArray textures;
-// uniform sampler2D textures[16];
 
 layout(bindless_sampler) uniform sampler2D defaultTexture;
-
-// vec4 getSampleFromArray(sampler2D textures[16], int ndx, vec2 uv) {
-//     vec4 color = vec4(0);
-//     for (int i = 0; i < 16; ++i) {
-//       vec4 c = texture2D(textures[i], uv);
-//       if (i == ndx) {
-//         color += c;
-//       }
-//     }
-//     return color;
-// }
 
 void main()
 {
@@ -68,17 +51,12 @@ void main()
 	float smoothness = 0.0;
 	
 	if(matId >= 0.0) {
-		// material cMat = materials[int(matId)];
 		color = materials[int(matId)].color;
 		smoothness = materials[int(matId)].smoothness;
 		if(materials[int(matId)].textured && !wire) {
 			vec2 uv = textCord + materials[int(matId)].textureOffset;
 			uv = uv * materials[int(matId)].textureScale;
 			color = color * texture(materials[int(matId)].texture, uv);
-			// color = color * texture(sampler2D(defaultTexture), textCord);
-			// color = mix(color, texture(defaultTexture, textCord), 0.5);
-			// color = color * texture(defaultTexture, textCord);
-			// color = vec4(textCord.xy, 0.0, 1.0);
 		}
 	}
 
@@ -86,9 +64,6 @@ void main()
 		fragColor = color;
 		return;
 	}
-	
-	vec3 lightDir = normalize(lightPos - fragPos);
-	vec3 diffuse = lightColor * max(dot(vertexNormal, lightDir), 0.0);
 	
 	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
@@ -116,20 +91,7 @@ void main()
 		vec3 specular = lights[i].color * spec;
 
 		lighting = lighting + diff + (specular * smoothness);
-		// lighting = lighting + diff;
 	}
 	
-	// vec4 color = cMat.color;
-	
-	// color = cMat.color * texture(cMat.texture, textCord);
-	// if(cMat.textureIndex >= 0) {
-	// 	// color = cMat.color * texture(textures[cMat.textureIndex], textCord);
-	// 	// color = cMat.color * getSampleFromArray(textures, cMat.textureIndex, textCord);
-	// } else {
-	// 	color = cMat.color;
-	// }
-	
 	fragColor = color * vec4(lighting.xyz, 1.0);
-	
-	// fragColor = vertexColor;
 }

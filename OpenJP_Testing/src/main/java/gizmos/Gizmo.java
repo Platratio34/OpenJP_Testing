@@ -20,7 +20,7 @@ public class Gizmo {
 
     /**
      * Create a new white gizmo
-     * @param type gizmo type (Ussaly somthing from <code>GizmoType</code>)
+     * @param type gizmo type (Usually something from <code>GizmoType</code>)
      */
     public Gizmo(String type) {
         transform = new Transform();
@@ -28,7 +28,7 @@ public class Gizmo {
     }
     /**
      * Create a new colored gizmo
-     * @param type gizmo type (Ussaly somthing from <code>GizmoType</code>)
+     * @param type gizmo type (Usually something from <code>GizmoType</code>)
      * @param color gizmo color
      */
     public Gizmo(String type, Color color) {
@@ -37,7 +37,7 @@ public class Gizmo {
     }
     /**
      * Create a new colored gizmo with given transformation
-     * @param type gizmo type (Ussaly somthing from <code>GizmoType</code>)
+     * @param type gizmo type (Usually something from <code>GizmoType</code>)
      * @param color gizmo color
      * @param transform gizmo transformation
      */
@@ -63,7 +63,7 @@ public class Gizmo {
 
     /**
      * Set the size of the gizmo
-     * @param size gizmo scale (applied to all axies)
+     * @param size gizmo scale (applied to all axis)
      */
     public void setSize(float size) {
         transform.setScale(size, size, size);
@@ -71,7 +71,7 @@ public class Gizmo {
 
     /**
      * Set the parent of the gizmo
-     * @param parent parent trnasformation
+     * @param parent parent transform
      */
     public void setParent(Transform parent) {
         transform.parent = parent;

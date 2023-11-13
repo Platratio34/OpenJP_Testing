@@ -74,7 +74,7 @@ public class Light implements TransformUpdate {
 	}
 	
 	/**
-	 * Update the light in the asscoiated lighting settings
+	 * Update the light in the associated lighting settings
 	 */
 	public void updateLight() {
 		lightSettings.updateLight(lId);

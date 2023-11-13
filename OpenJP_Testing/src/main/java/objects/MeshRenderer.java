@@ -2,12 +2,12 @@ package objects;
 
 /**
  * Renderer for standard mesh.<br><br>
- * <b>Shader specifc>
+ * <b>Shader specific</b>
  */
 public class MeshRenderer extends Renderer {
 
 	/**
-	 * The mesh that will be renderd
+	 * The mesh that will be rendered
 	 */
 	protected Mesh mesh;
 	

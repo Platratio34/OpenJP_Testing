@@ -36,7 +36,7 @@ public class UBO {
 	 * <br>
 	 * Binds UBO to specified target<br><br>
 	 * Use <code>UBO.*_SIZE</code> for data type sizes in <code>std140</code>
-	 * @param words length of the buffer in words (see <code>UBO.WORD_LENG</code> for word length)
+	 * @param words length of the buffer in words (see <code>UBO.WORD_LENGTH</code> for word length)
 	 * @param target binding target for the UBO
 	 */
 	public UBO(long words, int target) {
@@ -107,7 +107,7 @@ public class UBO {
 		bindTarget(binding);
 	}
 	/**
-	 * Bind the buffer to an alternent binding
+	 * Bind the buffer to an alternant binding
 	 * @param binding binding index
 	 */
 	public void bindTarget(int binding) {

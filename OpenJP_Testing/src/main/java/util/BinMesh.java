@@ -28,7 +28,7 @@ public class BinMesh {
 	private static final int SECTION_VERT = 0x01;
 	/** Color section id */
 	private static final int SECTION_COLOR = 0x02;
-	/** Noramal section id */
+	/** Normal section id */
 	private static final int SECTION_NORM = 0x03;
 	/** Index section id */
 	private static final int SECTION_INDICES = 0x04;
@@ -39,7 +39,7 @@ public class BinMesh {
 	 * Convert a float to byte array<br><br>
 	 * Uses IEEE 754 floating-point "single format"
 	 * @param f float to convert
-	 * @return 4 byte array represneting the float
+	 * @return 4 byte array representing the float
 	 */
 	public static byte[] floatToBin(float f) {
 		int bits = Float.floatToIntBits(f);
@@ -53,7 +53,7 @@ public class BinMesh {
 	/**
 	 * Convert a byte array to a float<br><br>
 	 * Uses IEEE 754 floating-point "single format"
-	 * @param bytes 4 byte array represneting the float
+	 * @param bytes 4 byte array representing the float
 	 * @return Float represented by the bytes
 	 */
 	public static float binToFloat(byte[] bytes) {
@@ -150,11 +150,11 @@ public class BinMesh {
 			}
 		}
 		
-		int vlength = (components.length - startLine)/numTypes;
-		float[] verts = new float[vlength*3];
-		float[] colors = new float[vlength*3];
-		float[] normals = new float[vlength*3];
-		float[] uvs = new float[vlength*2];
+		int cLength = (components.length - startLine)/numTypes;
+		float[] verts = new float[cLength*3];
+		float[] colors = new float[cLength*3];
+		float[] normals = new float[cLength*3];
+		float[] uvs = new float[cLength*2];
 		int uvsI = 0;
 		
 		int section = 0;
@@ -275,7 +275,7 @@ public class BinMesh {
 	/**
 	 * Convert a plain text mesh resource file to binary file
 	 * @param src resource path to plain text mesh file
-	 * @param dest non-resouce path to binary mesh file
+	 * @param dest non-resource path to binary mesh file
 	 * @throws IOException If either file could not be found or accessed
 	 */
 	public static void meshResourceToBin(String src, String dest) throws IOException {
@@ -365,8 +365,8 @@ public class BinMesh {
 	}
 
 	/**
-	 * Create a mesh from binary mesh resouce file
-	 * @param src binary resouce file
+	 * Create a mesh from binary mesh resource file
+	 * @param src binary resource file
 	 * @return Mesh created from binary file
 	 * @throws IOException If the file could not be found or read
 	 */
@@ -484,7 +484,7 @@ public class BinMesh {
 	/**
 	 * Convert a plain text gizmo mesh resource file to binary file
 	 * @param src resource path to plain text gizmo mesh file
-	 * @param dest non-resouce path to binary gizmo mesh file
+	 * @param dest non-resource path to binary gizmo mesh file
 	 * @throws IOException If either file could not be found or accessed
 	 */
 	public static void gizmoResourceToBin(String src, String dest) throws IOException {
@@ -574,8 +574,8 @@ public class BinMesh {
 	}
 
 	/**
-	 * Create a gizmo mesh from binary gizmo mesh resouce file
-	 * @param src binary resouce file
+	 * Create a gizmo mesh from binary gizmo mesh resource file
+	 * @param src binary resource file
 	 * @return Gizmo mesh created from binary file
 	 * @throws IOException If the file could not be found or read
 	 */

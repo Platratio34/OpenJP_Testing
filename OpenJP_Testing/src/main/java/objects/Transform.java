@@ -53,7 +53,7 @@ public class Transform implements TransformUpdate {
 	}
 	
 	/**
-	 * Re-calclate transformation matricies.<br>
+	 * Recalculate transformation matrices.<br>
 	 * <br>
 	 * <b>Notifies all listeners</b>
 	 */
@@ -123,10 +123,10 @@ public class Transform implements TransformUpdate {
 
 	/**
 	 * Move the transform an offset. <b>Recalculates the matrix</b>
-	 * @param ammount offset to apply
+	 * @param amount offset to apply
 	 */
-	public void translate(Vector3f ammount) {
-		translate(ammount.x, ammount.y, ammount.z);
+	public void translate(Vector3f amount) {
+		translate(amount.x, amount.y, amount.z);
 	}
 	/**
 	 * Move the transform by an offset. <b>Recalculates the matrix</b>
@@ -163,10 +163,10 @@ public class Transform implements TransformUpdate {
 
 	/**
 	 * Rotate the transform by an offset. <b>Recalculates the matrix</b>
-	 * @param ammount offset to rotate by
+	 * @param amount offset to rotate by
 	 */
-	public void rotate(Vector3f ammount) {
-		rotate(ammount.x, ammount.y, ammount.z);
+	public void rotate(Vector3f amount) {
+		rotate(amount.x, amount.y, amount.z);
 	}
 	/**
 	 * Rotate the transform by an offset. <b>Recalculates the matrix</b>

@@ -91,12 +91,13 @@ public abstract class Renderer {
             // colorsUniform.setColorArray(colors);
             useColorsUniform.setBoolean(false);
             materials.bind();
-        } else {
-            useColorsUniform.setBoolean(true);
-        }
+		} else {
+			useColorsUniform.setBoolean(true);
+		}
+		onRender();
     }
 	/**
-	 * Called when the renderer is renderd.<br><br>
+	 * Called when the renderer is rendered.<br><br>
 	 * Shader will already be bound, and generic uniforms will be set.
 	 */
 	protected abstract void onRender();

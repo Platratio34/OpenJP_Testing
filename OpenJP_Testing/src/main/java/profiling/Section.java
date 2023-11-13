@@ -1,4 +1,4 @@
-package profileing;
+package profiling;
 
 /**
  * Frame sub section
