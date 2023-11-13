@@ -18,8 +18,6 @@ public class LightingSettings {
 	public static final int MAX_LIGHTS = 16;
 
 	private Uniform ambientColorUniform;
-	private Uniform lightPosUniform;
-	private Uniform lightColorUniform;
 	private Uniform globalLightDirUniform;
 	private Uniform globalLightColorUniform;
 
@@ -34,8 +32,6 @@ public class LightingSettings {
 	 */
 	public LightingSettings(ShaderProgram shader) {
 		ambientColorUniform = new Uniform(shader, "ambientColor");
-		lightPosUniform = new Uniform(shader, "lightPos");
-		lightColorUniform = new Uniform(shader, "lightColor");
 		globalLightDirUniform = new Uniform(shader, "globalLightDir");
 		globalLightColorUniform = new Uniform(shader, "globalLightColor");
 		lights = new Light[MAX_LIGHTS];
@@ -52,14 +48,10 @@ public class LightingSettings {
 	}
 
 	@Deprecated
-	public void setLightPosition(Vector3f pos) {
-		lightPosUniform.setVector3f(pos);
-	}
+	public void setLightPosition(Vector3f pos) { }
 
 	@Deprecated
-	public void setLightColor(Color color) {
-		lightColorUniform.setColor(color);
-	}
+	public void setLightColor(Color color) { }
 
 	/**
 	 * Set the global directional light direction
