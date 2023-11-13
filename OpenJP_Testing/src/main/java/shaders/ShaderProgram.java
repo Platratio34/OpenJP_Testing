@@ -3,8 +3,6 @@ package shaders;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL44;
 
-import objects.Texture2D;
-
 import java.awt.Color;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -13,48 +11,70 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
+
+/** 
+ * Shader program
+ */
 public class ShaderProgram {
 
+    /** OpenGL program ID */
     private final int programId;
 
+    /** ID of vertex shader */
     private int vertexShaderId;
 
+    /** ID of fragment shader */
     private int fragmentShaderId;
-    private Texture2D defTexture;
 
+    /** Map of all known uniform names to IDs */
     private HashMap<String, Integer> knownUniforms;
 
+    /** UBO binding point for camera data */
     public static final int CAMERA_UNIFORM_BLOCK = 1;
 
-    private Uniform defaultTextUniform;
+    /** Name of the shader program */
     private String name;
 
+    /** Currently bound shader in OpenGL */
+    public static int currentBoundShader = 0;
+
+    /**
+     * Createa a new unamed shader program
+     * @throws Exception if the shader program could not be created in OpenGL
+     */
     public ShaderProgram() throws Exception {
         this("");
     }
 
+    /**
+     * Create a new named shader program
+     * @param name shader program name
+     * @throws Exception if the shader program could not be created in OpenGL
+     */
     public ShaderProgram(String name) throws Exception {
         this.name = name;
         programId = GL44.glCreateProgram();
         if (programId == 0) {
             throw new Exception("Could not create Shader "+name);
         }
-        defTexture = new Texture2D(2,2);
-        // defTexture.fill(Color.WHITE);
-        // defTexture.updateTexture();
         knownUniforms = new HashMap<String, Integer>();
-        // int defTextureUniform = getUniform("defaultTexture");
-        // Uniform.setTexture2D(defTextureUniform, defTexture);
-//        int textureId = GL44.glGenTexture();
-//        GL44.glActiveTexture(GL44.GL_TEXTURE0);
-//        GL44.glBindTexture()
     }
 
+    /**
+     * Creates a vertex shader from string
+     * @param shaderCode GLSL vertex shader code
+     * @throws Exception if the shader could not be created
+     */
     public void createVertexShader(String shaderCode) throws Exception {
         vertexShaderId = createShader(shaderCode, GL44.GL_VERTEX_SHADER);
         // int blockid = GL44.glGetUniformBlockIndex(programId, "Camera");
         // GL44.glUniformBlockBinding(programId, blockid, CAMERA_UNIFORM_BLOCK);
     }
+    /**
+     * Create a vertex shader from GLSL resource file
+     * @param filename resouce path
+     * @throws Exception if the shader could not be created
+     */
     public void createVertexShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);
         if (res == null) {
@@ -70,10 +90,19 @@ public class ShaderProgram {
     	createVertexShader(code);
     }
 
+    /**
+     * Creates a fragment shader from string
+     * @param shaderCode GLSL fragment shader code
+     * @throws Exception if the shader could not be created
+     */
     public void createFragmentShader(String shaderCode) throws Exception {
         fragmentShaderId = createShader(shaderCode, GL44.GL_FRAGMENT_SHADER);
     }
-
+    /**
+     * Create a fragment shader from GLSL resource file
+     * @param filename resouce path
+     * @throws Exception if the shader could not be created
+     */
     public void createFragmentShaderResource(String filename) throws Exception {
         URL res = getClass().getClassLoader().getResource(filename);
         if (res == null) {
@@ -89,6 +118,13 @@ public class ShaderProgram {
     	createFragmentShader(code);
     }
 
+    /**
+     * Create a new shader from code string
+     * @param shaderCode GLSL code
+     * @param shaderType type of shader. (<code>GL*.GL_*_SHADER</code>)
+     * @return OpengL ID of the shader
+     * @throws Exception if the shader could not be created
+     */
     protected int createShader(String shaderCode, int shaderType) throws Exception {
         int shaderId = GL44.glCreateShader(shaderType);
         if (shaderId == 0) {
@@ -107,6 +143,10 @@ public class ShaderProgram {
         return shaderId;
     }
 
+    /**
+     * Link the shader program program
+     * @throws Exception if linking failed
+     */
     public void link() throws Exception {
         
     	GL44.glLinkProgram(programId);
@@ -127,18 +167,26 @@ public class ShaderProgram {
         }
     }
 
+    /**
+     * Bind the shader program for rendering
+     */
     public void bind() {
+        if(currentBoundShader == programId) return;
         GL44.glUseProgram(programId);
-        if (defaultTextUniform == null) {
-            defaultTextUniform = new Uniform(this, "defaultTexture");
-            defaultTextUniform.setTexture2D(defTexture);
-        }
+        currentBoundShader = programId;
     }
 
+    /**
+     * Unbind the shader program from rendering
+     */
     public void unbind() {
     	GL44.glUseProgram(0);
+        currentBoundShader = 0;
     }
 
+    /**
+     * Cleanup the shader program
+     */
     public void cleanup() {
         unbind();
         if (programId != 0) {
@@ -146,7 +194,14 @@ public class ShaderProgram {
         }
     }
 
-	public int getUniform(String name) throws UniformException {
+    /**
+     * Get uniform ID from this shader program. <br><br>
+     * Chaches uniform IDs on first call for name.
+     * @param name uniform name
+     * @return Uniform ID OR <code>0</code> if the uniform could not be found
+     */
+    // @throws UniformException if the uniform could not be found in the shader program
+	public int getUniform(String name) {
         if(knownUniforms.containsKey(name)) return knownUniforms.get(name);
 		int id = GL44.glGetUniformLocation(programId, name);
 		if(id < 0) {
@@ -157,22 +212,70 @@ public class ShaderProgram {
 		return id;
 	}
 	
-	public void uniformSetBoolean(String name, boolean val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetBoolean(String name, boolean val) {
+        bind();
 		Uniform.setBoolean(getUniform(name), val);
 	}
-	public void uniformSetColor(String name, Color val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetColor(String name, Color val) {
+        bind();
 		Uniform.setColor(getUniform(name), val);
 	}
-	public void uniformSetColor4(String name, Color val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetColor4(String name, Color val) {
+        bind();
 		Uniform.setColor4(getUniform(name), val);
 	}
-	public void uniformSetFloat(String name, float val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetFloat(String name, float val) {
+        bind();
 		Uniform.setFloat(getUniform(name), val);
 	}
-	public void uniformSetVector3f(String name, Vector3f val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetVector3f(String name, Vector3f val) {
+        bind();
 		Uniform.setVector3f(getUniform(name), val);
 	}
-	public void uniformSetInt1(String name, int val) throws UniformException {
+    /**
+     * Set name uniform value.<br>
+     * <br>
+     * <b>Binds this shader program</b>
+     * @param name uniform name
+     * @param val uniform value
+     */
+	public void uniformSetInt1(String name, int val) {
+        bind();
 		GL44.glUniform1i(getUniform(name), val);
 	}
 }

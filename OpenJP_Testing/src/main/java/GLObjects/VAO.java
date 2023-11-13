@@ -4,21 +4,52 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL44;
 
+/**
+ * Vertex Array Object<br><br>
+ * Stores verticies, color, normal, uvs, and indicies for a mesh.
+ */
 public class VAO {
 	
 	private int id;
 	
 	private ArrayList<ABO> abos;
+
+	/** Attribute for vertex data */
+	public static final int ATRIB_VERTEX = 0;
+	/** Attribute for color data */
+	public static final int ATRIB_COLOR = 1;
+	/** Attribute for normal data */
+	public static final int ATRIB_NORMAL = 1;
+	/** Attribute for uv data */
+	public static final int ATRIB_UV = 1;
+	/** Attribute for index data */
+	public static final int ATRIB_INDEX = 1;
+
+	/** Currently bound VAO */
+	public static int currentBoundVAO = 0;
 	
+	/**
+	 * Create and allocate a new VAO
+	 */
 	public VAO() {
 		id = GL44.glGenVertexArrays();
 		abos = new ArrayList<ABO>();
 	}
 	
+	/**
+	 * Store data into an attribute list. Per-vertex size is 3.
+	 * @param attrib attribute index (see <code>VAO.ATRIB_*</code>)
+	 * @param data data to store
+	 */
 	public void storeDataInAttributeList(int attrib, float[] data) {
 		storeDataInAttributeList(attrib, data, 3);
 	}
-
+	/**
+	 * Store data into an attribute list. Per-vertex size is 3.
+	 * @param attrib attribute index (see <code>VAO.ATRIB_*</code>)
+	 * @param data data to store
+	 * @param size per-vertex size (number of values per vertex, ie 3 for vec3 or 2 for vec2)
+	 */
 	public void storeDataInAttributeList(int attrib, float[] data, int size) {
 		bind();
 		ABO abo = new ABO(GL44.GL_ARRAY_BUFFER);
@@ -29,47 +60,67 @@ public class VAO {
 		abo.unbind();
 	}
 	
+	/**
+	 * Store vertex and index data
+	 * @param verticies flattend array of vector 3 vertex data (orderd x, y, z)
+	 * @param indicies flattend array of vector 2 index data
+	 */
 	public void storeVertexIndexData(float[] verticies, int[] indicies) {
 		bind();
 		ABO vbo = new ABO(GL44.GL_ARRAY_BUFFER);
 		vbo.fill(verticies);
 		abos.add(vbo);
-		GL44.glEnableVertexAttribArray(0);
-		GL44.glVertexAttribPointer(0, 3, GL44.GL_FLOAT, false, 0, 0);
+		GL44.glEnableVertexAttribArray(ATRIB_VERTEX);
+		GL44.glVertexAttribPointer(ATRIB_VERTEX, 3, GL44.GL_FLOAT, false, 0, 0);
 		ABO ebo = new ABO(GL44.GL_ELEMENT_ARRAY_BUFFER);
 		ebo.fill(indicies);
 		abos.add(ebo);
-		GL44.glEnableVertexAttribArray(4);
-		GL44.glVertexAttribPointer(4, 2, GL44.GL_UNSIGNED_INT, false, 0, 0);
+		GL44.glEnableVertexAttribArray(ATRIB_INDEX);
+		GL44.glVertexAttribPointer(ATRIB_INDEX, 2, GL44.GL_UNSIGNED_INT, false, 0, 0);
 		vbo.unbind();
 	}
 	
+	/**
+	 * Store color data
+	 * @param colors flattend list of color data (orderd r, g, b)
+	 */
 	public void storeColorData(float[] colors) {
-		storeDataInAttributeList(1, colors, 3);
+		storeDataInAttributeList(ATRIB_COLOR, colors, 3);
 	}
+	/**
+	 * Store normal data
+	 * @param colors flattend list of normal data (orderd x, y, z)
+	 */
 	public void storeNormalData(float[] normals) {
-		storeDataInAttributeList(2, normals, 3);
+		storeDataInAttributeList(ATRIB_NORMAL, normals, 3);
 	}
+	/**
+	 * Store UV data
+	 * @param colors flattend list of UV data (orderd x, y)
+	 */
 	public void storeUVData(float[] uvs) {
-		storeDataInAttributeList(3, uvs, 2);
+		storeDataInAttributeList(ATRIB_UV, uvs, 2);
 	}
-	// public void storeMatData(int[] materials) {
-	// 	bind();
-	// 	ABO abo = new ABO(GL44.GL_ARRAY_BUFFER);
-	// 	abo.fill(materials);
-	// 	abos.add(abo);
-	// 	GL44.glEnableVertexAttribArray(3);
-	// 	GL44.glVertexAttribPointer(3, 3, GL44.GL_INT, false, 0, 0);
-	// 	abo.unbind();
-	// }
 	
+	/**
+	 * Bind the VAO
+	 */
 	public void bind() {
+		if(currentBoundVAO == id) return;
 		GL44.glBindVertexArray(id);
+		currentBoundVAO = id;
 	}
+	/**
+	 * Unbind all VAOs
+	 */
 	public static void unbind() {
 		GL44.glBindVertexArray(0);
+		currentBoundVAO = 0;
 	}
 	
+	/**
+	 * Dispose of the VAO and all acossiated ABOs
+	 */
 	public void dispose() {
 		GL44.glDeleteVertexArrays(id);
 		for (ABO abo : abos) {
@@ -77,6 +128,9 @@ public class VAO {
 		}
 	}
 	
+	/**
+	 * Get the OpenGL id of the VAO
+	 */
 	public int getId() {
 		return id;
 	}

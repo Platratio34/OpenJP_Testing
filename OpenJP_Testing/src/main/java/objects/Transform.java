@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+/**
+ * Transformation object for position, rotation, and scale
+ */
 public class Transform implements TransformUpdate {
 	
 	private Vector3f position;
@@ -21,6 +24,9 @@ public class Transform implements TransformUpdate {
 	
 	private ArrayList<TransformUpdate> updaters;
 	
+	/**
+	 * Create a new transform.
+	 */
 	public Transform() {
 		position = new Vector3f();
 		rotation = new Vector3f();
@@ -30,6 +36,12 @@ public class Transform implements TransformUpdate {
 		updaters = new ArrayList<TransformUpdate>();
 		recalculateMatrix();
 	}
+	/**
+	 * Create a new transform
+	 * @param position position of the transform
+	 * @param rotation rotation of the transform
+	 * @param scale scale of the transform
+	 */
 	public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
 		this.position = position;
 		this.rotation = rotation;
@@ -40,6 +52,11 @@ public class Transform implements TransformUpdate {
 		recalculateMatrix();
 	}
 	
+	/**
+	 * Re-calclate transformation matricies.<br>
+	 * <br>
+	 * <b>Notifies all listeners</b>
+	 */
 	public void recalculateMatrix() {
 		matrix.identity().translate(position)
 		.rotateX((float)Math.toRadians(rotation.x))
@@ -57,6 +74,10 @@ public class Transform implements TransformUpdate {
 		update();
 	}
 	
+	/**
+	 * Get the transformation matrix
+	 * @return transformation matrix
+	 */
 	public Matrix4f getTransformMatrix() {
 //		return createMatrix();
 		if(parent != null) {
@@ -67,6 +88,10 @@ public class Transform implements TransformUpdate {
 		return matrix;
 	}
 
+	/**
+	 * Get the inverse transformation matrix for camera
+	 * @return inverse transformation matrix
+	 */
 	public Matrix4f getTransformMatrixInverse() {
 		if (parent != null) {
 			Matrix4f out = new Matrix4f();
@@ -76,9 +101,19 @@ public class Transform implements TransformUpdate {
 		return matrixInverse;
 	}
 	
+	/**
+	 * Set the position of the transform. <b>Recalculates the matrix</b>
+	 * @param pos new position
+	 */
 	public void setPosition(Vector3f pos) {
 		setPosition(pos.x, pos.y, pos.z);
 	}
+	/**
+	 * Set the position of the transform. <b>Recalculates the matrix</b>
+	 * @param x new x position
+	 * @param y new y position
+	 * @param z new z position
+	 */
 	public void setPosition(float x, float y, float z) {
 		position.x = x;
 		position.y = y;
@@ -87,14 +122,14 @@ public class Transform implements TransformUpdate {
 	}
 
 	/**
-	 * Move the transform an offset
+	 * Move the transform an offset. <b>Recalculates the matrix</b>
 	 * @param ammount offset to apply
 	 */
 	public void translate(Vector3f ammount) {
 		translate(ammount.x, ammount.y, ammount.z);
 	}
 	/**
-	 * Move the transform by an offset
+	 * Move the transform by an offset. <b>Recalculates the matrix</b>
 	 * @param x x component of offset
 	 * @param y y component of offset
 	 * @param z z component of offset
@@ -106,9 +141,19 @@ public class Transform implements TransformUpdate {
 		recalculateMatrix();
 	}
 	
+	/**
+	 * Set the rotation of the transform. <b>Recalculates the matrix</b>
+	 * @param pos new rotation
+	 */
 	public void setRotation(Vector3f rot) {
 		setRotation(rot.x, rot.y, rot.z);
 	}
+	/**
+	 * Set the rotation of the transform. <b>Recalculates the matrix</b>
+	 * @param x new x rotation
+	 * @param y new y rotation
+	 * @param z new z rotation
+	 */
 	public void setRotation(float x, float y, float z) {
 		rotation.x = x;
 		rotation.y = y;
@@ -117,14 +162,14 @@ public class Transform implements TransformUpdate {
 	}
 
 	/**
-	 * Rotate the transform by an offset
+	 * Rotate the transform by an offset. <b>Recalculates the matrix</b>
 	 * @param ammount offset to rotate by
 	 */
 	public void rotate(Vector3f ammount) {
 		rotate(ammount.x, ammount.y, ammount.z);
 	}
 	/**
-	 * Rotate the transform by an offset
+	 * Rotate the transform by an offset. <b>Recalculates the matrix</b>
 	 * @param x x component of offset
 	 * @param y y component of offset
 	 * @param z z component of offset
@@ -136,9 +181,19 @@ public class Transform implements TransformUpdate {
 		recalculateMatrix();
 	}
 	
+	/**
+	 * Set the scale of the transform. <b>Recalculates the matrix</b>
+	 * @param pos new scale
+	 */
 	public void setScale(Vector3f scale) {
 		setScale(scale.x, scale.y, scale.z);
 	}
+	/**
+	 * Set the scale of the transform. <b>Recalculates the matrix</b>
+	 * @param x new x scale
+	 * @param y new y scale
+	 * @param z new z scale
+	 */
 	public void setScale(float x, float y, float z) {
 		scale.x = x;
 		scale.y = y;
@@ -146,15 +201,28 @@ public class Transform implements TransformUpdate {
 		recalculateMatrix();
 	}
 	
+	/**
+	 * Get the current position of the transform
+	 * @return current position
+	 */
 	public Vector3f getPosition() {
 		return new Vector3f(position);
 	}
+	/**
+	 * Get the current rotation of the transform
+	 * @return current rotation
+	 */
 	public Vector3f getRotation() {
 		return new Vector3f(rotation);
 	}
+	/**
+	 * Get the current scale of the transform
+	 * @return current scale
+	 */
 	public Vector3f getScale() {
 		return new Vector3f(scale);
 	}
+
 	private void update() {
 		for(TransformUpdate tu : updaters) {
 			tu.onTransformUpdate(this);
@@ -165,13 +233,24 @@ public class Transform implements TransformUpdate {
 	public void onTransformUpdate(Transform transform) {
 		update();
 	}
+	/**
+	 * Add an update listener
+	 * @param updater listener
+	 */
 	public void addUpdate(TransformUpdate updater) {
 		updaters.add(updater);
 	}
+	/**
+	 * Removes an update listener
+	 * @param updater listener
+	 */
 	public void removeUpdate(TransformUpdate updater) {
 		updaters.remove(updater);
 	}
 
+	/**
+	 * Returns a string representation of the transform, containing the position, rotation, and scale
+	 */
 	public String toString() {
 		return "Transform: {pos: " + position + ", rot: " + rotation + ", scale: " + scale + "}";
 	}
@@ -182,13 +261,6 @@ public class Transform implements TransformUpdate {
 	 */
 	public Vector3f forward() {
 		return matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f)).negate();
-		// Vector3f v = new Vector3f();
-		// matrix.getRow(2, v);
-		// System.out.println(v);
-		// v = matrix.normalizedPositiveZ(new Vector3f(1.0f, 0.0f, 0.0f));
-		// System.out.println(v);
-		// // return v.mul(-1);
-		// return v;
 	}
 
 	/**
@@ -197,9 +269,6 @@ public class Transform implements TransformUpdate {
 	 */
 	public Vector3f right() {
 		return matrix.normalizedPositiveX(new Vector3f(1.0f, 0.0f, 0.0f));
-		// Vector3f v = new Vector3f();
-		// matrix.getRow(0, v);
-		// return v;
 	}
 
 	/**
@@ -208,8 +277,5 @@ public class Transform implements TransformUpdate {
 	 */
 	public Vector3f up() {
 		return matrix.normalizedPositiveY(new Vector3f(1.0f, 0.0f, 0.0f));
-		// Vector3f v = new Vector3f();
-		// matrix.getRow(1, v);
-		// return v;
 	}
 }

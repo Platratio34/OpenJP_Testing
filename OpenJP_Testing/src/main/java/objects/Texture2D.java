@@ -10,8 +10,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
-import java.awt.image.DataBufferInt;
 
+/**
+ * 2D texture for rendering
+ */
 public class Texture2D {
 	
 	private int textureId;
@@ -24,6 +26,13 @@ public class Texture2D {
 	private boolean resident = false;;
 	private boolean genMipMaps = false;
 	
+	/**
+	 * Create a new white texture of size.<br>
+	 * <br>
+	 * Width and height should be multiples of 2.
+	 * @param w width
+	 * @param h height
+	 */
 	public Texture2D(int w, int h) {
 		//		System.out.println("Created texture with ID "+textureId);
 		width = w;
@@ -33,6 +42,14 @@ public class Texture2D {
 
 		initGLTexture();
 	}
+	/**
+	 * Create a new texture of size.<br>
+	 * <br>
+	 * Width and height should be multiples of 2.
+	 * @param w width
+	 * @param h height
+	 * @param pixles pixel colors (orderd x, y)
+	 */
 	public Texture2D(int w, int h, Color[] pixels) {
 		//		System.out.println("Created texture with ID "+textureId);
 		width = w;
@@ -58,29 +75,56 @@ public class Texture2D {
 		}
 	}
 	
+	/**
+	 * Set the color of a given pixel
+	 * @param x x position of pixel
+	 * @param y y position of pixel
+	 * @param color pixel color
+	 */
 	public void setPixel(int x, int y, Color color) {
 		int i = x + (y*width);
 		pixels[i] = color;
 	}
+	/**
+	 * Get the color of a given pixel
+	 * @param x x position of pixel
+	 * @param y y position of pixel
+	 * @return pixel color
+	 */
 	public Color getPixel(int x, int y) {
 		int i = x + (y*width);
 		return pixels[i];
 	}
 	
+	/**
+	 * Fill all pixels with given color
+	 * @param color fill color
+	 */
 	public void fill(Color color) {
 		for(int i = 0; i < pixels.length; i++) {
 			pixels[i] = color;
 		}
 	}
 	
+	/**
+	 * Get the width of the texture
+	 * @return pixel width
+	 */
 	public int getWidth() {
 		return width;
 	}
-
+	/**
+	 * Get the height of the texture
+	 * @return pixel height
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Convert the texture to a byte buffer
+	 * @return byte buffer of color data
+	 */
 	public ByteBuffer toByteBuffer() {
 		ByteBuffer buff = ByteBuffer.allocateDirect(4*width*height);
 		for(int i = 0; i < pixels.length; i++) {
@@ -95,6 +139,9 @@ public class Texture2D {
 		return buff;
 	}
 	
+	/**
+	 * Update the texture in OpenGL
+	 */
 	public void updateTexture() {
 		// bind();
 		GL45.glTextureSubImage2D(textureId, 0, 0, 0, width, height, GL45.GL_RGBA, GL45.GL_UNSIGNED_BYTE, toByteBuffer());
@@ -105,32 +152,44 @@ public class Texture2D {
 		// GL45.glGenerateMipmap(GL45.GL_TEXTURE_2D);
 		// unbind();
 	}
-	public void bind() {
-		GL45.glBindTexture(GL45.GL_TEXTURE_2D, textureId);
-	}
-	public void unbind() {
-		GL45.glBindTexture(GL45.GL_TEXTURE_2D, 0);
-	}
+	
+	/**
+	 * Bind the texture to texture unit
+	 * @param index texture unit index (<code>GL*.GL_TEXTURE*</code>)
+	 */
 	public void activateBind(int index) {
-		bind();
+		GL45.glBindTexture(GL45.GL_TEXTURE_2D, textureId);
 		GL45.glActiveTexture(GL45.GL_TEXTURE0+index);
 	}
 	
+	/**
+	 * Get the OpenGL texture ID
+	 * @return texture ID
+	 */
 	public int getId() {
 		return textureId;
 	}
 
+	/**
+	 * Get bindless texture handle
+	 * @return texture handle
+	 */
 	public long getHandle() {
 		return handle;
 	}
 
+	/**
+	 * Make bindless texture resident
+	 */
 	public void makeResident() {
 		if (resident)
 			return;
 		ARBBindlessTexture.glMakeTextureHandleResidentARB(handle);
 		resident = true;
 	}
-
+	/**
+	 * Make bindless texture non-resident
+	 */
 	public void makeNonResident() {
 		if (!resident)
 			return;
@@ -138,6 +197,12 @@ public class Texture2D {
 		resident = false;
 	}
 	
+	/**
+	 * Load a texture from .png resouce file
+	 * @param path resource path
+	 * @return Texture from image file
+	 * @throws IOException if the file could not be found or read
+	 */
 	public static Texture2D loadFromPngResource(String path) throws IOException {
 		ClassLoader classLoader = Triangle.class.getClassLoader();
 		BufferedImage bi = ImageIO.read(classLoader.getResourceAsStream(path));

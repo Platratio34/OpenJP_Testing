@@ -7,6 +7,11 @@ import org.joml.Vector3f;
 import shaders.ShaderProgram;
 import shaders.Uniform;
 
+/**
+ * Lighting settings for shader.<br>
+ * <br>
+ * <b>Shader specific</b>
+ */
 public class LightingSettings {
 
 	private Uniform ambientColorUniform;
@@ -20,6 +25,10 @@ public class LightingSettings {
 	
 	private ShaderProgram shader;
 	
+	/**
+	 * Create a new lighting settings for the given shader
+	 * @param shader shader to use
+	 */
 	public LightingSettings(ShaderProgram shader) {
 		ambientColorUniform = new Uniform(shader, "ambientColor");
 		lightPosUniform = new Uniform(shader, "lightPos");
@@ -30,6 +39,10 @@ public class LightingSettings {
 		this.shader = shader;
 	}
 	
+	/**
+	 * Set the ambient light color
+	 * @param color
+	 */
 	public void setAbientLighting(Color color) {
 		ambientColorUniform.setColor(color);
 	}
@@ -52,18 +65,18 @@ public class LightingSettings {
 		nextLightId++;
 		lights[id] = light;
 		light.lId = id;
-		light.lightSettings = this;
+		light.setLightingSettings(this);
 		setLightArray("lights", lights[id], id);
 		return id;
 	}
 	public void setLight(int id, Light light) {
 		if(id < 0 || id >= lights.length) throw new IndexOutOfBoundsException("ID must be in range 0 < id < "+lights.length+"; ID was "+id);
 		lights[id].lId = -1;
-		lights[id].lightSettings = null;
+		lights[id].setLightingSettings(null);
 		if(light == null) return;
 		lights[id] = light;
 		light.lId = id;
-		light.lightSettings = this;
+		light.setLightingSettings(this);
 		setLightArray("lights", lights[id], id);
 	}
 	public void updateLight(int id) {

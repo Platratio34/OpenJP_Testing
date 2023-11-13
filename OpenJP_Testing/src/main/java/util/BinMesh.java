@@ -12,18 +12,35 @@ import objects.Mesh;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
+/**
+ * Static class containing functions for creating and reading binary mesh files
+ */
 public class BinMesh {
 
+	/** Float type code */
 	private static final int TYPE_FLOAT = 0x01;
+	/** Unsigned integer type code */
 	private static final int TYPE_UINT = 0x02;
 
+	/** End section id */
 	private static final int SECTION_END = 0x00;
+	/** Vertex section id */
 	private static final int SECTION_VERT = 0x01;
+	/** Color section id */
 	private static final int SECTION_COLOR = 0x02;
+	/** Noramal section id */
 	private static final int SECTION_NORM = 0x03;
+	/** Index section id */
 	private static final int SECTION_INDICES = 0x04;
+	/** UV section id */
 	private static final int SECTION_UV = 0x05;
 
+	/**
+	 * Convert a float to byte array<br><br>
+	 * Uses IEEE 754 floating-point "single format"
+	 * @param f float to convert
+	 * @return 4 byte array represneting the float
+	 */
 	public static byte[] floatToBin(float f) {
 		int bits = Float.floatToIntBits(f);
 		return new byte[] {
@@ -33,17 +50,35 @@ public class BinMesh {
 				(byte) (bits)
 		};
 	}
-
+	/**
+	 * Convert a byte array to a float<br><br>
+	 * Uses IEEE 754 floating-point "single format"
+	 * @param bytes 4 byte array represneting the float
+	 * @return Float represented by the bytes
+	 */
 	public static float binToFloat(byte[] bytes) {
 		int intBits = bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
 		return Float.intBitsToFloat(intBits);
 	}
-
+	/**
+	 * Convert a bytes to a float.<br><br>
+	 * Uses IEEE 754 floating-point "single format"
+	 * @param b0 high byte (<code>0xff000000</code>)
+	 * @param b1 medium high byte (<code>0x00ff0000</code>)
+	 * @param b2 medium low byte (<code>0x0000ff00</code>)
+	 * @param b3 low byte (<code>0x000000ff</code>)
+	 * @return Float represented by the bytes
+	 */
 	public static float binToFloat(byte b0, byte b1, byte b2, byte b3) {
 		int intBits = b0 << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF);
 		return Float.intBitsToFloat(intBits);
 	}
     
+	/**
+	 * Convert an unsigned integer to bytes
+	 * @param n unsigned integer to convert
+	 * @return 4 byte array representing the integer
+	 */
 	public static byte[] uIntToBin(int n) {
 		return new byte[] {
 				(byte) (n >> 24),
@@ -52,16 +87,31 @@ public class BinMesh {
 				(byte) (n)
 		};
 	}
-
+	/**
+	 * Convert byte array to unsigned integer
+	 * @param bytes 4 byte array representing the integer
+	 * @return Unsigned integer represented by the bytes
+	 */
 	public static int binToUInt(byte[] bytes) {
 		return binToUInt(bytes[0], bytes[1], bytes[2], bytes[3]);
 	}
-
+	/**
+	 * Convert bytes to unsigned integer
+	 * @param b0 high byte (<code>0xff000000</code>)
+	 * @param b1 medium high byte (<code>0x00ff0000</code>)
+	 * @param b2 medium low byte (<code>0x0000ff00</code>)
+	 * @param b3 low byte (<code>0x000000ff</code>)
+	 * @return Unsigned integer represented by the bytes
+	 */
 	public static int binToUInt(byte b0, byte b1, byte b2, byte b3) {
 		return b0 << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF);
 	}
     
-	
+	/**
+	 * Convert a mesh string to byte array
+	 * @param str mesh string
+	 * @return Byte array representing the mesh
+	 */
     public static byte[] meshToBin(String str) {
         
 		String[] components = str.split(";");
@@ -222,14 +272,19 @@ public class BinMesh {
 		return out.toByteArray();
     }
     
+	/**
+	 * Convert a plain text mesh resource file to binary file
+	 * @param src resource path to plain text mesh file
+	 * @param dest non-resouce path to binary mesh file
+	 * @throws IOException If either file could not be found or accessed
+	 */
 	public static void meshResourceToBin(String src, String dest) throws IOException {
 		ClassLoader classLoader = BinMesh.class.getClassLoader();
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(src)));
 		} catch (NullPointerException e) {
-			System.err.println("Could not load mesh from resource \"" + src + "\"");
-			return;
+			throw new IOException("Could not load mesh from resource \"" + src + "\"");
 		}
 		String line = "";
 		String str = "";
@@ -248,6 +303,11 @@ public class BinMesh {
 		outputStream.close();
 	}
 	
+	/**
+	 * Create a mesh from byte array
+	 * @param bytes bytes from binary mesh file
+	 * @return Mesh created from file OR <code>null</code> if a mesh could not be created
+	 */
 	public static Mesh meshFromBin(byte[] bytes) {
 		if (bytes[0] != 'M' || bytes[1] != 'E' || bytes[2] != 'S' || bytes[3] != 'H') { // Check that this is a mesh file
 			System.err.println("Could not load mesh; file type mismatch");
@@ -304,6 +364,12 @@ public class BinMesh {
 		return mesh;
 	}
 
+	/**
+	 * Create a mesh from binary mesh resouce file
+	 * @param src binary resouce file
+	 * @return Mesh created from binary file
+	 * @throws IOException If the file could not be found or read
+	 */
 	public static Mesh meshFromBinResource(String src) throws IOException {
 		ClassLoader classLoader = BinMesh.class.getClassLoader();
 		InputStream is = classLoader.getResourceAsStream(src);
@@ -315,7 +381,12 @@ public class BinMesh {
 		}
 		return meshFromBin(bos.toByteArray());
 	}
-
+	
+	/**
+	 * Convert a gizmo mesh string to byte array
+	 * @param str gizmo mesh string
+	 * @return Byte array representing the mesh
+	 */
 	public static byte[] gizmoToBin(String str) {
         
 		String[] components = str.split(";");
@@ -410,6 +481,12 @@ public class BinMesh {
 		return out.toByteArray();
     }
     
+	/**
+	 * Convert a plain text gizmo mesh resource file to binary file
+	 * @param src resource path to plain text gizmo mesh file
+	 * @param dest non-resouce path to binary gizmo mesh file
+	 * @throws IOException If either file could not be found or accessed
+	 */
 	public static void gizmoResourceToBin(String src, String dest) throws IOException {
 		ClassLoader classLoader = BinMesh.class.getClassLoader();
 		BufferedReader br;
@@ -436,6 +513,11 @@ public class BinMesh {
 		outputStream.close();
 	}
 	
+	/**
+	 * Create a gizmo mesh from byte array
+	 * @param bytes bytes from binary gizmo mesh file
+	 * @return Gizmo mesh created from file OR <code>null</code> if a mesh could not be created
+	 */
 	public static GizmoMesh gizmoFromBin(byte[] bytes) {
 		if (bytes[0] != 'G' || bytes[1] != 'I' || bytes[2] != 'Z' || bytes[3] != 'M') { // Check that this is a gizmo file
 			System.err.println("Could not load gizmo; file type mismatch");
@@ -491,6 +573,12 @@ public class BinMesh {
 		return new GizmoMesh(vertices);
 	}
 
+	/**
+	 * Create a gizmo mesh from binary gizmo mesh resouce file
+	 * @param src binary resouce file
+	 * @return Gizmo mesh created from binary file
+	 * @throws IOException If the file could not be found or read
+	 */
 	public static GizmoMesh gizmoFromBinResource(String src) throws IOException {
 		ClassLoader classLoader = BinMesh.class.getClassLoader();
 		InputStream is = classLoader.getResourceAsStream(src);

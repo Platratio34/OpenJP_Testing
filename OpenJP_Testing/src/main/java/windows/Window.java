@@ -116,7 +116,7 @@ public class Window {
 			width = w;
 			height = h;
 			GL44.glViewport(0, 0, width, height);
-			camera.updateAspectRation(width, height);
+			camera.updateAspectRatio(width, height);
 		});
 		
 		
