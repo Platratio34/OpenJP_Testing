@@ -3,15 +3,18 @@ package game;
 import java.awt.Color;
 import java.io.IOException;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import game.simple.FirstPersonFlyCamera;
+import game.simple.PrimitiveCreator;
 import gizmos.OriginGizmo;
 import input.InputBind;
 import input.InputCallback;
 import input.KeyboardBind;
 import objects.MeshCache;
 import objects.MeshRenderer;
+import shaders.Material;
 import shaders.Shaders;
 
 public class Test {
@@ -27,6 +30,7 @@ public class Test {
         MeshCache.load("meshes/matCube.bin");
         MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
         mR.setShader(Shaders.getShader(Game.MAIN_SHADER));
+        mR.materials.setMaterial(0, new Material(Color.white));
         gOClose.addComponent(mR);
 
         game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
@@ -38,7 +42,9 @@ public class Test {
 
         game.addGameObject(FirstPersonFlyCamera.create());
 
-        game.lightingSettings.setAmbientLighting(Color.WHITE);
+        game.lightingSettings.setAmbientLighting(new Color(0.1f, 0.1f, 0.1f));
+        game.lightingSettings.setGlobalLightColor(new Color(0.95f, 0.90f, 0.85f));
+        game.lightingSettings.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
 
         game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1, new InputCallback() {
 
@@ -50,6 +56,12 @@ public class Test {
             }
             
         });
+
+        GameObject plane = PrimitiveCreator.createPlane();
+        plane.transform.setScale(100, 100, 100);
+        plane.transform.setPosition(0, -0.5f, 0);
+        plane.renderer.materials.getMaterial(0).setColor(new Color(82, 69, 11));
+        game.addGameObject(plane);
 
         game.run();
     }

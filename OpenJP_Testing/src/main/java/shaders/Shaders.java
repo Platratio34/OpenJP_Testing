@@ -73,6 +73,38 @@ public class Shaders {
         }
         return true;
     }
+
+    
+    /**
+     * Create a new named shader with specified vertex and fragment shader
+     * @param name shader name
+     * @param vertPath resource path to vertex shader
+     * @param fragPath resource path to fragment shader
+     * @return If the shader was loaded
+     */
+    public static boolean loadShader(String name, String vertPath, String fragPath) {
+        if (shaders.containsKey(name)) {
+            System.err.println("[WARN] Shader " + name + " was already loaded");
+            return true;
+        }
+        try {
+            ShaderProgram shader = new ShaderProgram(name);
+            shader.createVertexShaderResource(vertPath);
+            shader.createFragmentShaderResource(fragPath);
+            shader.link();
+            shaders.put(name, shader);
+            if (name == "main") {
+                mainShader = shader;
+            }
+            System.out.println("Loaded shader " + name);
+            shader.bind();
+        } catch (Exception e) {
+            System.err.println("Error on loading shader " + name + " with frag " + fragPath);
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     
     /**
      * Get shader by name

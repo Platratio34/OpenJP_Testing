@@ -13,7 +13,7 @@ public class Camera implements TransformUpdate {
 	/** Field of view of the camera (degrees) */
 	public float fov = (float)Math.toRadians(60);
 	/** Near clip plane depth */
-	public float nearZ = 0.01f;
+	public float nearZ = 0.1f;
 	/** Far clip plane depth */
 	public float farZ = 1000f;
 	/** Aspect ration (width / height)*/

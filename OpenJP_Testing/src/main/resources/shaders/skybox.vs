@@ -26,15 +26,21 @@ uniform bool useColor;
 
 void main()
 {
-    gl_Position = cameraProjection * (cameraTransform * transformMatrix * vec4(position, 1.0));
+    vec4 pos = cameraProjection * cameraTransform * vec4(position+cameraPosition, 1.0);
+    // pos.z = pos.w;
+    // pos = pos / pos.w;
+    // pos.z = 0.9;
+    // pos.w = 1.0;
+    gl_Position = pos;
+    textCord = vec2(pos.z, 0.0);
     if(useColor) {
     	matId = -1.0;
     } else {
     	matId = color.x;
     }
     vertexColor = vec4(color, 1.0);
-    vertexNormal = normalize((transformMatrix * vec4(normal, 0.0)).xyz);
-    fragPos = (transformMatrix * vec4(position, 1.0)).xyz;
-    textCord = uv;
-    // textCord = vec2(0.0, 0.0);
+    vertexNormal = normalize((vec4(normal, 0.0)).xyz);
+    fragPos = (vec4(position, 1.0)).xyz;
+    fragPos = fragPos;
+    // textCord = uv;
 }

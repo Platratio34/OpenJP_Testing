@@ -68,7 +68,7 @@ public class Game {
 
         boolean loaded = true;
         loaded = loaded && Shaders.loadShader(GIZMO_SHADER, "shaders/gizmo.fs");
-        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/skybox.fs");
+        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/skybox.vs", "shaders/skybox.fs");
         loaded = loaded && Shaders.loadShader(MAIN_SHADER, "shaders/fragment.fs");
         if (!loaded) {
             System.err.println("Could not load main shaders");
@@ -101,7 +101,7 @@ public class Game {
             long cTime = System.currentTimeMillis();
             lastFrameTime = (cTime - lastFrameStart) / 1000f;
             lastFrameStart = cTime;
-            
+
             profiler.startFrame();
             
             inputSystem.onTick();
@@ -162,6 +162,7 @@ public class Game {
         GL45.glEnable(GL45.GL_CULL_FACE);
 
         skybox.render();
+        GL45.glClear(GL45.GL_DEPTH_BUFFER_BIT);
         GL45.glEnable(GL45.GL_DEPTH_TEST);
 
         for (GameObject gameObject : gameObjects) {

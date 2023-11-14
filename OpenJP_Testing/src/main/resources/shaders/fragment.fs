@@ -67,7 +67,10 @@ void main()
 	
 	vec3 globalDiffuse = globalLightColor * max(dot(vertexNormal, globalLightDir), 0.0);
 	
-	vec3 lighting = ambientColor + globalDiffuse;
+	vec3 viewDir = normalize(cameraPosition - fragPos);
+	vec3 globalIllumination = ambientColor * max(dot(vertexNormal, viewDir), 0.0);
+	
+	vec3 lighting = globalIllumination + globalDiffuse;
 
 	for(int i = 0; i < 16; i++) {
 		if(lights[i].range <= 0.0) {
@@ -85,7 +88,6 @@ void main()
 		vec3 diff = lights[i].color * max(dot(vertexNormal, dir), 0.0) * attn;
 
 		// Specular
-		vec3 viewDir = normalize(cameraPosition - fragPos);
 		vec3 reflectDir = reflect(-viewDir, vertexNormal);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 		vec3 specular = lights[i].color * spec;
