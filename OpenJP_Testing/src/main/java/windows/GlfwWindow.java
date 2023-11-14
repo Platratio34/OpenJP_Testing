@@ -30,7 +30,9 @@ public class GlfwWindow {
     
     private String title;
 
-    public GlfwWindow(String title, Camera camera) {
+    private Camera camera;
+
+    public GlfwWindow(String title) {
         this.title = title;
 
         GLFWErrorCallback.createPrint(System.err).set();
@@ -63,16 +65,15 @@ public class GlfwWindow {
             width = w;
             height = h;
             GL44.glViewport(0, 0, width, height);
-            camera.updateAspectRatio(width, height);
+            if(camera != null) camera.updateAspectRatio(width, height);
         });
-        camera.updateAspectRatio(width, height);
 
         keyboardCallback = new KeyboardCallback();
 		GLFW.glfwSetKeyCallback(windowId, keyboardCallback);
 		mouseButtonCallback = new MouseButtonCallback();
 		GLFW.glfwSetMouseButtonCallback(windowId, mouseButtonCallback);
 		mouseCursorCallback = new MouseCursorCallback();
-		GLFW.glfwSetCursorPosCallback(windowId, mouseCursorCallback);
+        GLFW.glfwSetCursorPosCallback(windowId, mouseCursorCallback);
     }
     
     /**
@@ -195,5 +196,10 @@ public class GlfwWindow {
 
     public void swapBuffers() {
 		GLFW.glfwSwapBuffers(windowId);
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+        camera.updateAspectRatio(width, height);
     }
 }

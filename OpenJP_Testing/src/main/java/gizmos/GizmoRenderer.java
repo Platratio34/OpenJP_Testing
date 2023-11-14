@@ -64,4 +64,8 @@ public class GizmoRenderer extends Renderer {
     protected void onRender() {
         Gizmos.render(type);
     }
+
+    public boolean hasShader() {
+        return shader != null;
+    }
 }

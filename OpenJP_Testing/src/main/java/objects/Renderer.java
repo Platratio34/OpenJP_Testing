@@ -5,6 +5,7 @@ import org.joml.Matrix4f;
 import game.Component;
 import shaders.Materials;
 import shaders.ShaderProgram;
+import shaders.Shaders;
 import shaders.Uniform;
 
 /**
@@ -40,6 +41,13 @@ public abstract class Renderer extends Component {
 	 * Material collection
 	 */
 	public Materials materials;
+
+	/**
+	 * Create a new renderer
+	 */
+	public Renderer() {
+		this(new Transform());
+	}
 	
 	/**
 	 * Create a new renderer with given transform
@@ -80,7 +88,7 @@ public abstract class Renderer extends Component {
 	
 	/**
 	 * Render the renderer if it is visible<br><br>
-	 * Calls <code>onRender()<br> for child classes
+	 * Calls <code>onRender()</code> for child classes
 	 */
     public void render() {
         if (!visible)
@@ -103,17 +111,11 @@ public abstract class Renderer extends Component {
 	 */
 	protected abstract void onRender();
 	
-	@Override
+
+    @Override
 	public void onStart() {
-		
-	}
-	@Override
-	public void onTick() {
-		
-	}
-	@Override
-	public void onCleanup() {
-		
+		if (shader == null)
+			setShader(Shaders.getMainShader());
 	}
     
 }

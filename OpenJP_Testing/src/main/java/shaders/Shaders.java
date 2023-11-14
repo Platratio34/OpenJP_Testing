@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 public class Shaders {
     
-    private static HashMap<String, ShaderProgram> shaders;
+    private static HashMap<String, ShaderProgram> shaders = new HashMap<String, ShaderProgram>();
 
     private static final String DEFAULT_VERTEX = "shaders/vertex.vs";
+
+    private static ShaderProgram mainShader;
 
     /**
      * Create a new named shader with specified frag shader.<br>
@@ -27,6 +29,9 @@ public class Shaders {
             shader.createFragmentShaderResource(fragPath);
             shader.link();
             shaders.put(name, shader);
+            if (name == "main") {
+                mainShader = shader;
+            }
         } catch (Exception e) {
             System.err.println("Error on loading shader " + name + " with frag " + fragPath);
             e.printStackTrace();
@@ -56,5 +61,13 @@ public class Shaders {
             shader.dispose();
         }
         shaders.clear();
+    }
+
+    /**
+     * The shader that is marked as main
+     * @return
+     */
+    public static ShaderProgram getMainShader() {
+        return mainShader;
     }
 }

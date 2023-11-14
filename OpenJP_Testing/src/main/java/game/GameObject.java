@@ -31,18 +31,18 @@ public class GameObject {
         if (started) {
             component.onStart();
         }
-        if (component instanceof Renderer) {
+        if (component instanceof Gizmo) {
+            if (gizmo != null) {
+                System.err.println("[WARN] game object already had a gizmo, previous gizmo will no longer be drawn");
+            }
+            gizmo = (Gizmo) component;
+            gizmo.setParent(transform);
+        } else if (component instanceof Renderer) {
             if (renderer != null) {
                 System.err.println("[WARN] game object already had a renderer, previous renderer will no longer be drawn");
             }
             renderer = (Renderer) component;
             renderer.transform = transform;
-        } else if (component instanceof Gizmo) {
-            if (renderer != null) {
-                System.err.println("[WARN] game object already had a renderer, previous renderer will no longer be drawn");
-            }
-            gizmo = (Gizmo) component;
-            gizmo.setParent(transform);
         }
     }
 

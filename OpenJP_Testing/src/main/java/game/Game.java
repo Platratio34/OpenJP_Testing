@@ -12,7 +12,6 @@ import input.InputSystem;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.MeshCache;
-import objects.Renderer;
 import profiling.Frame;
 import profiling.Profiler;
 import shaders.Shaders;
@@ -31,8 +30,6 @@ public class Game {
 
     /** Main camera for game */
     public Camera mainCamera;
-
-    private Color clearColor = new Color(0, 0, 0, 1);
 
     private SkyBox skybox;
 
@@ -59,16 +56,19 @@ public class Game {
     private float lastFrameTime = 0f;
 
     public Game() {
+        inputSystem = new InputSystem();
+
+        window = new GlfwWindow("Game");
         mainCamera = new Camera();
-        window = new GlfwWindow("Game", mainCamera);
+        window.setCamera(mainCamera);
         window.addKeyboardListener(inputSystem);
 
         gameObjects = new ArrayList<GameObject>();
 
         boolean loaded = true;
         loaded = loaded && Shaders.loadShader(MAIN_SHADER, "shaders/fragment.fs");
-        loaded = loaded && Shaders.loadShader(GIZMO_SHADER, "shaders/skybox.fs");
-        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/gizmo.fs");
+        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/skybox.fs");
+        loaded = loaded && Shaders.loadShader(GIZMO_SHADER, "shaders/gizmo.fs");
         if (!loaded) {
             System.err.println("Could not load main shaders");
         }
@@ -97,11 +97,13 @@ public class Game {
         end = false;
         while (!end) {
             profiler.startFrame();
-
+            
+            inputSystem.onTick();
             GLFW.glfwPollEvents();
             onTick();
 
             onRender();
+
             profiler.start("swap");
             window.swapBuffers();
             profiler.end("swap");
@@ -114,10 +116,11 @@ public class Game {
                 Frame f = profiler.getLastFrame();
                 long sleepTime = targetFrameTime - f.time();
                 lastFrameTime = f.time() / 1000f;
-                if (sleepTime > 2)
+                if (sleepTime > 2) {
                     Thread.sleep(sleepTime);
-                else
+                } else {
                     System.err.println("Frame took too long; Target time: "+targetFrameTime+"ms, frame: "+f);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -139,18 +142,18 @@ public class Game {
         for (GameObject gameObject : gameObjects) {
             gameObject.onTick();
         }
-
-        inputSystem.onTick();
         profiler.end("tick");
     }
 
     private void onRender() {
         profiler.start("render");
-        GL45.glClearColor(clearColor.getRed() / 255f, clearColor.getGreen() / 255f, clearColor.getBlue() / 255f,
-                clearColor.getAlpha() / 255f);
+
         GL45.glClear(GL45.GL_COLOR_BUFFER_BIT | GL45.GL_DEPTH_BUFFER_BIT);
 
         mainCamera.bindUBO();
+
+        GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_FILL);
+        GL44.glEnable(GL44.GL_CULL_FACE);
 
         skybox.render();
         GL45.glEnable(GL45.GL_DEPTH_TEST);
@@ -206,6 +209,14 @@ public class Game {
         targetFPS = fps;
         targetFrameTime = (long) (1000f / fps);
     }
+
+    /**
+     * Get the current target frames per second
+     * @return target frames per second
+     */
+    public float getTargetFPS() {
+        return targetFPS;
+    }
     
     /**
      * Get the time the last frame took to process
@@ -215,7 +226,19 @@ public class Game {
         return lastFrameTime;
     }
 
+    /**
+     * Mark that the game should stop running
+     */
     public void markEnd() {
         end = true;
+    }
+
+    /**
+     * Set the window clear color
+     * @param color new clear color
+     */
+    public void setClearColor(Color color) {
+        GL45.glClearColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+                color.getAlpha() / 255f);
     }
 }

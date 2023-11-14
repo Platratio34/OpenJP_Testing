@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import game.Component;
 import objects.Transform;
+import shaders.Shaders;
 
 /**
  * Gizmo
@@ -83,5 +84,11 @@ public class Gizmo extends Component {
      */
     public void render() {
         renderer.render();
+    }
+
+    @Override
+    public void onStart() {
+        if(!renderer.hasShader())
+            renderer.setShader(Shaders.getMainShader());
     }
 }

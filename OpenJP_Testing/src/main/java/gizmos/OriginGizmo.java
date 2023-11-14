@@ -2,6 +2,8 @@ package gizmos;
 
 import java.awt.Color;
 
+import shaders.Shaders;
+
 /**
  * Colored origin gizmo
  */
@@ -33,6 +35,15 @@ public class OriginGizmo extends Gizmo {
 
     public GizmoRenderer getZRenderer() {
         return originZ;
+    }
+
+    @Override
+    public void onStart() {
+        if (!renderer.hasShader()) {
+            renderer.setShader(Shaders.getMainShader());
+            originY.setShader(Shaders.getMainShader());
+            originZ.setShader(Shaders.getMainShader());
+        }
     }
     
     @Override

@@ -25,6 +25,11 @@ public class MeshRenderer extends Renderer {
 		super(transform);
 		this.mesh = mesh;
 	}
+
+	public MeshRenderer(Mesh mesh) {
+		super();
+		this.mesh = mesh;
+	}
 	
 	@Override
 	protected void onRender() {
