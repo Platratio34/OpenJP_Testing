@@ -25,11 +25,28 @@ public class InputSystem implements KeyboardEvent, MouseEvent {
      */
     public void addBind(String name, int keycode) {
         if (binds.containsKey(name)) {
+            System.err.println("Bind " + name + " already existed for input system");
+            return;
+        }
+        InputBind bind = new KeyboardBind(keycode);
+        bind.name = name;
+        binds.put(name, bind);
+    }
+    
+    /**
+     * Add a named keybind to input system
+     * @param name keybind name
+     * @param keycode key code (GLFW_KEY_*)
+     * @param cb on change callback
+     */
+    public void addBind(String name, int keycode, InputCallback cb) {
+        if (binds.containsKey(name)) {
             System.err.println("Bind "+name+" already existed for input system");
             return;
         }
         InputBind bind = new KeyboardBind(keycode);
         bind.name = name;
+        bind.addCallback(cb);
         binds.put(name, bind);
     }
 

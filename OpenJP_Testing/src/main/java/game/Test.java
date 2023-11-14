@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.lwjgl.glfw.GLFW;
 
 import game.simple.FirstPersonFlyCamera;
-import game.simple.PositionTracker;
 import gizmos.OriginGizmo;
 import input.InputBind;
 import input.InputCallback;
@@ -34,7 +33,6 @@ public class Test {
         game.mainCamera.transform.setRotation(35, -45, 0);
 
         gOClose.addComponent(new OriginGizmo());
-        // gOClose.addComponent(new PositionTracker());
 
         game.drawGizmos = true;
 
@@ -42,8 +40,7 @@ public class Test {
 
         game.lightingSettings.setAmbientLighting(Color.WHITE);
 
-        game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1);
-        game.inputSystem.addBindCallback("toggleGizmos", new InputCallback() {
+        game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1, new InputCallback() {
 
             @Override
             public void onChange(InputBind bind) {
