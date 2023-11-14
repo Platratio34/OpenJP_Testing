@@ -100,7 +100,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
 
 	public GLTest2() {
 		
-		window = new Window("Open GL Test");
+		window = new Window("OpenGL Testing 2");
 		window.addLoopRunnable(this);
 		// window.addKeyboardListener(this);
 		window.addMouseListener(this);
@@ -405,6 +405,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         
         // testMesh.dispose();
 		matCubeMesh.dispose();
+		MeshCache.dispose();
 		Gizmos.dispose();
 	}
 	

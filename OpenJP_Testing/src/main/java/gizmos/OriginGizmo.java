@@ -30,7 +30,15 @@ public class OriginGizmo extends Gizmo {
     public GizmoRenderer getYRenderer() {
         return originY;
     }
+
     public GizmoRenderer getZRenderer() {
         return originZ;
+    }
+    
+    @Override
+    public void render() {
+        renderer.render();
+        originY.render();
+        originZ.render();
     }
 }

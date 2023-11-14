@@ -185,9 +185,9 @@ public class ShaderProgram {
     }
 
     /**
-     * Cleanup the shader program
+     * Disposes of the shader program
      */
-    public void cleanup() {
+    public void dispose() {
         unbind();
         if (programId != 0) {
         	GL44.glDeleteProgram(programId);

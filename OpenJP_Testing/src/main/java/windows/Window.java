@@ -41,7 +41,7 @@ public class Window {
 	/**
 	 * Main shader (lit)
 	 */
-	public ShaderProgram shader;
+	public ShaderProgram mainShader;
 	/**
 	 * Main shader lighting settings
 	 */
@@ -50,7 +50,7 @@ public class Window {
 	/**
 	 * Unlit shader
 	 */
-	public ShaderProgram unlitShader;
+	public ShaderProgram gizmoShader;
 
 	/**
 	 * Skybox shader
@@ -105,12 +105,18 @@ public class Window {
 	 * Window input system
 	 */
 	public InputSystem inputSystem;
+
+	/**
+	 * Window title. <b>Read Only</b>
+	 */
+	public String title;
 	
 	/**
 	 * Create a new window and initialize it
 	 * @param title
 	 */
 	public Window(String title) {
+		this.title = title;
 		init();
 	}
 	
@@ -136,7 +142,7 @@ public class Window {
 		GLFWVidMode vidMode = GLFW.glfwGetVideoMode(mon);
 		width = vidMode.width();
 		height = vidMode.height();
-		window = GLFW.glfwCreateWindow(width, height, "OpenGL Testing 2", NULL, NULL);
+		window = GLFW.glfwCreateWindow(width, height, title, NULL, NULL);
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		GL44.glEnable(GL44.GL_DEPTH_TEST);
@@ -156,11 +162,11 @@ public class Window {
 		// GLFW.glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
 
 		try {
-			unlitShader = new ShaderProgram("unlit");
-			unlitShader.createVertexShaderResource("shaders/vertex.vs");
-			unlitShader.createFragmentShaderResource("shaders/unlit.fs");
-			unlitShader.link();
-			unlitShader.bind();
+			gizmoShader = new ShaderProgram("gizmo");
+			gizmoShader.createVertexShaderResource("shaders/vertex.vs");
+			gizmoShader.createFragmentShaderResource("shaders/gizmo.fs");
+			gizmoShader.link();
+			gizmoShader.bind();
 
 			skyboxShader = new ShaderProgram("skybox");
 			skyboxShader.createVertexShaderResource("shaders/vertex.vs");
@@ -168,23 +174,17 @@ public class Window {
 			skyboxShader.link();
 			skyboxShader.bind();
 
-			shader = new ShaderProgram("main");
-			shader.createVertexShaderResource("shaders/vertex.vs");
-			shader.createFragmentShaderResource("shaders/fragment.fs");
-			shader.link();
-			shader.bind();
-			// Texture2D tex = new Texture2D(1, 1);
-			// tex.fill(Color.blue);
-			// tex.setPixel(0, 0, Color.green);
-			// tex.setPixel(1, 1, Color.red);
-			// tex.updateTexture();
-			// Uniform.setTexture2D(shader.getUniform("defaultTexture"), tex, 31);
+			mainShader = new ShaderProgram("main");
+			mainShader.createVertexShaderResource("shaders/vertex.vs");
+			mainShader.createFragmentShaderResource("shaders/fragment.fs");
+			mainShader.link();
+			mainShader.bind();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new IllegalStateException("Unable to initialize Shader");
+			throw new IllegalStateException("Unable to initialize Shaders");
 		}
 
-		lightingSettings = new LightingSettings(shader);
+		lightingSettings = new LightingSettings(mainShader);
 
 		camera = new Camera();
 		camera.aspectRatio = (float) width / (float) height;
@@ -199,8 +199,8 @@ public class Window {
 
 		// GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
 
-		unlitUniform = new Uniform(shader, "unlit");
-		wireUniform = new Uniform(shader, "wire");
+		unlitUniform = new Uniform(mainShader, "unlit");
+		wireUniform = new Uniform(mainShader, "wire");
 
 		GL44.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -258,7 +258,7 @@ public class Window {
 		profiler.end("init");
 
 		profiler.start("runnables");
-		shader.bind();
+		mainShader.bind();
 		for (WindowLoopRunnable runnable : loopRunnables.values()) {
 			runnable.onLoop();
 		}
@@ -269,7 +269,7 @@ public class Window {
 		camera.bindUBO();
 
 		skybox.render();
-		shader.bind();
+		mainShader.bind();
 		GL44.glEnable(GL44.GL_DEPTH_TEST);
 
 		if (wireframeMode) {
@@ -289,7 +289,7 @@ public class Window {
 
 		if (drawGizmos) {
 			profiler.start("gizmos");
-			unlitShader.bind();
+			gizmoShader.bind();
 			GL44.glDisable(GL44.GL_DEPTH_TEST);
 			for (Renderer renderer : gizmos.values()) {
 				renderer.render();
@@ -345,7 +345,7 @@ public class Window {
 	 * @return renderer id
 	 */
 	public int addRenderer(Renderer renderer) {
-		renderer.setShader(shader);
+		renderer.setShader(mainShader);
 		while (renderers.containsKey(nextIdRend)) {
 			nextIdRend++;
 		}
@@ -360,7 +360,7 @@ public class Window {
 	 * @return gizmo id
 	 */
 	public int addGizmo(Renderer renderer) {
-		renderer.setShader(unlitShader);
+		renderer.setShader(gizmoShader);
 		while (gizmos.containsKey(nextIdGizmo)) {
 			nextIdGizmo++;
 		}

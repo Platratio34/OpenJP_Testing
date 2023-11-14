@@ -25,10 +25,10 @@ void main()
 
     vec3 dir = normalize(fragPos - cameraPosition);
     vec4 color = vec4(1.0, 1.0, 0.0, 0.0);
-    if(dir.y <= 0.0) {
-        color = mix(groundColor, horizonColor, (dir.y*4.0)+1.0);
+    if(dir.y <= -0.1) {
+        color = mix(groundColor, horizonColor, ((dir.y+0.1)*2.0)+1.0);
     } else {
-        color = mix(horizonColor, skyColor, dir.y*2.0);
+        color = mix(horizonColor, skyColor, (dir.y+0.1)*2.0);
     }
     // vec4 color = mix(horizonColor, skyColor, (dir.y/2.0)+0.5);
     // float b = dir.y;

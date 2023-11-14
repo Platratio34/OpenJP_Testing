@@ -66,4 +66,14 @@ public class MeshCache {
     public boolean hasMesh(String path) {
         return meshes.containsKey(path);
     }
+
+    /**
+     * Dispose of all cached meshes and clears map
+     */
+    public static void dispose() {
+        for (Mesh mesh : meshes.values()) {
+            mesh.dispose();
+        }
+        meshes.clear();
+    }
 }

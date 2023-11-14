@@ -2,6 +2,7 @@ package objects;
 
 import org.joml.Matrix4f;
 
+import game.Component;
 import shaders.Materials;
 import shaders.ShaderProgram;
 import shaders.Uniform;
@@ -10,7 +11,7 @@ import shaders.Uniform;
  * Generic renderer<br><br>
  * <b>Shader specific</b>
  */
-public abstract class Renderer {
+public abstract class Renderer extends Component {
     
 	/**
 	 * Transform used for rendering
@@ -101,5 +102,18 @@ public abstract class Renderer {
 	 * Shader will already be bound, and generic uniforms will be set.
 	 */
 	protected abstract void onRender();
+	
+	@Override
+	public void onStart() {
+		
+	}
+	@Override
+	public void onTick() {
+		
+	}
+	@Override
+	public void onCleanup() {
+		
+	}
     
 }

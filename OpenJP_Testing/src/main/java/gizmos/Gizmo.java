@@ -2,12 +2,13 @@ package gizmos;
 
 import java.awt.Color;
 
+import game.Component;
 import objects.Transform;
 
 /**
  * Gizmo
  */
-public class Gizmo {
+public class Gizmo extends Component {
     
     /**
      * Renderer for the gizmo
@@ -75,5 +76,12 @@ public class Gizmo {
      */
     public void setParent(Transform parent) {
         transform.parent = parent;
+    }
+
+    /**
+     * Render the gizmo
+     */
+    public void render() {
+        renderer.render();
     }
 }
