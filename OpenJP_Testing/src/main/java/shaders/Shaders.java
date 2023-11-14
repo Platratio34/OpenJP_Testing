@@ -32,6 +32,8 @@ public class Shaders {
             if (name == "main") {
                 mainShader = shader;
             }
+            System.out.println("Loaded shader " + name);
+            shader.bind();
         } catch (Exception e) {
             System.err.println("Error on loading shader " + name + " with frag " + fragPath);
             e.printStackTrace();

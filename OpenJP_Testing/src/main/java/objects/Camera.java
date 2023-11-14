@@ -38,8 +38,11 @@ public class Camera implements TransformUpdate {
 	 */
 	public Camera() {
 		transform = new Transform();
-
+		transform.addUpdate(this);
 		ubo = new CameraUBO();
+
+		recalculatePerspective();
+		recalculateMatrix();
 	}
 	
 	/**

@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL44;
 import org.lwjgl.opengl.GL45;
 
 import java.awt.Color;
@@ -66,9 +65,9 @@ public class Game {
         gameObjects = new ArrayList<GameObject>();
 
         boolean loaded = true;
-        loaded = loaded && Shaders.loadShader(MAIN_SHADER, "shaders/fragment.fs");
-        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/skybox.fs");
         loaded = loaded && Shaders.loadShader(GIZMO_SHADER, "shaders/gizmo.fs");
+        loaded = loaded && Shaders.loadShader(SKYBOX_SHADER, "shaders/skybox.fs");
+        loaded = loaded && Shaders.loadShader(MAIN_SHADER, "shaders/fragment.fs");
         if (!loaded) {
             System.err.println("Could not load main shaders");
         }
@@ -152,8 +151,8 @@ public class Game {
 
         mainCamera.bindUBO();
 
-        GL44.glPolygonMode(GL44.GL_FRONT_AND_BACK, GL44.GL_FILL);
-        GL44.glEnable(GL44.GL_CULL_FACE);
+        GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_FILL);
+        GL45.glEnable(GL45.GL_CULL_FACE);
 
         skybox.render();
         GL45.glEnable(GL45.GL_DEPTH_TEST);
@@ -165,7 +164,7 @@ public class Game {
         
         if (drawGizmos) {
 			profiler.start("gizmos");
-			GL44.glDisable(GL44.GL_DEPTH_TEST);
+			GL45.glDisable(GL45.GL_DEPTH_TEST);
 			for (GameObject gameObject : gameObjects) {
                 if (gameObject.gizmo != null)
                     gameObject.gizmo.render();

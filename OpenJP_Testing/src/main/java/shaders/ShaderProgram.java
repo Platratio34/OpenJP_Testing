@@ -274,8 +274,16 @@ public class ShaderProgram {
      * @param name uniform name
      * @param val uniform value
      */
-	public void uniformSetInt1(String name, int val) {
+    public void uniformSetInt1(String name, int val) {
         bind();
-		GL44.glUniform1i(getUniform(name), val);
-	}
+        GL44.glUniform1i(getUniform(name), val);
+    }
+
+    /**
+     * Get the name of the shader
+     * @return Shader name
+     */
+    public String getName() {
+        return name;
+    }
 }

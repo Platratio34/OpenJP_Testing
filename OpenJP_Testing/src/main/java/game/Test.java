@@ -20,14 +20,14 @@ public class Test {
         game.addGameObject(gOClose);
 
         MeshCache.load("meshes/matCube.bin");
-        // MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
-        // mR.setShader(Shaders.getShader(Game.MAIN_SHADER));
-        // gOClose.addComponent(mR);
+        MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
+        mR.setShader(Shaders.getShader(Game.MAIN_SHADER));
+        gOClose.addComponent(mR);
 
         game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
         game.mainCamera.transform.setRotation(35, -45, 0);
 
-        // gOClose.addComponent(new OriginGizmo());
+        gOClose.addComponent(new OriginGizmo());
 
         game.drawGizmos = true;
 
