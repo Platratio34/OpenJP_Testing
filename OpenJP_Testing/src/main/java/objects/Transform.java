@@ -17,7 +17,7 @@ public class Transform implements TransformUpdate {
 	/**
 	 * Parent transform
 	 */
-	public Transform parent;
+	private Transform parent;
 	
 	private Matrix4f matrix;
 	private Matrix4f matrixInverse;
@@ -221,6 +221,18 @@ public class Transform implements TransformUpdate {
 	 */
 	public Vector3f getScale() {
 		return new Vector3f(scale);
+	}
+
+	public void setParent(Transform parent) {
+		if (this.parent != null)
+			this.parent.removeUpdate(this);
+		this.parent = parent;
+		if (this.parent != null)
+			parent.addUpdate(this);
+	}
+
+	public Transform getParent() {
+		return parent;
 	}
 
 	private void update() {

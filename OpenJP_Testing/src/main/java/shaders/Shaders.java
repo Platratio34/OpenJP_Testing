@@ -11,7 +11,7 @@ public class Shaders {
     private static ShaderProgram mainShader;
 
     /**
-     * Create a new named shader with specified frag shader.<br>
+     * Create a new named shader with specified fragment shader.<br>
      * <br>
      * Uses default vertex shader.
      * @param name shader name
@@ -27,6 +27,38 @@ public class Shaders {
             ShaderProgram shader = new ShaderProgram(name);
             shader.createVertexShaderResource(DEFAULT_VERTEX);
             shader.createFragmentShaderResource(fragPath);
+            shader.link();
+            shaders.put(name, shader);
+            if (name == "main") {
+                mainShader = shader;
+            }
+            System.out.println("Loaded shader " + name);
+            shader.bind();
+        } catch (Exception e) {
+            System.err.println("Error on loading shader " + name + " with frag " + fragPath);
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Create a new named shader with specified fragment shader.<br>
+     * <br>
+     * Uses default vertex shader.
+     * @param name shader name
+     * @param fragPath path to fragment shader file
+     * @return If the shader was loaded
+     */
+    public static boolean loadShaderFile(String name, String fragPath) {
+        if (shaders.containsKey(name)) {
+            System.err.println("[WARN] Shader " + name + " was already loaded");
+            return true;
+        }
+        try {
+            ShaderProgram shader = new ShaderProgram(name);
+            shader.createVertexShaderResource(DEFAULT_VERTEX);
+            shader.createFragmentShader(fragPath);
             shader.link();
             shaders.put(name, shader);
             if (name == "main") {

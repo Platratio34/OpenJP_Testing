@@ -53,6 +53,7 @@ public class Game {
     private long targetFrameTime = 1000 / 30;
     private float targetFPS;
     private float lastFrameTime = 0f;
+    private long lastFrameStart = -1;
 
     public Game() {
         inputSystem = new InputSystem();
@@ -61,6 +62,7 @@ public class Game {
         mainCamera = new Camera();
         window.setCamera(mainCamera);
         window.addKeyboardListener(inputSystem);
+        window.addMouseListener(inputSystem);
 
         gameObjects = new ArrayList<GameObject>();
 
@@ -93,8 +95,13 @@ public class Game {
             gameObject.onStart();
         }
 
+        lastFrameStart = System.currentTimeMillis();
         end = false;
         while (!end) {
+            long cTime = System.currentTimeMillis();
+            lastFrameTime = (cTime - lastFrameStart) / 1000f;
+            lastFrameStart = cTime;
+            
             profiler.startFrame();
             
             inputSystem.onTick();
@@ -109,12 +116,12 @@ public class Game {
 
             profiler.endFrame();
             end = end || window.shouldClose();
-            if(end) continue;
+            if (end)
+                continue;
 
             try {
                 Frame f = profiler.getLastFrame();
                 long sleepTime = targetFrameTime - f.time();
-                lastFrameTime = f.time() / 1000f;
                 if (sleepTime > 2) {
                     Thread.sleep(sleepTime);
                 } else {

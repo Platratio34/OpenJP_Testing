@@ -79,4 +79,8 @@ public class Camera implements TransformUpdate {
 	 * Bind the camera UBO for rendering
 	 */
 	public void bindUBO() {ubo.bindTarget();}
+
+	public void setParent(Transform parent) {
+		transform.setParent(parent);
+    }
 }

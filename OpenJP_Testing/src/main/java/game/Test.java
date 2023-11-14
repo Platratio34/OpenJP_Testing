@@ -1,10 +1,16 @@
 package game;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import org.lwjgl.glfw.GLFW;
 
+import game.simple.FirstPersonFlyCamera;
+import game.simple.PositionTracker;
 import gizmos.OriginGizmo;
+import input.InputBind;
+import input.InputCallback;
+import input.KeyboardBind;
 import objects.MeshCache;
 import objects.MeshRenderer;
 import shaders.Shaders;
@@ -28,8 +34,25 @@ public class Test {
         game.mainCamera.transform.setRotation(35, -45, 0);
 
         gOClose.addComponent(new OriginGizmo());
+        // gOClose.addComponent(new PositionTracker());
 
         game.drawGizmos = true;
+
+        game.addGameObject(FirstPersonFlyCamera.create());
+
+        game.lightingSettings.setAmbientLighting(Color.WHITE);
+
+        game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1);
+        game.inputSystem.addBindCallback("toggleGizmos", new InputCallback() {
+
+            @Override
+            public void onChange(InputBind bind) {
+                KeyboardBind b = (KeyboardBind) bind;
+                if(b.pressed)
+                    game.drawGizmos = !game.drawGizmos;
+            }
+            
+        });
 
         game.run();
     }

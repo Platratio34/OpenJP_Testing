@@ -7,6 +7,8 @@ public abstract class Component {
 
     /** The game object this component is attached to */
     public GameObject gameObject;
+
+    protected Game game;
     
     /**
      * Called before the game loop starts, OR when the object is added added to the game.

@@ -1,72 +1,48 @@
 package input;
 
-import org.lwjgl.glfw.GLFW;
+import java.util.ArrayList;
 
 /**
- * Keyboard input binding
+ * Generic input binding
  */
-public class InputBind {
+public abstract class InputBind {
     
-    /**
-     * Binding keycode (<code>GLFW.GLFW_KEY_*</code>)
-     */
-    public int keycode;
-    /**
-     * If the bind was pressed since last tick
-     */
-    public boolean pressed;
-    /**
-     * If the bind was released since last tick
-     */
-    public boolean released;
-    /**
-     * If the bind is currently down
-     */
-    public boolean down;
+    /** Binding name */
+    public String name;
+
+    private ArrayList<InputCallback> callbacks = new ArrayList<InputCallback>();
 
     /**
-     * Create a new keyboard binding
-     * @param keycode GLFW keycode (<code>GLFW.GLFW_KEY_*</code>)
+     * Process input
+     * @param key keyboard or mouse input
+     * @param action input action
      */
-    public InputBind(int keycode) {
-        this.keycode = keycode;
-    }
+    public abstract void process(int key, int action);
 
     /**
-     * Reset the bind pressed and released state
+     * Reset on tick
      */
-    public void reset() {
-        pressed = false;
-        released = false;
-    }
+    public abstract void reset();
 
     /**
-     * Mark the bind as pressed this tick
+     * Add an on change callback
+     * @param cb on change callback
      */
-    public void press() {
-        pressed = true;
-        down = true;
+    public void addCallback(InputCallback cb) {
+        callbacks.add(cb);
+    }
+    /**
+     * Remove an on change callback
+     * @param cb on change callback
+     */
+    public void removeCallback(InputCallback cb) {
+        callbacks.remove(cb);
     }
 
-    /**
-     * Mark the bind as released this tick
-     */
-    public void release() {
-        released = true;
-        down = false;
+    protected void onChange() {
+        for (InputCallback inputCallback : callbacks) {
+            inputCallback.onChange(this);
+        }
     }
-
-    /**
-     * Process keyboard input
-     * @param key GLFW keycode
-     * @param action GLFW key action
-     */
-    public void process(int key, int action) {
-        if (key != keycode)
-            return;
-        if (action == GLFW.GLFW_PRESS)
-            press();
-        else if (action == GLFW.GLFW_RELEASE)
-            release();
-    }
+    
 }

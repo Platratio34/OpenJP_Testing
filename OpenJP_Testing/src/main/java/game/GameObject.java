@@ -29,6 +29,7 @@ public class GameObject {
         components.add(component);
         component.gameObject = this;
         if (started) {
+            component.game = game;
             component.onStart();
         }
         if (component instanceof Gizmo) {
@@ -57,6 +58,7 @@ public class GameObject {
     public void onStart() {
         started = true;
         for (Component component : components) {
+            component.game = game;
             component.onStart();
         }
     }

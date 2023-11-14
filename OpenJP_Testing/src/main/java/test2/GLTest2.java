@@ -143,7 +143,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         Transform t1 = new Transform();
         t1.setPosition(0.0f, 0.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
-        t1.parent = p1;
+        t1.setParent(p1);
         MeshRenderer r1 = new MeshRenderer(t1, matCubeMesh);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
@@ -152,7 +152,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         Transform t2 = new Transform();
         t2.setPosition(0.0f, 0.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
-        t2.parent = p1;
+        t2.setParent(p1);
         MeshRenderer r2 = new MeshRenderer(t2, matCubeMesh);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
@@ -161,7 +161,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         Transform t3 = new Transform();
         t3.setPosition(0.0f, 1.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
-        t3.parent = p2;
+        t3.setParent(p2);
         MeshRenderer r3 = new MeshRenderer(t3, matCubeMesh);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
@@ -170,7 +170,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         Transform t4 = new Transform();
         t4.setPosition(0.0f, 1.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
-        t4.parent = p2;
+        t4.setParent(p2);
         MeshRenderer r4 = new MeshRenderer(t4, matCubeMesh);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);
@@ -179,7 +179,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         t1 = new Transform();
         t1.setPosition(0.0f, 2.0f, 0.0f);
         t1.setScale(10.0f, 0.1f, 0.1f);
-        t1.parent = p1;
+        t1.setParent(p1);
         r1 = new MeshRenderer(t1, matCubeMesh);
         // r1.setColors(colors2);
 		r1.materials.setMaterial(0, mat2);
@@ -188,7 +188,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         t2 = new Transform();
         t2.setPosition(0.0f, 2.0f, 0.0f);
         t2.setScale(0.1f, 0.1f, 10.0f);
-        t2.parent = p1;
+        t2.setParent(p1);
         r2 = new MeshRenderer(t2, matCubeMesh);
         // r2.setColors(colors2);
 		r2.materials.setMaterial(0, mat2);
@@ -197,7 +197,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         t3 = new Transform();
         t3.setPosition(0.0f, 3.0f, 0.0f);
         t3.setScale(10.0f, 0.1f, 0.1f);
-        t3.parent = p2;
+        t3.setParent(p2);
         r3 = new MeshRenderer(t3, matCubeMesh);
         // r3.setColors(colors3);
 		r3.materials.setMaterial(0, mat3);
@@ -206,7 +206,7 @@ public class GLTest2 implements WindowLoopRunnable, MouseEvent {
         t4 = new Transform();
         t4.setPosition(0.0f, 3.0f, 0.0f);
         t4.setScale(0.1f, 0.1f, 10.0f);
-        t4.parent = p2;
+        t4.setParent(p2);
         r4 = new MeshRenderer(t4, matCubeMesh);
         // r4.setColors(colors3);
 		r4.materials.setMaterial(0, mat3);

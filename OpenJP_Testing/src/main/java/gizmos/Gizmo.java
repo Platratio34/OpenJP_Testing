@@ -76,7 +76,7 @@ public class Gizmo extends Component {
      * @param parent parent transform
      */
     public void setParent(Transform parent) {
-        transform.parent = parent;
+        transform.setParent(parent);
     }
 
     /**
