@@ -38,6 +38,7 @@ public class Camera implements TransformUpdate {
 	 */
 	public Camera() {
 		transform = new Transform();
+		transform.isCamera = true;
 		transform.addUpdate(this);
 		ubo = new CameraUBO();
 
@@ -56,8 +57,8 @@ public class Camera implements TransformUpdate {
 	 * Recalculate and store the transformation matrix
 	 */
 	public void recalculateMatrix() {
-		ubo.setTransformMatrix(transform.getTransformMatrixInverse());
-		ubo.setPosition(transform.getPosition());
+		ubo.setTransformMatrix(transform.getTransformMatrixCamera());
+		ubo.setPosition(transform.getWorldPosition());
 	}
 
 	/**

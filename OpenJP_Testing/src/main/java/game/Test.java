@@ -14,12 +14,15 @@ import input.InputCallback;
 import input.KeyboardBind;
 import objects.MeshCache;
 import objects.MeshRenderer;
+import objects.Texture2D;
 import shaders.Material;
 import shaders.Shaders;
 
 public class Test {
 
     public static void main(String[] args) throws IOException {
+        util.BinMesh.gizmoResourceToBin("meshes/gizmos/camera.gizmo", "src/main/resources/meshes/gizmos/camera.gzb");
+        
         Game game = new Game();
         game.inputSystem.addBind("close", GLFW.GLFW_KEY_ESCAPE);
         GameObject gOClose = new GameObject();
@@ -33,8 +36,8 @@ public class Test {
         mR.materials.setMaterial(0, new Material(Color.white));
         gOClose.addComponent(mR);
 
-        game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
-        game.mainCamera.transform.setRotation(35, -45, 0);
+        // game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
+        // game.mainCamera.transform.setRotation(35, -45, 0);
 
         gOClose.addComponent(new OriginGizmo());
 
@@ -60,7 +63,10 @@ public class Test {
         GameObject plane = PrimitiveCreator.createPlane();
         plane.transform.setScale(100, 100, 100);
         plane.transform.setPosition(0, -0.5f, 0);
-        plane.renderer.materials.getMaterial(0).setColor(new Color(82, 69, 11));
+        Material mat = plane.renderer.materials.getMaterial(0);
+        mat.setColor(new Color(82, 69, 11));
+        mat.setTexture(Texture2D.loadFromPngResource("textures/checkerboard16_2.png"));
+        mat.setTextureScale(5, 5);
         game.addGameObject(plane);
 
         game.run();

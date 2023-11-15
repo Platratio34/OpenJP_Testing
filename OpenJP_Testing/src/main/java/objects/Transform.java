@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 /**
  * Transformation object for position, rotation, and scale
@@ -20,9 +21,12 @@ public class Transform implements TransformUpdate {
 	private Transform parent;
 	
 	private Matrix4f matrix;
-	private Matrix4f matrixInverse;
+	private Matrix4f matrixCamera;
 	
 	private ArrayList<TransformUpdate> updaters;
+
+	/** If this is a transform for a camera */
+	public boolean isCamera;
 	
 	/**
 	 * Create a new transform.
@@ -32,7 +36,7 @@ public class Transform implements TransformUpdate {
 		rotation = new Vector3f();
 		scale = new Vector3f(1.0f);
 		matrix = new Matrix4f();
-		matrixInverse = new Matrix4f();
+		matrixCamera = new Matrix4f();
 		updaters = new ArrayList<TransformUpdate>();
 		recalculateMatrix();
 	}
@@ -47,7 +51,7 @@ public class Transform implements TransformUpdate {
 		this.rotation = rotation;
 		this.scale = scale;
 		matrix = new Matrix4f();
-		matrixInverse = new Matrix4f();
+		matrixCamera = new Matrix4f();
 		updaters = new ArrayList<TransformUpdate>();
 		recalculateMatrix();
 	}
@@ -58,18 +62,27 @@ public class Transform implements TransformUpdate {
 	 * <b>Notifies all listeners</b>
 	 */
 	public void recalculateMatrix() {
-		matrix.identity().translate(position)
-		.rotateX((float)Math.toRadians(rotation.x))
-		.rotateY((float)Math.toRadians(rotation.y))
-		.rotateZ((float)Math.toRadians(rotation.z))
-		.scale(scale);
+		if (isCamera) {
+			matrix.identity();
+			matrix.translate(position);
+			matrix.rotateX((float)Math.toRadians(-rotation.x));
+			matrix.rotateY((float)Math.toRadians(-rotation.y));
+		} else {
+			matrix.identity()
+			.translate(position)
+			.rotateX((float)Math.toRadians(rotation.x))
+			.rotateY((float)Math.toRadians(rotation.y))
+			.rotateZ((float)Math.toRadians(rotation.z))
+			.scale(scale);
+		}
 		
 		// matrix.invertAffine(matrixInverse);
-		matrixInverse.identity()
-		.rotateX((float)Math.toRadians(rotation.x))
-		.rotateY((float)Math.toRadians(rotation.y))
-		.rotateZ((float)Math.toRadians(rotation.z))
-		.translate(-position.x, -position.y, -position.z);
+		matrixCamera.identity();
+		matrixCamera.translate(position.x, position.y, position.z);
+		matrixCamera.rotateY((float)Math.toRadians(-rotation.y));
+		matrixCamera.rotateX((float)Math.toRadians(-rotation.x));
+		// matrixCamera.transpose();
+		// matrixCamera.invertAffine();
 		
 		update();
 	}
@@ -82,7 +95,11 @@ public class Transform implements TransformUpdate {
 //		return createMatrix();
 		if(parent != null) {
 			Matrix4f out = new Matrix4f();
-			parent.getTransformMatrix().mul(matrix, out);
+			if (isCamera) {
+				parent.getTransformMatrix().mul(matrix, out);
+			} else {
+				parent.getTransformMatrixCamera().mul(matrix, out);
+			}
 			return out;
 		}
 		return matrix;
@@ -92,13 +109,13 @@ public class Transform implements TransformUpdate {
 	 * Get the inverse transformation matrix for camera
 	 * @return inverse transformation matrix
 	 */
-	public Matrix4f getTransformMatrixInverse() {
+	public Matrix4f getTransformMatrixCamera() {
 		if (parent != null) {
 			Matrix4f out = new Matrix4f();
-			parent.getTransformMatrixInverse().mul(matrix, out);
+			parent.getTransformMatrixCamera().mul(matrixCamera, out);
 			return out;
 		}
-		return matrixInverse;
+		return matrixCamera;
 	}
 	
 	/**
@@ -207,6 +224,20 @@ public class Transform implements TransformUpdate {
 	 */
 	public Vector3f getPosition() {
 		return new Vector3f(position);
+	}
+
+	public Vector3f getWorldPosition() {
+		Vector3f pos = new Vector3f(position);
+		if (parent != null) {
+			Matrix4f pMatrix = parent.getTransformMatrix();
+			if (isCamera)
+				pMatrix = parent.getTransformMatrixCamera();
+			Vector4f vec4 = new Vector4f(pos.x, pos.y, pos.z, 1.0f).mul(pMatrix);
+			pos.x = vec4.x;
+			pos.y = vec4.y;
+			pos.z = vec4.z;
+		}
+		return pos;
 	}
 	/**
 	 * Get the current rotation of the transform

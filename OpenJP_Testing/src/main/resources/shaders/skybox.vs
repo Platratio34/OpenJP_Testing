@@ -26,7 +26,7 @@ uniform bool useColor;
 
 void main()
 {
-    vec4 pos = cameraProjection * cameraTransform * vec4(position+cameraPosition, 1.0);
+    vec4 pos = cameraProjection * inverse(cameraTransform) * vec4(position+cameraPosition, 1.0);
     // pos.z = pos.w;
     // pos = pos / pos.w;
     // pos.z = 0.9;

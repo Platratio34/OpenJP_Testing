@@ -40,9 +40,9 @@ public class OriginGizmo extends Gizmo {
     @Override
     public void onStart() {
         if (!renderer.hasShader()) {
-            renderer.setShader(Shaders.getMainShader());
-            originY.setShader(Shaders.getMainShader());
-            originZ.setShader(Shaders.getMainShader());
+            renderer.setShader(Shaders.getShader("gizmo"));
+            originY.setShader(Shaders.getShader("gizmo"));
+            originZ.setShader(Shaders.getShader("gizmo"));
         }
     }
     
@@ -51,5 +51,12 @@ public class OriginGizmo extends Gizmo {
         renderer.render();
         originY.render();
         originZ.render();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        renderer.setVisible(visible);
+        originY.setVisible(visible);
+        originZ.setVisible(visible);
     }
 }

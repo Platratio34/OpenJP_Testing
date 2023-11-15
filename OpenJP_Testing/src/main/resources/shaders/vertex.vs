@@ -26,7 +26,7 @@ uniform bool useColor;
 
 void main()
 {
-    gl_Position = cameraProjection * (cameraTransform * transformMatrix * vec4(position, 1.0));
+    gl_Position = cameraProjection * (inverse(cameraTransform) * transformMatrix * vec4(position, 1.0));
     if(useColor) {
     	matId = -1.0;
     } else {

@@ -8,6 +8,8 @@ public class GizmoType {
     public static final String AXIS = "axis";
     /** Square Pyramid Gizmo */
     public static final String PYRAMID = "pyramid";
+    /** Camera gizmo (pyramid facing -Z) */
+    public static final String CAMERA = "camera";
 
     /** Origin Gizmo (+x, +y, +z) */
     public static final String ORIGIN = "origin";

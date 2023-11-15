@@ -88,7 +88,15 @@ public class Gizmo extends Component {
 
     @Override
     public void onStart() {
-        if(!renderer.hasShader())
-            renderer.setShader(Shaders.getMainShader());
+        if (!renderer.hasShader())
+            renderer.setShader(Shaders.getShader("gizmo"));
+    }
+
+    /**
+     * Set if the gizmo should be drawn
+     * @param visible draw gizmo
+     */
+    public void setVisible(boolean visible) {
+        renderer.setVisible(visible);
     }
 }

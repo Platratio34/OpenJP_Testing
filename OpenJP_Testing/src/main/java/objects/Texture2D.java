@@ -8,6 +8,7 @@ import oldObjects.Triangle;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
@@ -205,7 +206,11 @@ public class Texture2D {
 	 */
 	public static Texture2D loadFromPngResource(String path) throws IOException {
 		ClassLoader classLoader = Triangle.class.getClassLoader();
-		BufferedImage bi = ImageIO.read(classLoader.getResourceAsStream(path));
+		InputStream iS = classLoader.getResourceAsStream(path);
+		if (iS == null) {
+			throw new IOException("Could not load rescues \""+path+"\"");
+		}
+		BufferedImage bi = ImageIO.read(iS);
 		// int[] data = ((DataBufferInt) bi.getRaster().getDataBuffer()).getData();
 		int w = bi.getWidth();
 		int h = bi.getHeight();
