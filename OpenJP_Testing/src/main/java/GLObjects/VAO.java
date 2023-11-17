@@ -59,6 +59,14 @@ public class VAO {
 		GL44.glVertexAttribPointer(attrib, size, GL44.GL_FLOAT, false, 0, 0);
 		abo.unbind();
 	}
+
+	/**
+	 * Store vertex data
+	 * @param vertices flattened array of vector 3 vertex data (ordered x, y, z)
+	 */
+	public void storeVertexData(float[] vertices) {
+		storeDataInAttributeList(ATTRIB_VERTEX, vertices, 3);
+	}
 	
 	/**
 	 * Store vertex and index data

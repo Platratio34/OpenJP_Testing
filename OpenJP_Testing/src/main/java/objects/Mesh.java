@@ -8,6 +8,8 @@ import java.io.File;
 import org.lwjgl.opengl.GL44;
 
 import GLObjects.VAO;
+import util.MeshData;
+
 import java.io.InputStreamReader;
 
 /**
@@ -15,17 +17,11 @@ import java.io.InputStreamReader;
  */
 public class Mesh {
 
-	/**
-	 * Vertex Array Object for mesh
-	 */
+	/** Vertex Array Object for mesh */
 	private VAO vao;
-	/**
-	 * Number of vertices or indices depending on mode
-	 */
+	/** Number of vertices or indices depending on mode */
 	private int indexLength;
-	/**
-	 * If the mesh should be rendered using indices
-	 */
+	/** If the mesh should be rendered using indices */
 	private boolean indexMode = false;
 
 	/**
@@ -62,6 +58,15 @@ public class Mesh {
 	}
 
 	/**
+	 * Create a new mesh from a MeshData object
+	 */
+	public Mesh(MeshData data) {
+		vao = new VAO();
+
+		set(data);
+	}
+
+	/**
 	 * Set the vertices of the mesh
 	 * 
 	 * @param vertices
@@ -92,6 +97,24 @@ public class Mesh {
 	 */
 	public void setUVs(float[] uvs) {
 		vao.storeUVData(uvs);
+	}
+
+	/**
+	 * Set the values of the mesh from a MeshData
+	 */
+	public void set(MeshData data) {
+		if(data.indicies != null) {
+			vao.storeVertexIndexData(data.verticies, data.indicies);
+			indexLength = data.indicies.length;
+			indexMode = true;
+		} else {
+			vao.storeVertexData(data.verticies);
+			indexLength = data.verticies.length;
+		}
+		vao.storeColorData(data.colors);
+		vao.storeNormalData(data.normals);
+		if(data.uvs != null)
+			vao.storeUVData(data.uvs);
 	}
 
 	/**
@@ -149,7 +172,10 @@ public class Mesh {
 	 * 
 	 * @param str mesh string
 	 * @return Mesh from the string
+	 * 
+	 * @deprecated use meshDataFromString and mesh data constructor
 	 */
+	@Deprecated
 	public static Mesh createFromString(String str) {
 		return createFromString(str, new Mesh());
 	}
@@ -160,7 +186,10 @@ public class Mesh {
 	 * @param str  mesh string
 	 * @param mesh mesh to initialize
 	 * @return Mesh from the string
+	 * 
+	 * @deprecated use meshDataFromString and mesh data constructor
 	 */
+	@Deprecated
 	public static Mesh createFromString(String str, Mesh mesh) {
 		String[] components = str.split(";");
 		int sI = 0;
@@ -233,6 +262,83 @@ public class Mesh {
 	}
 
 	/**
+	 * Create MeshData from a mesh plain text file
+	 * @param str plain text mesh data
+	 * @return MeshData from file
+	 */
+	public static MeshData meshDataFromString(String str) {
+		MeshData data = new MeshData();
+		String[] components = str.split(";");
+		int sI = 0;
+		int vI = 0;
+		int cI = 1;
+		int nI = 2;
+		int mI = -1;
+
+		if (components[0].contains("format=")) {
+			sI++;
+			String[] parts = components[0].substring(8).split(",");
+			// vI = -1;
+			cI = -1;
+			nI = -1;
+			for (int i = 0; i < parts.length; i++) {
+				if (parts[i].equals("vertex")) {
+					vI = i;
+				} else if (parts[i].equals("color")) {
+					cI = i;
+				} else if (parts[i].equals("normal")) {
+					nI = i;
+				} else if (parts[i].equals("mat")) {
+					mI = i;
+				}
+			}
+		}
+
+		int vLength = components.length - sI;
+		float[] verts = new float[vLength];
+		float[] colors = new float[vLength];
+		float[] normals = new float[vLength];
+
+		int type = 0;
+		int arrI = 0;
+		for (int i = sI; i < components.length; i++) {
+			String[] parts = components[i].split(",");
+			if (type == vI) {
+				verts[arrI] = Float.parseFloat(parts[0]);
+				verts[arrI + 1] = Float.parseFloat(parts[1]);
+				verts[arrI + 2] = Float.parseFloat(parts[2]);
+				// System.out.print(String.format("v=%f,%f,%f; ", verts[arrI], verts[arrI+1],
+				// verts[arrI+2]));
+			} else if (type == cI) {
+				colors[arrI] = Float.parseFloat(parts[0]);
+				colors[arrI + 1] = Float.parseFloat(parts[1]);
+				colors[arrI + 2] = Float.parseFloat(parts[2]);
+				// System.out.print(String.format("c=%f,%f,%f; ", colors[arrI], colors[arrI+1],
+				// colors[arrI+2]));
+			} else if (type == nI) {
+				normals[arrI] = Float.parseFloat(parts[0]);
+				normals[arrI + 1] = Float.parseFloat(parts[1]);
+				normals[arrI + 2] = Float.parseFloat(parts[2]);
+				// System.out.print(String.format("n=%f,%f,%f; ", normals[arrI],
+				// normals[arrI+1], normals[arrI+2]));
+			} else if (type == mI) {
+				colors[arrI] = Float.parseFloat(parts[0]);
+			}
+
+			type = (type + 1) % 3;
+			if (type == 0) {
+				arrI += 3;
+				// System.out.println("");
+			}
+		}
+
+		data.verticies = verts;
+		data.colors = colors;
+		data.normals = normals;
+		return data;
+	}
+
+	/**
 	 * Create a new mesh from mesh file
 	 * 
 	 * @param path path to plain text mesh file
@@ -262,7 +368,10 @@ public class Mesh {
 			line = br.readLine();
 		}
 		br.close();
-		return createFromString(str, mesh);
+		// return createFromString(str, mesh);
+		MeshData data = meshDataFromString(str);
+		mesh.set(data);
+		return mesh;
 	}
 
 	/**
@@ -288,6 +397,16 @@ public class Mesh {
 			line = br.readLine();
 		}
 		br.close();
-		return createFromString(str);
+		// return createFromString(str);
+		return new Mesh(meshDataFromString(str));
+	}
+
+	/**
+	 * Check if the provided MeshData is valid for creating a mesh
+	 * @param data MeshData to check
+	 * @return Valid for creating a Mesh
+	 */
+	public static boolean validateMeshData(MeshData data) {
+		return (data.type.equals("MESH")) && (data.verticies != null) && (data.colors != null) && (data.normals != null);
 	}
 }

@@ -35,6 +35,10 @@ public class BinMesh {
 	/** UV section id */
 	private static final int SECTION_UV = 0x05;
 
+	/*
+	 * Number converter functions
+	 */
+
 	/**
 	 * Convert a float to byte array<br><br>
 	 * Uses IEEE 754 floating-point "single format"
@@ -107,6 +111,10 @@ public class BinMesh {
 		return b0 << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF);
 	}
     
+	/*
+	 * Old converter functions
+	 */
+
 	/**
 	 * Convert a mesh string to byte array
 	 * @param str mesh string
@@ -591,4 +599,170 @@ public class BinMesh {
 		return gizmoFromBin(bos.toByteArray());
 	}
 
+	/**
+	 * Converts mesh data to byte array
+	 * @param mesh MeshData to convert
+	 * @return Byte array representing the mesh
+	 */
+	public static byte[] meshDataToBin(MeshData mesh) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+		// Write file header
+        out.write(mesh.type.charAt(0));
+        out.write(mesh.type.charAt(1));
+        out.write(mesh.type.charAt(2));
+		out.write(mesh.type.charAt(3));
+		
+		// Section header for vertices
+		out.write(SECTION_VERT);
+		out.write(TYPE_FLOAT);
+		out.write(mesh.verticies.length / 0x100);
+		out.write(mesh.verticies.length % 0x100);
+		
+		// Write vertices
+		for (int i = 0; i < mesh.verticies.length; i++) {
+			byte[] b = floatToBin(mesh.verticies[i]);
+			out.write(b[0]);
+			out.write(b[1]);
+			out.write(b[2]);
+			out.write(b[3]);
+		}
+
+		if(mesh.indicies != null) {
+			// Section header for colors
+			out.write(SECTION_INDICES);
+			out.write(TYPE_UINT);
+			out.write(mesh.indicies.length / 0x100);
+			out.write(mesh.indicies.length % 0x100);
+			
+			// Write colors
+			for (int i = 0; i < mesh.indicies.length; i++) {
+				byte[] b = uIntToBin(mesh.indicies[i]);
+				out.write(b[0]);
+				out.write(b[1]);
+				out.write(b[2]);
+				out.write(b[3]);
+			}
+		}
+		
+		if(mesh.colors != null) {
+			// Section header for colors
+			out.write(SECTION_COLOR);
+			out.write(TYPE_FLOAT);
+			out.write(mesh.colors.length / 0x100);
+			out.write(mesh.colors.length % 0x100);
+			
+			// Write colors
+			for (int i = 0; i < mesh.colors.length; i++) {
+				byte[] b = floatToBin(mesh.colors[i]);
+				out.write(b[0]);
+				out.write(b[1]);
+				out.write(b[2]);
+				out.write(b[3]);
+			}
+		}
+		
+		if(mesh.normals != null) {
+			// Section header for normals
+			out.write(SECTION_NORM);
+			out.write(TYPE_FLOAT);
+			out.write(mesh.normals.length / 0x100);
+			out.write(mesh.normals.length % 0x100);
+			
+			// Write normals
+			for (int i = 0; i < mesh.normals.length; i++) {
+				byte[] b = floatToBin(mesh.normals[i]);
+				out.write(b[0]);
+				out.write(b[1]);
+				out.write(b[2]);
+				out.write(b[3]);
+			}
+		}
+		
+		if(mesh.uvs != null) {
+			// Section header for uvs
+			out.write(SECTION_UV);
+			out.write(TYPE_FLOAT);
+			out.write(mesh.uvs.length / 0x100);
+			out.write(mesh.uvs.length % 0x100);
+			
+			// Write normals
+			for (int i = 0; i < mesh.uvs.length; i++) {
+				byte[] b = floatToBin(mesh.uvs[i]);
+				out.write(b[0]);
+				out.write(b[1]);
+				out.write(b[2]);
+				out.write(b[3]);
+			}
+		}
+		
+		// File end section header
+		out.write(SECTION_END);
+		out.write(0x00);
+		out.write(0x00);
+		out.write(0x00);
+
+		return out.toByteArray();
+	}
+
+	/**
+	 * Convert a byte array to mesh data
+	 * @param bytes byte array representing a mesh
+	 * @return MeshData created from byte array
+	 */
+	public static MeshData binToMeshData(byte[] bytes) {
+		// if (bytes[0] != 'M' || bytes[1] != 'E' || bytes[2] != 'S' || bytes[3] != 'H') { // Check that this is a mesh file
+		// 	System.err.println("Could not load mesh; file type mismatch");
+		// 	return null;
+		// }
+		MeshData mesh = new MeshData();
+		// float[] vertices = null;
+		// float[] colors = null;
+		// float[] normals = null;
+		// float[] uvs = null;
+
+		mesh.type = "" + (char)bytes[0] + (char)bytes[1] + (char)bytes[2] + (char)bytes[3];
+
+		int cSection = (int) bytes[4];
+		int pointer = 4;
+		while (cSection != SECTION_END) {
+			byte dType = bytes[pointer + 1];
+			int length = (bytes[pointer + 2] * 0x100) + bytes[pointer + 3];
+			// System.out.println(cSection + " " + dType + " " + length);
+			pointer += 4; // move to start of data
+
+			if (dType == TYPE_FLOAT) { // float
+				float[] arr = new float[length];
+				int aI = 0;
+				for (int i = pointer; i < pointer + (length * 4); i += 4) {
+					float f = binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					arr[aI] = f;
+					aI++;
+				}
+				if (cSection == SECTION_VERT) {
+					mesh.verticies = arr;
+				} else if (cSection == SECTION_COLOR) {
+					mesh.colors = arr;
+				} else if (cSection == SECTION_NORM) {
+					mesh.normals = arr;
+				} else if (cSection == SECTION_UV) {
+					mesh.uvs = arr;
+				}
+			} else if (dType == TYPE_UINT) {
+				int[] arr = new int[length];
+				int aI = 0;
+				for (int i = pointer; i < pointer + (length * 4); i += 4) {
+					int n = binToUInt(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					arr[aI] = n;
+					aI++;
+				}
+				if (cSection == SECTION_INDICES) {
+					mesh.indicies = arr;
+				}
+			}
+			pointer += length*4; // move pointer to next header
+			cSection = (int) bytes[pointer];
+		}
+		return mesh;
+	}
 }
