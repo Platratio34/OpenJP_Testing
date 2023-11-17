@@ -244,10 +244,15 @@ public class Transform implements TransformUpdate {
 		return pos;
 	}
 
+	/**
+	 * Get a posittion offset from this transform.<br>
+	 * <br>
+	 * Equivelent to <code>transform.getTransformMatrix().transformPosition(offset)
+	 * @param offset offset from transform
+	 * @return world space position
+	 */
 	public Vector3f getPosition(Vector3f offset) {
-		Matrix4f mat = getTransformMatrix();
-		Vector4f pos = new Vector4f(offset.x, offset.y, offset.z, 1.0f).mul(mat);
-		return new Vector3f(pos.x, pos.y, pos.z);
+		return getTransformMatrix().transformPosition(new Vector3f(offset));
 	}
 
 	/**
