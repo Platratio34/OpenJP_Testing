@@ -22,7 +22,7 @@ public class Triangle {
     }
 
     /**
-     * Check if another triangle intersetcs this one
+     * Check if another triangle intersects this one
      * @param other triangle to check for collision with
      * @return If the triangles collide
      */
@@ -30,7 +30,7 @@ public class Triangle {
         return other.intersects(point1, point2) || other.intersects(point2, point3) || other.intersects(point3, point1); 
     }
     /**
-     * Check if another triangle intersetcs this one
+     * Check if another triangle intersects this one
      * @param other triangle to check for collision with
      * @param thisMatrix transformation matrix for this triangle
      * @param otherMatrix transformation for the other triangle
@@ -79,7 +79,7 @@ public class Triangle {
     }
     
     /**
-     * Check if the volume of the tetraheadron abcd is positive or negative
+     * Check if the volume of the tetrahedron abcd is positive or negative
      * @param a
      * @param b
      * @param c

@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import game.Component;
 
 /**
- * Triangle bassed collider
+ * Triangle based collider
  */
 public class Collider extends Component {
 
@@ -25,40 +25,40 @@ public class Collider extends Component {
     }
 
     /**
-     * Create a new collider from an array of verticies.<br>
+     * Create a new collider from an array of vertices.<br>
      * <br>
-     * Creates triangles out of every 3 verticies sequentialy.
+     * Creates triangles out of every 3 vertices sequential.
      * 
-     * @param points array of verticies
+     * @param vertices array of vertices
      */
-    public Collider(Vector3f[] points) {
-        triangles = new Triangle[points.length / 3];
+    public Collider(Vector3f[] vertices) {
+        triangles = new Triangle[vertices.length / 3];
         for (int i = 0; i < triangles.length; i++) {
             triangles[i] = new Triangle(
-                    points[(i * 3)],
-                    points[(i * 3) + 1],
-                    points[(i * 3) + 2]);
+                    vertices[(i * 3)],
+                    vertices[(i * 3) + 1],
+                    vertices[(i * 3) + 2]);
         }
         computeBounds();
     }
 
     /**
-     * Creates a new collider from an array of flattend verticies.<br>
+     * Creates a new collider from an array of flatted vertices.<br>
      * <br>
-     * Creates a vertex from every 3 points sequentialy (orderd x,y,z).<br>
+     * Creates a vertex from every 3 points sequentially (ordered x,y,z).<br>
      * <br>
-     * Creates triangles out of every 3 verticies sequentialy.
+     * Creates triangles out of every 3 vertices sequentially.
      * 
-     * @param flatPoints
+     * @param flatVertices
      */
-    public Collider(float[] flatPoints) {
-        triangles = new Triangle[flatPoints.length / 9];
+    public Collider(float[] flatVertices) {
+        triangles = new Triangle[flatVertices.length / 9];
         for (int i = 0; i < triangles.length; i++) {
             int pI = i * 9;
             triangles[i] = new Triangle(
-                    new Vector3f(flatPoints[pI + 0], flatPoints[pI + 1], flatPoints[pI + 2]),
-                    new Vector3f(flatPoints[pI + 3], flatPoints[pI + 4], flatPoints[pI + 5]),
-                    new Vector3f(flatPoints[pI + 6], flatPoints[pI + 7], flatPoints[pI + 8]));
+                    new Vector3f(flatVertices[pI + 0], flatVertices[pI + 1], flatVertices[pI + 2]),
+                    new Vector3f(flatVertices[pI + 3], flatVertices[pI + 4], flatVertices[pI + 5]),
+                    new Vector3f(flatVertices[pI + 6], flatVertices[pI + 7], flatVertices[pI + 8]));
         }
         computeBounds();
     }
@@ -94,10 +94,10 @@ public class Collider extends Component {
     }
 
     /**
-     * Check if the 2 colliders are within their bounding distances of
-     * eachother.<b>DOES NOT MEAN COLLISION</b>
+     * Check if the 2 colliders are within their bounding distances of each other.
+     * <b>DOES NOT MEAN COLLISION</b>
      * 
-     * @param other collider to check agains
+     * @param other collider to check against
      * @return if distance is less than bounding distance
      */
     public boolean checkBound(Collider other) {

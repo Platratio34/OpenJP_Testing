@@ -245,9 +245,9 @@ public class Transform implements TransformUpdate {
 	}
 
 	/**
-	 * Get a posittion offset from this transform.<br>
+	 * Get a position offset from this transform.<br>
 	 * <br>
-	 * Equivelent to <code>transform.getTransformMatrix().transformPosition(offset)
+	 * Equivalent to <code>transform.getTransformMatrix().transformPosition(offset)
 	 * @param offset offset from transform
 	 * @return world space position
 	 */

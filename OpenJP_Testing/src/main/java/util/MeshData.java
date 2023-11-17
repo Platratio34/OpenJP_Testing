@@ -7,8 +7,8 @@ public class MeshData {
 
     public String type = "";
     
-    public float[] verticies;
-    public int[] indicies;
+    public float[] vertices;
+    public int[] indices;
 
     public float[] colors;
     public float[] normals;

@@ -631,28 +631,28 @@ public class BinMesh {
 		// Section header for vertices
 		out.write(SECTION_VERT);
 		out.write(TYPE_FLOAT);
-		out.write(mesh.verticies.length / 0x100);
-		out.write(mesh.verticies.length % 0x100);
+		out.write(mesh.vertices.length / 0x100);
+		out.write(mesh.vertices.length % 0x100);
 		
 		// Write vertices
-		for (int i = 0; i < mesh.verticies.length; i++) {
-			byte[] b = floatToBin(mesh.verticies[i]);
+		for (int i = 0; i < mesh.vertices.length; i++) {
+			byte[] b = floatToBin(mesh.vertices[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
 			out.write(b[3]);
 		}
 
-		if(mesh.indicies != null) {
+		if(mesh.indices != null) {
 			// Section header for colors
 			out.write(SECTION_INDICES);
 			out.write(TYPE_UINT);
-			out.write(mesh.indicies.length / 0x100);
-			out.write(mesh.indicies.length % 0x100);
+			out.write(mesh.indices.length / 0x100);
+			out.write(mesh.indices.length % 0x100);
 			
 			// Write colors
-			for (int i = 0; i < mesh.indicies.length; i++) {
-				byte[] b = uIntToBin(mesh.indicies[i]);
+			for (int i = 0; i < mesh.indices.length; i++) {
+				byte[] b = uIntToBin(mesh.indices[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -755,7 +755,7 @@ public class BinMesh {
 					aI++;
 				}
 				if (cSection == SECTION_VERT) {
-					mesh.verticies = arr;
+					mesh.vertices = arr;
 				} else if (cSection == SECTION_COLOR) {
 					mesh.colors = arr;
 				} else if (cSection == SECTION_NORM) {
@@ -772,7 +772,7 @@ public class BinMesh {
 					aI++;
 				}
 				if (cSection == SECTION_INDICES) {
-					mesh.indicies = arr;
+					mesh.indices = arr;
 				}
 			}
 			pointer += length*4; // move pointer to next header

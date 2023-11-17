@@ -103,13 +103,13 @@ public class Mesh {
 	 * Set the values of the mesh from a MeshData
 	 */
 	public void set(MeshData data) {
-		if(data.indicies != null) {
-			vao.storeVertexIndexData(data.verticies, data.indicies);
-			indexLength = data.indicies.length;
+		if(data.indices != null) {
+			vao.storeVertexIndexData(data.vertices, data.indices);
+			indexLength = data.indices.length;
 			indexMode = true;
 		} else {
-			vao.storeVertexData(data.verticies);
-			indexLength = data.verticies.length;
+			vao.storeVertexData(data.vertices);
+			indexLength = data.vertices.length;
 		}
 		vao.storeColorData(data.colors);
 		vao.storeNormalData(data.normals);
@@ -403,7 +403,7 @@ public class Mesh {
 			}
 		}
 
-		data.verticies = verts;
+		data.vertices = verts;
 		data.colors = colors;
 		data.normals = normals;
 		return data;
@@ -415,6 +415,6 @@ public class Mesh {
 	 * @return Valid for creating a Mesh
 	 */
 	public static boolean validateMeshData(MeshData data) {
-		return (data.type.equals("MESH")) && (data.verticies != null) && (data.colors != null) && (data.normals != null);
+		return (data.type.equals("MESH")) && (data.vertices != null) && (data.colors != null) && (data.normals != null);
 	}
 }
