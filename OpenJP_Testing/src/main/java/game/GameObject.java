@@ -20,6 +20,8 @@ public class GameObject {
     public Renderer renderer;
     public Gizmo gizmo;
 
+    public String name;
+
     public GameObject() {
         transform = new Transform();
         components = new ArrayList<Component>();

@@ -11,10 +11,12 @@ import input.InputSystem;
 import lighting.LightingSettings;
 import objects.Camera;
 import objects.MeshCache;
+import objects.Renderer;
 import profiling.Frame;
 import profiling.Profiler;
 import shaders.Shaders;
 import shaders.SkyBox;
+import shaders.Uniform;
 import windows.GlfwWindow;
 
 public class Game {
@@ -55,6 +57,8 @@ public class Game {
     private float lastFrameTime = 0f;
     private long lastFrameStart = -1;
 
+    private Uniform blendClipUniform;
+
     public Game() {
         inputSystem = new InputSystem();
 
@@ -73,6 +77,7 @@ public class Game {
         if (!loaded) {
             System.err.println("Could not load main shaders");
         }
+        blendClipUniform = new Uniform(Shaders.getMainShader(), "blendClip");
 
         skybox = new SkyBox();
         skybox.setShader(Shaders.getShader(SKYBOX_SHADER));
@@ -165,9 +170,24 @@ public class Game {
         GL45.glClear(GL45.GL_DEPTH_BUFFER_BIT);
         GL45.glEnable(GL45.GL_DEPTH_TEST);
 
-        for (GameObject gameObject : gameObjects) {
-            if (gameObject.renderer != null)
+        // GL45.glEnable(GL45.GL_)
+        GL45.glEnable(GL45.GL_BLEND);
+        GL45.glBlendFunc(GL45.GL_SRC_ALPHA, GL45.GL_ONE_MINUS_SRC_ALPHA);
+
+        blendClipUniform.setFloat(1.0f);
+        ArrayList<Renderer> deferredTransparent = new ArrayList<Renderer>();
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject gameObject = gameObjects.get(i);
+            if (gameObject.renderer != null) {
+                if (gameObject.renderer.defferTransparency) {
+                    deferredTransparent.add(gameObject.renderer);
+                }
                 gameObject.renderer.render();
+            }
+        }
+        blendClipUniform.setFloat(0.0f);
+        for (Renderer renderer : deferredTransparent) {
+            renderer.render();
         }
         
         if (drawGizmos) {

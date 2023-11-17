@@ -14,8 +14,9 @@ uniform vec3 ambientColor;
 uniform vec3 globalLightDir;
 uniform vec3 globalLightColor;
 
-layout(std140, binding = 1) uniform Camera
-{
+uniform float blendClip;
+
+layout(std140, binding = 1) uniform Camera {
     mat4 cameraProjection;
     mat4 cameraTransform;
     vec3 cameraPosition;
@@ -32,16 +33,26 @@ struct light {
 
 uniform light[16] lights;
 
-struct material {
+// struct material {
+// 	vec4 color;
+// 	float smoothness;
+// 	bool textured;
+// 	vec2 textureScale;
+// 	vec2 textureOffset;
+// 	layout(bindless_sampler) sampler2D texture;
+// };
+
+// uniform material[16] materials;
+
+layout(std140, binding = 2) uniform Material {
 	vec4 color;
 	float smoothness;
 	bool textured;
 	vec2 textureScale;
 	vec2 textureOffset;
 	layout(bindless_sampler) sampler2D texture;
-};
+} materials[2];
 
-uniform material[16] materials;
 
 layout(bindless_sampler) uniform sampler2D defaultTexture;
 
@@ -58,6 +69,9 @@ void main()
 			uv = uv * materials[int(matId)].textureScale;
 			color = color * texture(materials[int(matId)].texture, uv);
 		}
+	}
+	if(color.a < blendClip) {
+		discard;
 	}
 
 	if(unlit || wire) {

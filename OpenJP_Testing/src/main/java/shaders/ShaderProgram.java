@@ -31,6 +31,8 @@ public class ShaderProgram {
 
     /** UBO binding point for camera data */
     public static final int CAMERA_UNIFORM_BLOCK = 1;
+    /** UBO binding point for camera data */
+    public static final int MATERIAL_UNIFORM_BLOCK_BASE = 2;
 
     /** Name of the shader program */
     private String name;

@@ -27,8 +27,18 @@ struct material {
 };
 
 uniform material[16] materials;
+
 // uniform sampler2DArray textures;
 // uniform sampler2D textures[16];
+
+// layout(std140, binding = 2) uniform Material {
+// 	vec4 color;
+// 	float smoothness;
+// 	bool textured;
+// 	vec2 textureScale;
+// 	vec2 textureOffset;
+// 	layout(bindless_sampler) sampler2D texture;
+// } materials[8];
 
 uniform sampler2D defaultTexture;
 

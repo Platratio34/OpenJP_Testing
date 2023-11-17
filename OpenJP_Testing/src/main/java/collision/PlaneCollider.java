@@ -2,9 +2,12 @@ package collision;
 
 import org.joml.Vector3f;
 
-public class FlatPlaneCollider extends Collider {
+/**
+ * Plane primitive collider
+ */
+public class PlaneCollider extends Collider {
 
-    public FlatPlaneCollider() {
+    public PlaneCollider() {
         super(new Triangle[2]);
         
         Vector3f p1 = new Vector3f(0.5f, 0.0f, 0.5f);

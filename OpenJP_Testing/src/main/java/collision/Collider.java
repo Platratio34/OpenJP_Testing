@@ -4,6 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import game.Component;
+import objects.Transform;
+import util.MeshData;
 
 /**
  * Triangle based collider
@@ -13,6 +15,17 @@ public class Collider extends Component {
     protected Triangle[] triangles;
 
     protected float boundDist;
+
+    public Transform transform;
+
+    protected Collider() {
+        transform = new Transform();
+    }
+
+    @Override
+    public void onStart() {
+        transform.setParent(gameObject.transform);
+    }
 
     /**
      * Create a new collider from an array of triangles
@@ -63,6 +76,14 @@ public class Collider extends Component {
         computeBounds();
     }
 
+    /**
+     * Create a new collider from a mesh data object
+     * @param data
+     */
+    public Collider(MeshData data) {
+        this(data.vertices);
+    }
+
     private void computeBounds() {
         boundDist = 0;
         for (Triangle triangle : triangles) {
@@ -79,8 +100,8 @@ public class Collider extends Component {
      * @return
      */
     public boolean checkCollision(Collider other) {
-        Matrix4f thisMatrix = gameObject.transform.getTransformMatrix();
-        Matrix4f otherMatrix = other.gameObject.transform.getTransformMatrix();
+        Matrix4f thisMatrix = transform.getTransformMatrix();
+        Matrix4f otherMatrix = other.transform.getTransformMatrix();
         if (!checkBound(other, thisMatrix, otherMatrix))
             return false;
         for (int i = 0; i < triangles.length; i++) {
@@ -101,8 +122,8 @@ public class Collider extends Component {
      * @return if distance is less than bounding distance
      */
     public boolean checkBound(Collider other) {
-        Matrix4f thisMatrix = gameObject.transform.getTransformMatrix();
-        Matrix4f otherMatrix = other.gameObject.transform.getTransformMatrix();
+        Matrix4f thisMatrix = transform.getTransformMatrix();
+        Matrix4f otherMatrix = other.transform.getTransformMatrix();
         return checkBound(other, thisMatrix, otherMatrix);
     }
 

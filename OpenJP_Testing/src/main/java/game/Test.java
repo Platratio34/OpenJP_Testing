@@ -24,6 +24,7 @@ public class Test {
         util.BinMesh.gizmoResourceToBin("meshes/gizmos/camera.gizmo", "src/main/resources/meshes/gizmos/camera.gzb");
         
         Game game = new Game();
+
         game.inputSystem.addBind("close", GLFW.GLFW_KEY_ESCAPE);
         GameObject gOClose = new GameObject();
         GameCloser gC = new GameCloser();
@@ -33,7 +34,8 @@ public class Test {
         MeshCache.load("meshes/matCube.bin");
         MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
         mR.setShader(Shaders.getShader(Game.MAIN_SHADER));
-        mR.materials.setMaterial(0, new Material(Color.white));
+        mR.materials.setMaterial(0, new Material(new Color(255, 255, 255)));
+        mR.defferTransparency = true;
         gOClose.addComponent(mR);
 
         // game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
@@ -59,10 +61,28 @@ public class Test {
             }
             
         });
+        game.inputSystem.addBind("toggleAlpha", GLFW.GLFW_KEY_2, new InputCallback() {
+            private boolean al = false;
+
+            @Override
+            public void onChange(InputBind bind) {
+                KeyboardBind b = (KeyboardBind) bind;
+                if (b.pressed) {
+                    al = !al;
+                    if (al) {
+                        mR.materials.getMaterial(0).setColor(new Color(255, 255, 255, 128));
+                    } else {
+                        mR.materials.getMaterial(0).setColor(new Color(255, 255, 255, 255));
+                    }
+                }
+            }
+            
+        });
 
         GameObject plane = PrimitiveCreator.createPlane();
         plane.transform.setScale(100, 100, 100);
         plane.transform.setPosition(0, -0.5f, 0);
+        plane.name = "Plane";
         Material mat = plane.renderer.materials.getMaterial(0);
         mat.setColor(new Color(82, 69, 11));
         mat.setTexture(Texture2D.loadFromPngResource("textures/checkerboard16_2.png"));

@@ -359,32 +359,35 @@ public class BinMesh {
 					uvs = arr;
 				}
 			}
-			pointer += length*4; // move pointer to next header
+			pointer += length * 4; // move pointer to next header
 			cSection = (int) bytes[pointer];
 		}
 		if (vertices == null || colors == null || normals == null) { // A section was not present
 			System.err.println("Could not load mesh, missing sections:");
-			if (vertices == null) System.err.println("Missing vertex section");
-			if (colors == null) System.err.println("Missing color section");
-			if (normals == null) System.err.println("Missing normal section");
+			if (vertices == null)
+				System.err.println("Missing vertex section");
+			if (colors == null)
+				System.err.println("Missing color section");
+			if (normals == null)
+				System.err.println("Missing normal section");
 			return null;
 		}
 		Mesh mesh = new Mesh(vertices);
 		mesh.setColors(colors);
 		mesh.setNormals(normals);
-		if(uvs != null) {
+		if (uvs != null) {
 			mesh.setUVs(uvs);
 		}
 		return mesh;
 	}
-
+	
 	/**
 	 * Create a mesh from binary mesh resource file
 	 * @param src binary resource file
-	 * @return Mesh created from binary file
+	 * @return Mesh Data from binary file
 	 * @throws IOException If the file could not be found or read
 	 */
-	public static Mesh meshFromBinResource(String src) throws IOException {
+	public static MeshData meshDataFromBinResource(String src) throws IOException {
 		ClassLoader classLoader = BinMesh.class.getClassLoader();
 		InputStream is = classLoader.getResourceAsStream(src);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -394,7 +397,17 @@ public class BinMesh {
 			b = is.read();
 		}
 		// return meshFromBin(bos.toByteArray());
-		return new Mesh(binToMeshData(bos.toByteArray()));
+		return binToMeshData(bos.toByteArray());
+	}
+
+	/**
+	 * Create a mesh from binary mesh resource file
+	 * @param src binary resource file
+	 * @return Mesh created from binary file
+	 * @throws IOException If the file could not be found or read
+	 */
+	public static Mesh meshFromBinResource(String src) throws IOException {
+		return new Mesh(meshDataFromBinResource(src));
 	}
 	
 	/*

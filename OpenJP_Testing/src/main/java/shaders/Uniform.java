@@ -86,7 +86,7 @@ public class Uniform {
 	 * @param color value
 	 */
 	public static void setColor4(int uniform, Color color) {
-		if(uniform < 0) return;
+		if (uniform < 0) return;
 		GL44.glUniform4f(uniform, color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, color.getAlpha()/255f);
 	}
 	

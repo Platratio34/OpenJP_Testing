@@ -3,6 +3,7 @@ package objects;
 import java.util.HashMap;
 
 import util.BinMesh;
+import util.MeshData;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 public class MeshCache {
     
     private static HashMap<String, Mesh> meshes = new HashMap<String, Mesh>();
+    private static HashMap<String, MeshData> meshData = new HashMap<String, MeshData>();
 
     /**
      * Get mesh by resource path
@@ -32,6 +34,25 @@ public class MeshCache {
         }
         return meshes.get(path);
     }
+    /**
+     * Get mesh by resource path
+     * @param path resource path
+     * @return Mesh data OR <code>null</code> if the data could not be loaded
+     */
+    public static MeshData getMeshData(String path) {
+        if (!meshData.containsKey(path)) {
+            try {
+                load(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return meshData.get(path);
+    }
 
     /**
      * Load a mesh by resource path
@@ -50,11 +71,13 @@ public class MeshCache {
             return;
         }
         if (path.contains(".bin")) {
-            Mesh mesh = BinMesh.meshFromBinResource(path);
-            if (mesh == null) {
+            MeshData data = BinMesh.meshDataFromBinResource(path);
+            if (data == null) {
                 throw new IOException("Unable to load mesh; Unknown error");
             }
+            Mesh mesh = new Mesh(data);
             meshes.put(path, mesh);
+            meshData.put(path, data);
             return;
         }
         throw new IOException("Unknown file type");

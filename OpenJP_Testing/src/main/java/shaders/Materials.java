@@ -14,7 +14,7 @@ public class Materials {
 	/**
 	 * Maximum number of materials
 	 */
-	public static final int MAX_MATERIALS = 16;
+	public static final int MAX_MATERIALS = 8;
 	
 	private Material[] materials;
 	private ShaderProgram shader;
