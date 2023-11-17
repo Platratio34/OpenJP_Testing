@@ -226,6 +226,10 @@ public class Transform implements TransformUpdate {
 		return new Vector3f(position);
 	}
 
+	/**
+	 * Get the world space position of the transform
+	 * @return
+	 */
 	public Vector3f getWorldPosition() {
 		Vector3f pos = new Vector3f(position);
 		if (parent != null) {
@@ -239,6 +243,13 @@ public class Transform implements TransformUpdate {
 		}
 		return pos;
 	}
+
+	public Vector3f getPosition(Vector3f offset) {
+		Matrix4f mat = getTransformMatrix();
+		Vector4f pos = new Vector4f(offset.x, offset.y, offset.z, 1.0f).mul(mat);
+		return new Vector3f(pos.x, pos.y, pos.z);
+	}
+
 	/**
 	 * Get the current rotation of the transform
 	 * @return current rotation
