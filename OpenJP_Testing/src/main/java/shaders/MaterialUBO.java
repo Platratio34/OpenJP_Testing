@@ -1,13 +1,8 @@
 package shaders;
 
 import java.awt.Color;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 
 import org.joml.Vector2f;
-import org.lwjgl.opengl.GL45;
-import org.lwjgl.system.MemoryStack;
 
 import objects.Texture2D;
 import objects.UBO;
@@ -28,11 +23,6 @@ public class MaterialUBO extends UBO {
 
     public MaterialUBO() {
         super(SIZE, ShaderProgram.MATERIAL_UNIFORM_BLOCK_BASE);
-        // try (MemoryStack stack = MemoryStack.stackPush()) {
-        //     IntBuffer b = stack.mallocInt(3);
-        //     GL45.glGetIntegerv(GL45.GL_MAX_FRAGMENT_UNIFORM_BLOCKS, b);
-        //     System.out.println(b.get(0));
-        // }
     }
     
     public void setColor(Color color) {
