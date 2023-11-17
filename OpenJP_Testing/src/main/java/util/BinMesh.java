@@ -112,14 +112,17 @@ public class BinMesh {
 	}
     
 	/*
-	 * Old converter functions
+	 * Mesh converter functions
 	 */
 
 	/**
 	 * Convert a mesh string to byte array
 	 * @param str mesh string
 	 * @return Byte array representing the mesh
+	 * 
+	 * @deprecated use <code>Mesh.meshDataFromString(String)</code> and <code>BinMesh.meshDataToBin(MeshData)</code> instead
 	 */
+	@Deprecated
     public static byte[] meshToBin(String str) {
         
 		String[] components = str.split(";");
@@ -302,7 +305,7 @@ public class BinMesh {
 		}
 		br.close();
 
-		byte[] bytes = meshToBin(str);
+		byte[] bytes = meshDataToBin(Mesh.meshDataFromString(str));
 
 		FileOutputStream outputStream = new FileOutputStream(dest);
 		for (int i = 0; i < bytes.length; i++) {
@@ -315,7 +318,10 @@ public class BinMesh {
 	 * Create a mesh from byte array
 	 * @param bytes bytes from binary mesh file
 	 * @return Mesh created from file OR <code>null</code> if a mesh could not be created
+	 * 
+	 * @deprecated use <code>BinMesh.binToMeshData</code> and <code>Mesh(MeshData)</code> instead
 	 */
+	@Deprecated
 	public static Mesh meshFromBin(byte[] bytes) {
 		if (bytes[0] != 'M' || bytes[1] != 'E' || bytes[2] != 'S' || bytes[3] != 'H') { // Check that this is a mesh file
 			System.err.println("Could not load mesh; file type mismatch");
@@ -387,9 +393,14 @@ public class BinMesh {
 			bos.write(b);
 			b = is.read();
 		}
-		return meshFromBin(bos.toByteArray());
+		// return meshFromBin(bos.toByteArray());
+		return new Mesh(binToMeshData(bos.toByteArray()));
 	}
 	
+	/*
+	 * Gizmo converter functions
+	 */
+
 	/**
 	 * Convert a gizmo mesh string to byte array
 	 * @param str gizmo mesh string
@@ -598,6 +609,10 @@ public class BinMesh {
 		}
 		return gizmoFromBin(bos.toByteArray());
 	}
+
+	/*
+	 * Mesh Data binary converters
+	 */
 
 	/**
 	 * Converts mesh data to byte array

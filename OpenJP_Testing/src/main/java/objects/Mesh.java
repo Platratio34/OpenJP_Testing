@@ -139,6 +139,10 @@ public class Mesh {
 		vao.dispose();
 	}
 
+	/*
+	 * Static creation functions
+	 */
+
 	/**
 	 * Create the mesh from a single combined array
 	 */
@@ -262,6 +266,73 @@ public class Mesh {
 	}
 
 	/**
+	 * Create a new mesh from mesh file
+	 * 
+	 * @param path path to plain text mesh file
+	 * @return New mesh from file
+	 * @throws IOException If the file could not be found or read
+	 */
+	public static Mesh createFromFile(String path) throws IOException {
+		return createFromFile(path, new Mesh());
+	}
+
+	/**
+	 * Initialize a new mesh from mesh file
+	 * 
+	 * @param path path to plain text mesh file
+	 * @param mesh mesh to initialize
+	 * @return Mesh initialized from file
+	 * @throws IOException If the file could not be found or read
+	 */
+	public static Mesh createFromFile(String path, Mesh mesh) throws IOException {
+		File f = new File(path);
+		System.out.println(f.getAbsolutePath());
+		BufferedReader br = new BufferedReader(new FileReader(f));
+		String line = "";
+		String str = "";
+		while (line != null) {
+			str += line;
+			line = br.readLine();
+		}
+		br.close();
+		// return createFromString(str, mesh);
+		MeshData data = meshDataFromString(str);
+		mesh.set(data);
+		return mesh;
+	}
+
+	/**
+	 * Create a new mesh from mesh resource file
+	 * 
+	 * @param path resource path to plain text mesh file
+	 * @return New mesh from file
+	 * @throws IOException If the file could not be found or read
+	 */
+	public static Mesh createFromResource(String resource) throws IOException {
+		// BufferedReader br = new BufferedReader(new FileReader(path));
+		ClassLoader classLoader = Mesh.class.getClassLoader();
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
+		} catch (NullPointerException e) {
+			throw new IOException("Could not load mesh from resource \"" + resource + "\"");
+		}
+		String line = "";
+		String str = "";
+		while (line != null) {
+			str += line;
+			line = br.readLine();
+		}
+		br.close();
+		// return createFromString(str);
+		return new Mesh(meshDataFromString(str));
+	}
+
+	/*
+	 * MeshData functions
+	 */
+
+	/**
 	 * Create MeshData from a mesh plain text file
 	 * @param str plain text mesh data
 	 * @return MeshData from file
@@ -336,69 +407,6 @@ public class Mesh {
 		data.colors = colors;
 		data.normals = normals;
 		return data;
-	}
-
-	/**
-	 * Create a new mesh from mesh file
-	 * 
-	 * @param path path to plain text mesh file
-	 * @return New mesh from file
-	 * @throws IOException If the file could not be found or read
-	 */
-	public static Mesh createFromFile(String path) throws IOException {
-		return createFromFile(path, new Mesh());
-	}
-
-	/**
-	 * Initialize a new mesh from mesh file
-	 * 
-	 * @param path path to plain text mesh file
-	 * @param mesh mesh to initialize
-	 * @return Mesh initialized from file
-	 * @throws IOException If the file could not be found or read
-	 */
-	public static Mesh createFromFile(String path, Mesh mesh) throws IOException {
-		File f = new File(path);
-		System.out.println(f.getAbsolutePath());
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		String line = "";
-		String str = "";
-		while (line != null) {
-			str += line;
-			line = br.readLine();
-		}
-		br.close();
-		// return createFromString(str, mesh);
-		MeshData data = meshDataFromString(str);
-		mesh.set(data);
-		return mesh;
-	}
-
-	/**
-	 * Create a new mesh from mesh resource file
-	 * 
-	 * @param path resource path to plain text mesh file
-	 * @return New mesh from file
-	 * @throws IOException If the file could not be found or read
-	 */
-	public static Mesh createFromResource(String resource) throws IOException {
-		// BufferedReader br = new BufferedReader(new FileReader(path));
-		ClassLoader classLoader = Mesh.class.getClassLoader();
-		BufferedReader br;
-		try {
-			br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(resource)));
-		} catch (NullPointerException e) {
-			throw new IOException("Could not load mesh from resource \"" + resource + "\"");
-		}
-		String line = "";
-		String str = "";
-		while (line != null) {
-			str += line;
-			line = br.readLine();
-		}
-		br.close();
-		// return createFromString(str);
-		return new Mesh(meshDataFromString(str));
 	}
 
 	/**
