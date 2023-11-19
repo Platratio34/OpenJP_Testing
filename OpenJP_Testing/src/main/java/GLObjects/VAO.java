@@ -84,6 +84,25 @@ public class VAO {
 		ebo.fill(indices);
 		abos.add(ebo);
 		GL44.glEnableVertexAttribArray(ATTRIB_INDEX);
+		GL44.glVertexAttribPointer(ATTRIB_INDEX, 3, GL44.GL_UNSIGNED_INT, false, 0, 0);
+		vbo.unbind();
+	}
+	/**
+	 * Store vertex and index data
+	 * @param vertices flattened array of vector 3 vertex data (ordered x, y, z)
+	 * @param indices flattened array of vector 2 index data
+	 */
+	public void storeVertexIndexDataLines(float[] vertices, int[] indices) {
+		bind();
+		ABO vbo = new ABO(GL44.GL_ARRAY_BUFFER);
+		vbo.fill(vertices);
+		abos.add(vbo);
+		GL44.glEnableVertexAttribArray(ATTRIB_VERTEX);
+		GL44.glVertexAttribPointer(ATTRIB_VERTEX, 3, GL44.GL_FLOAT, false, 0, 0);
+		ABO ebo = new ABO(GL44.GL_ELEMENT_ARRAY_BUFFER);
+		ebo.fill(indices);
+		abos.add(ebo);
+		GL44.glEnableVertexAttribArray(ATTRIB_INDEX);
 		GL44.glVertexAttribPointer(ATTRIB_INDEX, 2, GL44.GL_UNSIGNED_INT, false, 0, 0);
 		vbo.unbind();
 	}

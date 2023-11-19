@@ -188,24 +188,24 @@ public class Material {
 	 * @param index material index
 	 */
 	public void updateShader(ShaderProgram shader, String uniformName, int index) {
-		// shader.uniformSetColor4(uniformName+".color", color);
-		// shader.uniformSetFloat(uniformName+".smoothness", smoothness);
-		// // shader.uniformSetInt1(uniformName+".textureIndex", textureIndex);
-		// if(texture != null) {
-		// 	// texture.updateTexture();
-		// 	int textureUniform = shader.getUniform(uniformName+".texture");
-		// 	Uniform.setTexture2D(textureUniform, texture);
-		// 	shader.uniformSetInt1(uniformName+".textured", 1);
-		// 	int textureScaleUniform = shader.getUniform(uniformName+".textureScale");
-		// 	Uniform.setVector2f(textureScaleUniform, textureScale);
-		// 	int textureOffsetUniform = shader.getUniform(uniformName+".textureOffset");
-		// 	Uniform.setVector2f(textureOffsetUniform, textureOffset);
-		// } else {
-		// 	shader.uniformSetInt1(uniformName+".textured", 0);
-		// }
-		ubo.bindTarget(ShaderProgram.MATERIAL_UNIFORM_BLOCK_BASE + index);
-		if (texture != null) {
-			texture.makeResident();
+		shader.uniformSetColor4(uniformName+".color", color);
+		shader.uniformSetFloat(uniformName+".smoothness", smoothness);
+		// shader.uniformSetInt1(uniformName+".textureIndex", textureIndex);
+		if(texture != null) {
+			// texture.updateTexture();
+			int textureUniform = shader.getUniform(uniformName+".texture");
+			Uniform.setTexture2D(textureUniform, texture);
+			shader.uniformSetInt1(uniformName+".textured", 1);
+			int textureScaleUniform = shader.getUniform(uniformName+".textureScale");
+			Uniform.setVector2f(textureScaleUniform, textureScale);
+			int textureOffsetUniform = shader.getUniform(uniformName+".textureOffset");
+			Uniform.setVector2f(textureOffsetUniform, textureOffset);
+		} else {
+			shader.uniformSetInt1(uniformName+".textured", 0);
 		}
+		// ubo.bindTarget(ShaderProgram.MATERIAL_UNIFORM_BLOCK_BASE + index);
+		// if (texture != null) {
+		// 	texture.makeResident();
+		// }
 	}
 }

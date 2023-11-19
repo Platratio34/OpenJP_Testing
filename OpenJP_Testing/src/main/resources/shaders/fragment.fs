@@ -33,25 +33,25 @@ struct light {
 
 uniform light[16] lights;
 
-// struct material {
-// 	vec4 color;
-// 	float smoothness;
-// 	bool textured;
-// 	vec2 textureScale;
-// 	vec2 textureOffset;
-// 	layout(bindless_sampler) sampler2D texture;
-// };
-
-// uniform material[16] materials;
-
-layout(std140, binding = 2) uniform Material {
+struct material {
 	vec4 color;
 	float smoothness;
 	bool textured;
 	vec2 textureScale;
 	vec2 textureOffset;
 	layout(bindless_sampler) sampler2D texture;
-} materials[2];
+};
+
+uniform material[16] materials;
+
+// layout(std140, binding = 2) uniform Material {
+// 	vec4 matColor;
+// 	float matSmoothness;
+// 	bool textured;
+// 	vec2 textureScale;
+// 	vec2 textureOffset;
+// 	layout(bindless_sampler) sampler2D matTexture;
+// } materials[8];
 
 
 layout(bindless_sampler) uniform sampler2D defaultTexture;

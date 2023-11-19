@@ -16,7 +16,9 @@ public class MeshCache {
     private static HashMap<String, MeshData> meshData = new HashMap<String, MeshData>();
 
     /**
-     * Get mesh by resource path
+     * Get mesh by resource path.<br>
+     * <br>
+     * Tries to load the mesh if not yet loaded
      * @param path resource path
      * @return Mesh OR <code>null</code> if the mesh could not be loaded
      */

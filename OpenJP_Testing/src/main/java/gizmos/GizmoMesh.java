@@ -41,7 +41,7 @@ public class GizmoMesh {
     public GizmoMesh(float[] points, int[] indices) {
         vao = new VAO();
 
-        vao.storeVertexIndexData(points, indices);
+        vao.storeVertexIndexDataLines(points, indices);
         indexMode = true;
         indexLength = indices.length;
     }

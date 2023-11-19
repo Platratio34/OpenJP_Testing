@@ -12,11 +12,16 @@ import gizmos.OriginGizmo;
 import input.InputBind;
 import input.InputCallback;
 import input.KeyboardBind;
+import meshLoaders.CubeCircleBuilder;
+import objects.Mesh;
 import objects.MeshCache;
 import objects.MeshRenderer;
 import objects.Texture2D;
 import shaders.Material;
+import shaders.ShaderProgram;
 import shaders.Shaders;
+import util.BinMesh;
+import util.MeshData;
 
 public class Test {
 
@@ -89,6 +94,17 @@ public class Test {
         mat.setTextureScale(5, 5);
         game.addGameObject(plane);
 
+        GameObject sphere = new GameObject();
+        sphere.transform.setPosition(0, 3, 0);
+        // MeshData sphereData = CircleBuilder.buildSphere(1, 20);
+        // BinMesh.meshDataToFile(sphereData, "src/main/resources/meshes/sphere.bin");
+        MeshRenderer sMR = new MeshRenderer(MeshCache.getMesh("meshes/sphere.bin"));
+        sMR.setShader(Shaders.getShader(Game.MAIN_SHADER));
+        // sMR.defferRender = true;
+        sMR.materials.setMaterial(0, new Material());
+        sphere.addComponent(sMR);
+        game.addGameObject(sphere);
+        
         game.run();
     }
 

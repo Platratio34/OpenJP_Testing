@@ -10,6 +10,7 @@ import gizmos.GizmoMesh;
 import objects.Mesh;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 /**
@@ -793,4 +794,13 @@ public class BinMesh {
 		}
 		return mesh;
 	}
+
+	public static void meshDataToFile(MeshData data, String dest) throws IOException {
+		byte[] bytes = meshDataToBin(data);
+		FileOutputStream outputStream = new FileOutputStream(dest);
+		for (int i = 0; i < bytes.length; i++) {
+			outputStream.write(bytes[i]);
+		}
+		outputStream.close();		
+    }
 }

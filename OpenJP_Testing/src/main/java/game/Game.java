@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL44;
 import org.lwjgl.opengl.GL45;
 
 import java.awt.Color;
@@ -58,6 +59,7 @@ public class Game {
     private long lastFrameStart = -1;
 
     private Uniform blendClipUniform;
+    private Uniform wireUniform;
 
     public Game() {
         inputSystem = new InputSystem();
@@ -85,6 +87,7 @@ public class Game {
         profiler = new Profiler();
 
         lightingSettings = new LightingSettings(Shaders.getShader(MAIN_SHADER));
+		wireUniform = new Uniform(Shaders.getShader(MAIN_SHADER), "wire");
     }
 
     /**
@@ -165,10 +168,11 @@ public class Game {
 
         GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_FILL);
         GL45.glEnable(GL45.GL_CULL_FACE);
+        GL45.glEnable(GL45.GL_DEPTH_TEST);
 
         skybox.render();
         GL45.glClear(GL45.GL_DEPTH_BUFFER_BIT);
-        GL45.glEnable(GL45.GL_DEPTH_TEST);
+		wireUniform.setBoolean(false);
 
         // GL45.glEnable(GL45.GL_)
         GL45.glEnable(GL45.GL_BLEND);
@@ -176,19 +180,36 @@ public class Game {
 
         blendClipUniform.setFloat(1.0f);
         ArrayList<Renderer> deferredTransparent = new ArrayList<Renderer>();
+        ArrayList<Renderer> deferredRender = new ArrayList<Renderer>();
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject gameObject = gameObjects.get(i);
             if (gameObject.renderer != null) {
                 if (gameObject.renderer.defferTransparency) {
                     deferredTransparent.add(gameObject.renderer);
                 }
-                gameObject.renderer.render();
+                if (gameObject.renderer.defferRender) {
+                    deferredRender.add(gameObject.renderer);
+                } else {
+                    gameObject.renderer.render();
+                }
             }
         }
         blendClipUniform.setFloat(0.0f);
         for (Renderer renderer : deferredTransparent) {
             renderer.render();
         }
+        // GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_LINE);
+        GL45.glDisable(GL45.GL_DEPTH_TEST);
+        GL44.glDisable(GL44.GL_CULL_FACE);
+		wireUniform.setBoolean(true);
+		// unlitUniform.setBoolean(true);
+        for (Renderer renderer : deferredRender) {
+            renderer.render();
+        }
+        // GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_POINT);
+        // for (Renderer renderer : deferredRender) {
+        //     renderer.render();
+        // }
         
         if (drawGizmos) {
 			profiler.start("gizmos");

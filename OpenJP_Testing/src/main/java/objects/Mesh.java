@@ -53,7 +53,7 @@ public class Mesh {
 		vao = new VAO();
 
 		vao.storeVertexIndexData(vertices, indices);
-		indexLength = indices.length;
+		indexLength = vertices.length;
 		indexMode = true;
 	}
 
@@ -111,8 +111,10 @@ public class Mesh {
 			vao.storeVertexData(data.vertices);
 			indexLength = data.vertices.length;
 		}
-		vao.storeColorData(data.colors);
-		vao.storeNormalData(data.normals);
+		if(data.colors != null)
+			vao.storeColorData(data.colors);
+		if(data.normals != null)
+			vao.storeNormalData(data.normals);
 		if(data.uvs != null)
 			vao.storeUVData(data.uvs);
 	}
@@ -124,7 +126,7 @@ public class Mesh {
 		vao.bind();
 
 		if (indexMode) {
-			GL44.glDrawElements(GL44.GL_TRIANGLES, indexLength, GL44.GL_UNSIGNED_INT, 4);
+			GL44.glDrawElements(GL44.GL_TRIANGLES, indexLength, GL44.GL_UNSIGNED_INT, 0);
 		} else {
 			GL44.glDrawArrays(GL44.GL_TRIANGLES, 0, indexLength);
 		}
@@ -415,6 +417,6 @@ public class Mesh {
 	 * @return Valid for creating a Mesh
 	 */
 	public static boolean validateMeshData(MeshData data) {
-		return (data.type.equals("MESH")) && (data.vertices != null) && (data.colors != null) && (data.normals != null);
+		return (data.type.equals("MESH")) && (data.vertices != null) && (data.colors != null);
 	}
 }

@@ -42,6 +42,7 @@ public abstract class Renderer extends Component {
 	 */
 	public Materials materials;
 	public boolean defferTransparency;
+	public boolean defferRender;
 
 	/**
 	 * Create a new renderer
