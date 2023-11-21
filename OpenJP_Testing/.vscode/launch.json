@@ -8,14 +8,14 @@
             "type": "java",
             "name": "Game Test",
             "request": "launch",
-            "mainClass": "game.Test",
+            "mainClass": "game.test.Test",
             "projectName": "openJPTesting"
         },
         {
             "type": "java",
             "name": "Debug Game Test",
             "request": "launch",
-            "mainClass": "game.Test",
+            "mainClass": "game.test.Test",
             "projectName": "openJPTesting",
             "stopOnEntry": true
         },

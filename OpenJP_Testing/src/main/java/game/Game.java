@@ -157,6 +157,19 @@ public class Game {
             gameObject.onTick();
         }
         profiler.end("tick");
+        
+        profiler.start("collision");
+
+        for (int i = 0; i < gameObjects.size()-1; i++) {
+            GameObject gO = gameObjects.get(i);
+            for (int j = i + 1; j < gameObjects.size(); j++) {
+                gO.checkCollision(gameObjects.get(j));
+            }
+            gO.checkCollisionExit();
+        }
+        gameObjects.get(gameObjects.size()-1).checkCollisionExit();
+
+        profiler.end("collision");
     }
 
     private void onRender() {

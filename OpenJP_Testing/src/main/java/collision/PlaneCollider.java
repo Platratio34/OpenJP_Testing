@@ -7,6 +7,9 @@ import org.joml.Vector3f;
  */
 public class PlaneCollider extends Collider {
 
+    /**
+     * Create a new collider with a plane from -0.5 to +0.5 in x and y.
+     */
     public PlaneCollider() {
         super(new Triangle[2]);
         

@@ -16,7 +16,26 @@ public class Collider extends Component {
 
     protected float boundDist;
 
+    /** The transform for this collider. Should be parented to game objects rather than replaced */
     public Transform transform;
+
+    /**
+     * Collision mask.<br>
+     * <br>
+     * CCollision will not occur if this mask and the other collider's mask is 0 when and-ed.
+     * <br><br>
+     * <h4>Examples</h4>
+     * <p>
+     *  If this collider's mask is <code>0b0001_0001</code> and the other's mask is <code>0b0010_0001</code> then when and-ed you get <code>0b0000_0001</code>.
+     *  Because this is not zero, collision will be checked.
+     * </p>
+     * 
+     * <p>
+     *  If this collider's mask is <code>0b0001_0001</code> and the other's mask is <code>0b0010_0010</code> then when and-ed you get <code>0b0000_0000</code>.
+     *  Because this <b>is</b> zero, collision will <b>NOT</b> be checked.
+     * </p>
+     * */
+    public byte mask = 0b0000_0001;
 
     protected Collider() {
         transform = new Transform();
@@ -33,6 +52,7 @@ public class Collider extends Component {
      * @param triangles array of triangles
      */
     public Collider(Triangle[] triangles) {
+        this();
         this.triangles = triangles;
         computeBounds();
     }
@@ -45,6 +65,7 @@ public class Collider extends Component {
      * @param vertices array of vertices
      */
     public Collider(Vector3f[] vertices) {
+        this();
         triangles = new Triangle[vertices.length / 3];
         for (int i = 0; i < triangles.length; i++) {
             triangles[i] = new Triangle(
@@ -65,6 +86,7 @@ public class Collider extends Component {
      * @param flatVertices
      */
     public Collider(float[] flatVertices) {
+        this();
         triangles = new Triangle[flatVertices.length / 9];
         for (int i = 0; i < triangles.length; i++) {
             int pI = i * 9;
@@ -96,22 +118,39 @@ public class Collider extends Component {
     /**
      * Check if this collides with another collider
      * 
-     * @param other
-     * @return
+     * @param other collider to check against
+     * @return If the they are colliding
      */
     public boolean checkCollision(Collider other) {
+        if ((other.mask & mask) == 0x00) {
+            return false;
+        }
         Matrix4f thisMatrix = transform.getTransformMatrix();
         Matrix4f otherMatrix = other.transform.getTransformMatrix();
         if (!checkBound(other, thisMatrix, otherMatrix))
             return false;
         for (int i = 0; i < triangles.length; i++) {
-            for (int j = 0; j < other.triangles.length; i++) {
+            for (int j = 0; j < other.triangles.length; j++) {
                 if (triangles[i].collides(other.triangles[j], thisMatrix, otherMatrix)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+    
+    /**
+     * Check if this collides with another collider
+     * 
+     * @param other collider to check against
+     * @param mask collision mask to check with, and-ed with the this collider and the other collider's masks. See <code>Collider.mask</code> for details
+     * @return If the they are colliding
+     */
+    public boolean checkCollision(Collider other, byte mask) {
+        if ((other.mask & this.mask & mask) == 0x00) {
+            return false;
+        }
+        return checkCollision(other);
     }
 
     /**

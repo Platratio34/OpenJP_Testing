@@ -3,6 +3,9 @@ package collision;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+/**
+ * Triangle used for collision detection
+ */
 public class Triangle {
     
     private Vector3f point1;
@@ -95,6 +98,10 @@ public class Triangle {
         return volume >= 0;
     }
 
+    /**
+     * Get the maximum distance from the origin for all points in this triangle
+     * @return Maximum distance from the origin
+     */
     public float getMaxDist() {
         float d1 = point1.length();
         float d2 = point1.length();

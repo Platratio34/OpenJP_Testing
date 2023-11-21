@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import collision.Collider;
 import game.Component;
 import game.Game;
 import game.GameObject;
@@ -43,6 +44,8 @@ public class Test {
         mR.setShader(Shaders.getShader(Game.MAIN_SHADER));
         mR.materials.setMaterial(0, new Material(new Color(255, 255, 255)));
         mR.defferTransparency = true;
+        Collider gOCCollider = new Collider(MeshCache.getMeshData("meshes/matCube.bin"));
+        gOClose.addComponent(gOCCollider);
         gOClose.addComponent(mR);
 
         // game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
@@ -86,7 +89,7 @@ public class Test {
             
         });
 
-        GameObject plane = PrimitiveCreator.createPlane();
+        GameObject plane = PrimitiveCreator.createPlaneCollision();
         plane.transform.setScale(100, 100, 100);
         plane.transform.setPosition(0, -0.5f, 0);
         plane.name = "Plane";
@@ -115,14 +118,65 @@ public class Test {
         door.addComponent(doorRenderer);
         // doorRenderer.defferRender = true;
         game.addGameObject(door);
+
+        GameObject colliderTester = new GameObject();
+        colliderTester.addComponent(new CollisionTester());
+        Collider testCollider = new Collider(MeshCache.getMeshData("meshes/matCube.bin"));
+        colliderTester.addComponent(testCollider);
+        MeshRenderer testColliderMesh = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
+        testColliderMesh.materials.setMaterial(0, new Material());
+        colliderTester.addComponent(testColliderMesh);
+        game.addGameObject(colliderTester);
+        colliderTester.transform.setPosition(0,10f,0);
+        // colliderTester.transform.setScale(0.5f, 0.5f, 0.5f);
+        sphere.transform.setParent(colliderTester.transform);
         
         game.run();
     }
 
     private static class GameCloser extends Component {
         public void onTick() {
-            if(game.inputSystem.pressed("close"))
+            if (game.inputSystem.pressed("close"))
                 game.markEnd();
+        }
+    }
+    
+    private static class CollisionTester extends Component {
+
+        private float dir = -1;
+        private Material mat;
+        private float speed = 0;
+        private boolean doGravity = true;
+
+        @Override
+        public void onStart() {
+            mat = gameObject.renderer.materials.getMaterial(0);
+        }
+
+        @Override
+        public void onTick() {
+            if (doGravity) {
+                speed -= 9.8 * game.deltaTime();
+                gameObject.transform.translate(0, speed * game.deltaTime() , 0);
+            }
+            // Vector3f pos = gameObject.transform.getPosition();
+            // if (pos.y > 3)
+            //     dir = -1;
+            // else if (pos.x < -2)
+            //     dir = 1;
+        }
+        
+        @Override
+        public void onCollisionEnter(GameObject other) {
+            mat.setColor(new Color(255, 0, 0));
+            speed = 0;
+            doGravity = false;
+            // dir = 1;
+            // gameObject.transform.translate(0,15,0);
+        }
+        @Override
+        public void onCollisionExit(GameObject other) {
+            mat.setColor(new Color(0, 255, 0));
         }
     }
 }

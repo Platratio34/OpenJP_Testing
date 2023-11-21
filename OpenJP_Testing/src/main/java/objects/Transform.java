@@ -78,7 +78,7 @@ public class Transform implements TransformUpdate {
 		
 		// matrix.invertAffine(matrixInverse);
 		matrixCamera.identity();
-		matrixCamera.translate(position.x, position.y, position.z);
+		matrixCamera.translate(position);
 		matrixCamera.rotateY((float)Math.toRadians(-rotation.y));
 		matrixCamera.rotateX((float)Math.toRadians(-rotation.x));
 		// matrixCamera.transpose();
@@ -96,9 +96,9 @@ public class Transform implements TransformUpdate {
 		if(parent != null) {
 			Matrix4f out = new Matrix4f();
 			if (isCamera) {
-				parent.getTransformMatrix().mul(matrix, out);
-			} else {
 				parent.getTransformMatrixCamera().mul(matrix, out);
+			} else {
+				parent.getTransformMatrix().mul(matrix, out);
 			}
 			return out;
 		}
@@ -270,6 +270,10 @@ public class Transform implements TransformUpdate {
 		return new Vector3f(scale);
 	}
 
+	/**
+	 * Set the parent of this transform
+	 * @param parent new parent
+	 */
 	public void setParent(Transform parent) {
 		if (this.parent != null)
 			this.parent.removeUpdate(this);
@@ -278,6 +282,10 @@ public class Transform implements TransformUpdate {
 			parent.addUpdate(this);
 	}
 
+	/**
+	 * Get the current parent of the transform
+	 * @return Current parent or <code>null</code>
+	 */
 	public Transform getParent() {
 		return parent;
 	}
@@ -297,6 +305,10 @@ public class Transform implements TransformUpdate {
 	 * @param updater listener
 	 */
 	public void addUpdate(TransformUpdate updater) {
+		if (updater == this) {
+			System.err.println("You can not set a transform to be updated by itself");
+			return;
+		}
 		updaters.add(updater);
 	}
 	/**
