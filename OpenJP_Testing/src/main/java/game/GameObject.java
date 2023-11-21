@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import collision.Collider;
 import gizmos.Gizmo;
-import input.InputSystem;
 import objects.Renderer;
 import objects.Transform;
 
