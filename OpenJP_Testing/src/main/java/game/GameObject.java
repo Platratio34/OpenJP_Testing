@@ -19,7 +19,6 @@ public class GameObject {
     private ArrayList<Component> components;
     private boolean started = false;
     
-    protected InputSystem inputSystem;
     protected Game game;
 
     /** Primary renderer of this object */

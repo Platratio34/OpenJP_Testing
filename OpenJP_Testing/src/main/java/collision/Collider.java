@@ -14,6 +14,7 @@ public class Collider extends Component {
 
     protected Triangle[] triangles;
 
+    /** Bounding distance. Distance from collider origin to furthest vertex */
     protected float boundDist;
 
     /** The transform for this collider. Should be parented to game objects rather than replaced */
@@ -22,16 +23,16 @@ public class Collider extends Component {
     /**
      * Collision mask.<br>
      * <br>
-     * CCollision will not occur if this mask and the other collider's mask is 0 when and-ed.
+     * Collision will not occur if the result of {@code this.mask & other.mask} is 0.
      * <br><br>
      * <h4>Examples</h4>
      * <p>
-     *  If this collider's mask is <code>0b0001_0001</code> and the other's mask is <code>0b0010_0001</code> then when and-ed you get <code>0b0000_0001</code>.
-     *  Because this is not zero, collision will be checked.
+     *  If this collider's mask is {@code 0b0001_0001} and the other's mask is {@code 0b0010_0001} then when and-ed you get {@code 0b0000_0001}.
+     *  Because this is not zero, collision <b>will</b> be checked.
      * </p>
      * 
      * <p>
-     *  If this collider's mask is <code>0b0001_0001</code> and the other's mask is <code>0b0010_0010</code> then when and-ed you get <code>0b0000_0000</code>.
+     *  If this collider's mask is {@code 0b0001_0001} and the other's mask is {@code 0b0010_0010} then when and-ed you get {@code 0b0000_0000}.
      *  Because this <b>is</b> zero, collision will <b>NOT</b> be checked.
      * </p>
      * */
@@ -106,6 +107,9 @@ public class Collider extends Component {
         this(data.vertices);
     }
 
+    /**
+     * Computes the distance to the furthest point of the collider. Used for quick rejection in collision tests
+     */
     private void computeBounds() {
         boundDist = 0;
         for (Triangle triangle : triangles) {
@@ -116,7 +120,7 @@ public class Collider extends Component {
     }
 
     /**
-     * Check if this collides with another collider
+     * Check if another collider is colliding with this collider
      * 
      * @param other collider to check against
      * @return If the they are colliding
@@ -140,7 +144,7 @@ public class Collider extends Component {
     }
     
     /**
-     * Check if this collides with another collider
+     * Check if another collider is colliding with this collider
      * 
      * @param other collider to check against
      * @param mask collision mask to check with, and-ed with the this collider and the other collider's masks. See <code>Collider.mask</code> for details
@@ -154,11 +158,11 @@ public class Collider extends Component {
     }
 
     /**
-     * Check if the 2 colliders are within their bounding distances of each other.
+     * Check if another collider is close enough that it might collide.
      * <b>DOES NOT MEAN COLLISION</b>
      * 
      * @param other collider to check against
-     * @return if distance is less than bounding distance
+     * @return If the colliders are close enough to possibly collide
      */
     public boolean checkBound(Collider other) {
         Matrix4f thisMatrix = transform.getTransformMatrix();
@@ -166,6 +170,15 @@ public class Collider extends Component {
         return checkBound(other, thisMatrix, otherMatrix);
     }
 
+    /**
+     * Check if another collider is close enough that it might collide.
+     * <b>DOES NOT MEAN COLLISION</b>
+     * 
+     * @param other collider to check against
+     * @param thisMatrix transformation matrix of <b>this</b> collider
+     * @param otherMatrix transformation matrix of the <b>other</b> collider
+     * @return If the colliders are close enough to possibly collide
+     */
     private boolean checkBound(Collider other, Matrix4f thisMatrix, Matrix4f otherMatrix) {
         float dist = thisMatrix.transformPosition(new Vector3f())
                 .distance(otherMatrix.transformPosition(new Vector3f()));

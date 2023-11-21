@@ -130,6 +130,8 @@ public class Test {
         colliderTester.transform.setPosition(0,10f,0);
         // colliderTester.transform.setScale(0.5f, 0.5f, 0.5f);
         sphere.transform.setParent(colliderTester.transform);
+
+        // testCollider.mask;
         
         game.run();
     }

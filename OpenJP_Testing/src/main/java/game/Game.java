@@ -244,7 +244,6 @@ public class Game {
      */
     public void addGameObject(GameObject object) {
         gameObjects.add(object);
-        object.inputSystem = inputSystem;
         object.game = this;
         if (started) {
             object.onStart();
