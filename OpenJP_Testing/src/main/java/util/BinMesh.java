@@ -39,78 +39,6 @@ public class BinMesh {
 	/*
 	 * Number converter functions
 	 */
-
-	/**
-	 * Convert a float to byte array<br><br>
-	 * Uses IEEE 754 floating-point "single format"
-	 * @param f float to convert
-	 * @return 4 byte array representing the float
-	 */
-	public static byte[] floatToBin(float f) {
-		int bits = Float.floatToIntBits(f);
-		return new byte[] {
-				(byte) (bits >> 24),
-				(byte) (bits >> 16),
-				(byte) (bits >> 8),
-				(byte) (bits)
-		};
-	}
-	/**
-	 * Convert a byte array to a float<br><br>
-	 * Uses IEEE 754 floating-point "single format"
-	 * @param bytes 4 byte array representing the float
-	 * @return Float represented by the bytes
-	 */
-	public static float binToFloat(byte[] bytes) {
-		int intBits = bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
-		return Float.intBitsToFloat(intBits);
-	}
-	/**
-	 * Convert a bytes to a float.<br><br>
-	 * Uses IEEE 754 floating-point "single format"
-	 * @param b0 high byte (<code>0xff000000</code>)
-	 * @param b1 medium high byte (<code>0x00ff0000</code>)
-	 * @param b2 medium low byte (<code>0x0000ff00</code>)
-	 * @param b3 low byte (<code>0x000000ff</code>)
-	 * @return Float represented by the bytes
-	 */
-	public static float binToFloat(byte b0, byte b1, byte b2, byte b3) {
-		int intBits = b0 << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF);
-		return Float.intBitsToFloat(intBits);
-	}
-    
-	/**
-	 * Convert an unsigned integer to bytes
-	 * @param n unsigned integer to convert
-	 * @return 4 byte array representing the integer
-	 */
-	public static byte[] uIntToBin(int n) {
-		return new byte[] {
-				(byte) (n >> 24),
-				(byte) (n >> 16),
-				(byte) (n >> 8),
-				(byte) (n)
-		};
-	}
-	/**
-	 * Convert byte array to unsigned integer
-	 * @param bytes 4 byte array representing the integer
-	 * @return Unsigned integer represented by the bytes
-	 */
-	public static int binToUInt(byte[] bytes) {
-		return binToUInt(bytes[0], bytes[1], bytes[2], bytes[3]);
-	}
-	/**
-	 * Convert bytes to unsigned integer
-	 * @param b0 high byte (<code>0xff000000</code>)
-	 * @param b1 medium high byte (<code>0x00ff0000</code>)
-	 * @param b2 medium low byte (<code>0x0000ff00</code>)
-	 * @param b3 low byte (<code>0x000000ff</code>)
-	 * @return Unsigned integer represented by the bytes
-	 */
-	public static int binToUInt(byte b0, byte b1, byte b2, byte b3) {
-		return b0 << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF);
-	}
     
 	/*
 	 * Mesh converter functions
@@ -221,7 +149,7 @@ public class BinMesh {
 		
 		// Write vertices
 		for (int i = 0; i < verts.length; i++) {
-			byte[] b = floatToBin(verts[i]);
+			byte[] b = Binary.floatToBin(verts[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -236,7 +164,7 @@ public class BinMesh {
 		
 		// Write colors
 		for (int i = 0; i < colors.length; i++) {
-			byte[] b = floatToBin(colors[i]);
+			byte[] b = Binary.floatToBin(colors[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -251,7 +179,7 @@ public class BinMesh {
 		
 		// Write normals
 		for (int i = 0; i < normals.length; i++) {
-			byte[] b = floatToBin(normals[i]);
+			byte[] b = Binary.floatToBin(normals[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -267,7 +195,7 @@ public class BinMesh {
 			
 			// Write normals
 			for (int i = 0; i < uvs.length; i++) {
-				byte[] b = floatToBin(uvs[i]);
+				byte[] b = Binary.floatToBin(uvs[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -346,7 +274,7 @@ public class BinMesh {
 				float[] arr = new float[length];
 				int aI = 0;
 				for (int i = pointer; i < pointer + (length * 4); i += 4) {
-					float f = binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					float f = Binary.binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
 					arr[aI] = f;
 					aI++;
 				}
@@ -483,7 +411,7 @@ public class BinMesh {
 		
 		// Write vertices
 		for (int i = 0; i < vA.length; i++) {
-			byte[] b = floatToBin(vA[i]);
+			byte[] b = Binary.floatToBin(vA[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -498,7 +426,7 @@ public class BinMesh {
 		
 		// Write colors
 		for (int i = 0; i < iA.length; i++) {
-			byte[] b = uIntToBin(iA[i]);
+			byte[] b = Binary.uIntToBin(iA[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -572,7 +500,7 @@ public class BinMesh {
 				float[] arr = new float[length];
 				int aI = 0;
 				for (int i = pointer; i < pointer + (length * 4); i += 4) {
-					float f = binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					float f = Binary.binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
 					arr[aI] = f;
 					aI++;
 				}
@@ -583,7 +511,7 @@ public class BinMesh {
 				int[] arr = new int[length];
 				int aI = 0;
 				for (int i = pointer; i < pointer + (length * 4); i += 4) {
-					int n = binToUInt(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					int n = Binary.binToInt(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
 					arr[aI] = n;
 					aI++;
 				}
@@ -650,7 +578,7 @@ public class BinMesh {
 		
 		// Write vertices
 		for (int i = 0; i < mesh.vertices.length; i++) {
-			byte[] b = floatToBin(mesh.vertices[i]);
+			byte[] b = Binary.floatToBin(mesh.vertices[i]);
 			out.write(b[0]);
 			out.write(b[1]);
 			out.write(b[2]);
@@ -666,7 +594,7 @@ public class BinMesh {
 			
 			// Write colors
 			for (int i = 0; i < mesh.indices.length; i++) {
-				byte[] b = uIntToBin(mesh.indices[i]);
+				byte[] b = Binary.uIntToBin(mesh.indices[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -683,7 +611,7 @@ public class BinMesh {
 			
 			// Write colors
 			for (int i = 0; i < mesh.colors.length; i++) {
-				byte[] b = floatToBin(mesh.colors[i]);
+				byte[] b = Binary.floatToBin(mesh.colors[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -700,7 +628,7 @@ public class BinMesh {
 			
 			// Write normals
 			for (int i = 0; i < mesh.normals.length; i++) {
-				byte[] b = floatToBin(mesh.normals[i]);
+				byte[] b = Binary.floatToBin(mesh.normals[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -717,7 +645,7 @@ public class BinMesh {
 			
 			// Write normals
 			for (int i = 0; i < mesh.uvs.length; i++) {
-				byte[] b = floatToBin(mesh.uvs[i]);
+				byte[] b = Binary.floatToBin(mesh.uvs[i]);
 				out.write(b[0]);
 				out.write(b[1]);
 				out.write(b[2]);
@@ -764,7 +692,7 @@ public class BinMesh {
 				float[] arr = new float[length];
 				int aI = 0;
 				for (int i = pointer; i < pointer + (length * 4); i += 4) {
-					float f = binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					float f = Binary.binToFloat(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
 					arr[aI] = f;
 					aI++;
 				}
@@ -781,7 +709,7 @@ public class BinMesh {
 				int[] arr = new int[length];
 				int aI = 0;
 				for (int i = pointer; i < pointer + (length * 4); i += 4) {
-					int n = binToUInt(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+					int n = Binary.binToInt(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
 					arr[aI] = n;
 					aI++;
 				}

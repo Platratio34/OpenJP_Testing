@@ -198,7 +198,7 @@ public class Game {
         for (Renderer renderer : deferredTransparent) {
             renderer.render();
         }
-        // GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_LINE);
+        GL45.glPolygonMode(GL45.GL_FRONT_AND_BACK, GL45.GL_LINE);
         GL45.glDisable(GL45.GL_DEPTH_TEST);
         GL44.glDisable(GL44.GL_CULL_FACE);
 		wireUniform.setBoolean(true);

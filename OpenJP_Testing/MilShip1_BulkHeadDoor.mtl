@@ -1,0 +1,24 @@
+# Blender MTL File: 'MilShip1.blend'
+# Material Count: 2
+
+newmtl Metal_1
+Ns 562.500000
+Ka 0.500000 0.500000 0.500000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 0.000000 -s 0.500000 0.500000 0.500000 C:\\Users\\pcral\\Pictures\\Metal_001_Normal.png
+
+newmtl Metal_2
+Ns 562.500000
+Ka 0.500000 0.500000 0.500000
+Kd 0.420020 0.420020 0.420020
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 0.100000 -s 0.500000 0.500000 0.500000 C:\\Users\\pcral\\Pictures\\Metal_001_Normal.png

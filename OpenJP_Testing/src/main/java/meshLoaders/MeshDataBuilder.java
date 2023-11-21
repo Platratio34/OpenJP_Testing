@@ -2,6 +2,7 @@ package meshLoaders;
 
 import java.util.ArrayList;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import util.MeshData;
@@ -108,6 +109,10 @@ public class MeshDataBuilder {
     public void addUV(float x, float y) {
         uvs.add(x);
         uvs.add(y);
+    }
+    public void addUV(Vector2f uv) {
+        uvs.add(uv.x);
+        uvs.add(uv.y);
     }
 
     public void setVertices(ArrayList<Vector3f> points) {

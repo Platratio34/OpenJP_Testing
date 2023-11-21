@@ -1,6 +1,8 @@
 package game;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.joml.Vector3f;
@@ -13,6 +15,8 @@ import input.InputBind;
 import input.InputCallback;
 import input.KeyboardBind;
 import meshLoaders.CubeCircleBuilder;
+import meshLoaders.FBXLoader;
+import meshLoaders.ObjLoader;
 import objects.Mesh;
 import objects.MeshCache;
 import objects.MeshRenderer;
@@ -104,6 +108,17 @@ public class Test {
         sMR.materials.setMaterial(0, new Material());
         sphere.addComponent(sMR);
         game.addGameObject(sphere);
+
+        GameObject door = new GameObject();
+        BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.fbx"));
+        FBXLoader.parseFile(doorReader);
+        // MeshRenderer doorRenderer = new MeshRenderer(new Mesh(ObjLoader.parseFile(doorReader)));
+        // MeshRenderer doorRenderer = new MeshRenderer(new Mesh(FBXLoader.parseFile(doorReader)));
+        // doorRenderer.materials.setMaterial(0, new Material(new Color(200, 200, 200), 0.25f));
+        // doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
+        // door.addComponent(doorRenderer);
+        // // doorRenderer.defferRender = true;
+        // game.addGameObject(door);
         
         game.run();
     }
