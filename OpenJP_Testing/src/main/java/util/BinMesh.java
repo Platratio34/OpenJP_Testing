@@ -10,7 +10,6 @@ import gizmos.GizmoMesh;
 import objects.Mesh;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 /**

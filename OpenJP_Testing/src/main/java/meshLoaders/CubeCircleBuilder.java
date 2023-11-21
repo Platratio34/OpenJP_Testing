@@ -1,7 +1,5 @@
 package meshLoaders;
 
-import java.util.ArrayList;
-
 import org.joml.Vector3f;
 
 import util.MeshData;

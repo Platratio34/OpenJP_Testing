@@ -14,18 +14,13 @@ import gizmos.OriginGizmo;
 import input.InputBind;
 import input.InputCallback;
 import input.KeyboardBind;
-import meshLoaders.CubeCircleBuilder;
-import meshLoaders.FBXLoader;
 import meshLoaders.ObjLoader;
 import objects.Mesh;
 import objects.MeshCache;
 import objects.MeshRenderer;
 import objects.Texture2D;
 import shaders.Material;
-import shaders.ShaderProgram;
 import shaders.Shaders;
-import util.BinMesh;
-import util.MeshData;
 
 public class Test {
 
@@ -111,7 +106,6 @@ public class Test {
 
         GameObject door = new GameObject();
         BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.obj"));
-        // FBXLoader.parseFile(doorReader);
         MeshRenderer doorRenderer = new MeshRenderer(new Mesh(ObjLoader.parseFile(doorReader)));
         doorRenderer.materials.setMaterial(0, new Material(new Color(200, 200, 200), 0.25f));
         doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
