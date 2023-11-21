@@ -30,14 +30,14 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         util.BinMesh.gizmoResourceToBin("meshes/gizmos/camera.gizmo", "src/main/resources/meshes/gizmos/camera.gzb");
-        
-        Game game = new Game();
 
-        game.inputSystem.addBind("close", GLFW.GLFW_KEY_ESCAPE);
+        Game.init();
+
+        Game.inputSystem.addBind("close", GLFW.GLFW_KEY_ESCAPE);
         GameObject gOClose = new GameObject();
         GameCloser gC = new GameCloser();
         gOClose.addComponent(gC);
-        game.addGameObject(gOClose);
+        Game.addGameObject(gOClose);
 
         MeshCache.load("meshes/matCube.bin");
         MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
@@ -48,30 +48,30 @@ public class Test {
         gOClose.addComponent(gOCCollider);
         gOClose.addComponent(mR);
 
-        // game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
-        // game.mainCamera.transform.setRotation(35, -45, 0);
+        // Game.mainCamera.transform.setPosition(3.0f, 5.0f, 3.0f);
+        // Game.mainCamera.transform.setRotation(35, -45, 0);
 
         gOClose.addComponent(new OriginGizmo());
 
-        game.drawGizmos = true;
+        Game.drawGizmos = true;
 
-        game.addGameObject(FirstPersonFlyCamera.create());
+        Game.addGameObject(FirstPersonFlyCamera.create());
 
-        game.lightingSettings.setAmbientLighting(new Color(0.1f, 0.1f, 0.1f));
-        game.lightingSettings.setGlobalLightColor(new Color(0.95f, 0.90f, 0.85f));
-        game.lightingSettings.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
+        Game.lightingSettings.setAmbientLighting(new Color(0.1f, 0.1f, 0.1f));
+        Game.lightingSettings.setGlobalLightColor(new Color(0.95f, 0.90f, 0.85f));
+        Game.lightingSettings.setGlobalLightDirection(new Vector3f(0.5f, 0.3f, 0.1f));
 
-        game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1, new InputCallback() {
+        Game.inputSystem.addBind("toggleGizmos", GLFW.GLFW_KEY_1, new InputCallback() {
 
             @Override
             public void onChange(InputBind bind) {
                 KeyboardBind b = (KeyboardBind) bind;
                 if(b.pressed)
-                    game.drawGizmos = !game.drawGizmos;
+                    Game.drawGizmos = !Game.drawGizmos;
             }
             
         });
-        game.inputSystem.addBind("toggleAlpha", GLFW.GLFW_KEY_2, new InputCallback() {
+        Game.inputSystem.addBind("toggleAlpha", GLFW.GLFW_KEY_2, new InputCallback() {
             private boolean al = false;
 
             @Override
@@ -97,7 +97,7 @@ public class Test {
         mat.setColor(new Color(82, 69, 11));
         mat.setTexture(Texture2D.loadFromPngResource("textures/checkerboard16_2.png"));
         mat.setTextureScale(5, 5);
-        game.addGameObject(plane);
+        Game.addGameObject(plane);
 
         GameObject sphere = new GameObject();
         sphere.transform.setPosition(0, 3, 0);
@@ -108,7 +108,7 @@ public class Test {
         // sMR.defferRender = true;
         sMR.materials.setMaterial(0, new Material());
         sphere.addComponent(sMR);
-        game.addGameObject(sphere);
+        Game.addGameObject(sphere);
 
         GameObject door = new GameObject();
         BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.obj"));
@@ -117,7 +117,7 @@ public class Test {
         doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
         door.addComponent(doorRenderer);
         // doorRenderer.defferRender = true;
-        game.addGameObject(door);
+        Game.addGameObject(door);
 
         GameObject colliderTester = new GameObject();
         colliderTester.addComponent(new CollisionTester());
@@ -126,20 +126,20 @@ public class Test {
         MeshRenderer testColliderMesh = new MeshRenderer(MeshCache.getMesh("meshes/matCube.bin"));
         testColliderMesh.materials.setMaterial(0, new Material());
         colliderTester.addComponent(testColliderMesh);
-        game.addGameObject(colliderTester);
+        Game.addGameObject(colliderTester);
         colliderTester.transform.setPosition(0,10f,0);
         // colliderTester.transform.setScale(0.5f, 0.5f, 0.5f);
         sphere.transform.setParent(colliderTester.transform);
 
         // testCollider.mask;
         
-        game.run();
+        Game.run();
     }
 
     private static class GameCloser extends Component {
         public void onTick() {
-            if (game.inputSystem.pressed("close"))
-                game.markEnd();
+            if (Game.inputSystem.pressed("close"))
+                Game.markEnd();
         }
     }
     
@@ -158,8 +158,8 @@ public class Test {
         @Override
         public void onTick() {
             if (doGravity) {
-                speed -= 9.8 * game.deltaTime();
-                gameObject.transform.translate(0, speed * game.deltaTime() , 0);
+                speed -= 9.8 * Game.deltaTime();
+                gameObject.transform.translate(0, speed * Game.deltaTime() , 0);
             }
             // Vector3f pos = gameObject.transform.getPosition();
             // if (pos.y > 3)

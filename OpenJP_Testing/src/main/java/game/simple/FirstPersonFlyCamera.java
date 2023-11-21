@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 
+import game.Game;
 import game.Component;
 import game.GameObject;
 import gizmos.Gizmo;
@@ -32,7 +33,7 @@ public class FirstPersonFlyCamera extends Component {
 
     @Override
     public void onStart() {
-        camera = game.mainCamera;
+        camera = Game.mainCamera;
         camera.setParent(gameObject.transform);
         if (gizmo != null) {
             System.out.println("Thing-ing");
@@ -44,34 +45,34 @@ public class FirstPersonFlyCamera extends Component {
             gizmo.setVisible(false);
         }
 
-        game.inputSystem.addAxis(AXIS_FB, GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_S);
-        game.inputSystem.addAxis(AXIS_LR, GLFW.GLFW_KEY_A, GLFW.GLFW_KEY_D);
-        game.inputSystem.addAxis(AXIS_UD, GLFW.GLFW_KEY_Q, GLFW.GLFW_KEY_Z);
-        game.inputSystem.addBind(BIND_MOVE_MOD, GLFW.GLFW_KEY_LEFT_SHIFT);
+        Game.inputSystem.addAxis(AXIS_FB, GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_S);
+        Game.inputSystem.addAxis(AXIS_LR, GLFW.GLFW_KEY_A, GLFW.GLFW_KEY_D);
+        Game.inputSystem.addAxis(AXIS_UD, GLFW.GLFW_KEY_Q, GLFW.GLFW_KEY_Z);
+        Game.inputSystem.addBind(BIND_MOVE_MOD, GLFW.GLFW_KEY_LEFT_SHIFT);
 
-        game.inputSystem.addMouseBind(BIND_VIEW, GLFW.GLFW_MOUSE_BUTTON_2);
+        Game.inputSystem.addMouseBind(BIND_VIEW, GLFW.GLFW_MOUSE_BUTTON_2);
     }
 
     @Override
     public void onTick() {
         Vector3f move = new Vector3f();
-        move.add(gameObject.transform.forward().mul(game.inputSystem.axis(AXIS_FB)));
-        move.add(gameObject.transform.right().mul(game.inputSystem.axis(AXIS_LR) * -1f));
-        move.add(gameObject.transform.up().mul(game.inputSystem.axis(AXIS_UD)));
+        move.add(gameObject.transform.forward().mul(Game.inputSystem.axis(AXIS_FB)));
+        move.add(gameObject.transform.right().mul(Game.inputSystem.axis(AXIS_LR) * -1f));
+        move.add(gameObject.transform.up().mul(Game.inputSystem.axis(AXIS_UD)));
 
         if (move.length() > 0) {
-            move.mul(moveSpeed * game.deltaTime());
-            if (game.inputSystem.down(BIND_MOVE_MOD)) {
+            move.mul(moveSpeed * Game.deltaTime());
+            if (Game.inputSystem.down(BIND_MOVE_MOD)) {
                 move.mul(moveMod);
             }
             gameObject.transform.translate(move);
             // gizmo.transform.setPosition(gameObject.transform.getPosition());
         }
 
-        Vector2f mousePos = game.inputSystem.getMousePos();
-        if (game.inputSystem.pressed(BIND_VIEW)) {
+        Vector2f mousePos = Game.inputSystem.getMousePos();
+        if (Game.inputSystem.pressed(BIND_VIEW)) {
             lastPos = mousePos;
-        } else if (game.inputSystem.down(BIND_VIEW)) {
+        } else if (Game.inputSystem.down(BIND_VIEW)) {
             Vector2f diff = lastPos.sub(mousePos);
             Vector3f rot = camera.transform.getRotation();
             rot.add(-diff.y, 0.0f, 0.0f);

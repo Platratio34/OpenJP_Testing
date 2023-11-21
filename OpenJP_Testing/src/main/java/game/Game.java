@@ -21,19 +21,23 @@ import shaders.Uniform;
 import windows.GlfwWindow;
 
 public class Game {
+
+    private Game() {
+        throw new IllegalStateException("Game cannot be instantiated. Use static methods");
+    }
     
-    private GlfwWindow window;
+    private static GlfwWindow window;
 
     /** Game input system */
-    public InputSystem inputSystem;
+    public static  InputSystem inputSystem;
 
-    private ArrayList<GameObject> gameObjects;
-    private boolean started = false;
+    private static  ArrayList<GameObject> gameObjects;
+    private static  boolean started = false;
 
     /** Main camera for game */
-    public Camera mainCamera;
+    public static  Camera mainCamera;
 
-    private SkyBox skybox;
+    private static  SkyBox skybox;
 
     /** Main shader name in cache */
     public static final String MAIN_SHADER = "main";
@@ -43,25 +47,32 @@ public class Game {
     public static final String SKYBOX_SHADER = "skybox";
 
     /** Game profiler */
-    public Profiler profiler;
+    public static  Profiler profiler;
 
-    private boolean end = false;
+    private static  boolean end = false;
 
     /** Lighting settings for main shader */
-    public LightingSettings lightingSettings;
+    public static  LightingSettings lightingSettings;
 
     /** If gizmos should be drawn to the main camera */
-    public boolean drawGizmos;
+    public static  boolean drawGizmos;
 
-    private long targetFrameTime = 1000 / 30;
-    private float targetFPS;
-    private float lastFrameTime = 0f;
-    private long lastFrameStart = -1;
+    private static  long targetFrameTime = 1000 / 30;
+    private static  float targetFPS;
+    private static  float lastFrameTime = 0f;
+    private static  long lastFrameStart = -1;
 
-    private Uniform blendClipUniform;
-    private Uniform wireUniform;
+    private static  Uniform blendClipUniform;
+    private static  Uniform wireUniform;
 
-    public Game() {
+    // public Game() {
+    /**
+     * <b>This method must be called before doing anything with the game</b><br>
+     * <br>
+     * Initializes the game, including the window, input system, camera, etc.<br><br>
+     * Also loads default shaders <code>Game.MAIN_SHADER</code>, <code>Game.GIZMO_SHADER</code>, and <code>Game.SKYBOX_SHADER</code>
+     */
+    public static void init() {
         inputSystem = new InputSystem();
 
         window = new GlfwWindow("Game");
@@ -96,7 +107,7 @@ public class Game {
      * Runs <code>MeshCache.dispose()</code> and
      * <code>Shaders.dispose()</code> when done.
      */
-    public void run() {
+    public static void run() {
         window.showWindow(true);
 
         for (GameObject gameObject : gameObjects) {
@@ -150,7 +161,7 @@ public class Game {
         Shaders.dispose();
     }
 
-    private void onTick() {
+    private static  void onTick() {
         profiler.start("tick");
 
         for (GameObject gameObject : gameObjects) {
@@ -172,7 +183,7 @@ public class Game {
         profiler.end("collision");
     }
 
-    private void onRender() {
+    private static  void onRender() {
         profiler.start("render");
 
         GL45.glClear(GL45.GL_COLOR_BUFFER_BIT | GL45.GL_DEPTH_BUFFER_BIT);
@@ -242,9 +253,8 @@ public class Game {
      * Will run <code>onStart()</code> if added after game is started
      * @param object game object to add
      */
-    public void addGameObject(GameObject object) {
+    public static  void addGameObject(GameObject object) {
         gameObjects.add(object);
-        object.game = this;
         if (started) {
             object.onStart();
         }
@@ -256,7 +266,7 @@ public class Game {
      * <b>Calls <code>cleanup()</code> on the object</b>
      * @param object game object to delete
      */
-    public void deleteGameObject(GameObject object) {
+    public static  void deleteGameObject(GameObject object) {
         object.cleanup();
         gameObjects.remove(object);
     }
@@ -265,7 +275,7 @@ public class Game {
      * Set the target frames per second
      * @param fps target frames per second
      */
-    public void setTargetFPS(float fps) {
+    public static  void setTargetFPS(float fps) {
         targetFPS = fps;
         targetFrameTime = (long) (1000f / fps);
     }
@@ -274,7 +284,7 @@ public class Game {
      * Get the current target frames per second
      * @return target frames per second
      */
-    public float getTargetFPS() {
+    public static  float getTargetFPS() {
         return targetFPS;
     }
     
@@ -282,14 +292,14 @@ public class Game {
      * Get the time the last frame took to process
      * @return last frame time in seconds
      */
-    public float deltaTime() {
+    public static  float deltaTime() {
         return lastFrameTime;
     }
 
     /**
      * Mark that the game should stop running
      */
-    public void markEnd() {
+    public static  void markEnd() {
         end = true;
     }
 
@@ -297,7 +307,7 @@ public class Game {
      * Set the window clear color
      * @param color new clear color
      */
-    public void setClearColor(Color color) {
+    public static  void setClearColor(Color color) {
         GL45.glClearColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
                 color.getAlpha() / 255f);
     }
