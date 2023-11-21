@@ -1,4 +1,4 @@
-package game;
+package game.test;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import game.Component;
+import game.Game;
+import game.GameObject;
 import game.simple.FirstPersonFlyCamera;
 import game.simple.PrimitiveCreator;
 import gizmos.OriginGizmo;
@@ -118,8 +121,8 @@ public class Test {
 
     private static class GameCloser extends Component {
         public void onTick() {
-            if(gameObject.inputSystem.pressed("close"))
-                gameObject.game.markEnd();
+            if(game.inputSystem.pressed("close"))
+                game.markEnd();
         }
     }
 }
