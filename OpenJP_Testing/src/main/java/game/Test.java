@@ -110,15 +110,14 @@ public class Test {
         game.addGameObject(sphere);
 
         GameObject door = new GameObject();
-        BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.fbx"));
-        FBXLoader.parseFile(doorReader);
-        // MeshRenderer doorRenderer = new MeshRenderer(new Mesh(ObjLoader.parseFile(doorReader)));
-        // MeshRenderer doorRenderer = new MeshRenderer(new Mesh(FBXLoader.parseFile(doorReader)));
-        // doorRenderer.materials.setMaterial(0, new Material(new Color(200, 200, 200), 0.25f));
-        // doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
-        // door.addComponent(doorRenderer);
-        // // doorRenderer.defferRender = true;
-        // game.addGameObject(door);
+        BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.obj"));
+        // FBXLoader.parseFile(doorReader);
+        MeshRenderer doorRenderer = new MeshRenderer(new Mesh(ObjLoader.parseFile(doorReader)));
+        doorRenderer.materials.setMaterial(0, new Material(new Color(200, 200, 200), 0.25f));
+        doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
+        door.addComponent(doorRenderer);
+        // doorRenderer.defferRender = true;
+        game.addGameObject(door);
         
         game.run();
     }
