@@ -1,6 +1,7 @@
 package game.simple;
 
 import collision.Collider;
+import collision.PlaneCollider;
 import game.GameObject;
 import objects.MeshCache;
 import objects.MeshRenderer;
@@ -43,7 +44,7 @@ public class PrimitiveCreator {
         GameObject gO = new GameObject();
         MeshRenderer mR = new MeshRenderer(MeshCache.getMesh("meshes/plane.bin"));
         mR.materials.setMaterial(0, new Material());
-        Collider collider = new Collider(MeshCache.getMeshData("meshes/plane.bin"));
+        Collider collider = new PlaneCollider();
         gO.addComponent(collider);
         gO.addComponent(mR);
         return gO;

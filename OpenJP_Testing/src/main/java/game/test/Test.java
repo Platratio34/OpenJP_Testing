@@ -108,16 +108,10 @@ public class Test {
         // sMR.defferRender = true;
         sMR.materials.setMaterial(0, new Material());
         sphere.addComponent(sMR);
+        // sMR.defferRender = true;
         Game.addGameObject(sphere);
 
-        GameObject door = new GameObject();
-        BufferedReader doorReader = new BufferedReader(new FileReader("MilShip1_BulkHeadDoor.obj"));
-        MeshRenderer doorRenderer = new MeshRenderer(new Mesh(ObjLoader.parseFile(doorReader)));
-        doorRenderer.materials.setMaterial(0, new Material(new Color(200, 200, 200), 0.25f));
-        doorRenderer.materials.setMaterial(1, new Material(new Color(100, 100, 100), 0.75f));
-        door.addComponent(doorRenderer);
-        // doorRenderer.defferRender = true;
-        Game.addGameObject(door);
+        
 
         GameObject colliderTester = new GameObject();
         colliderTester.addComponent(new CollisionTester());
@@ -127,11 +121,15 @@ public class Test {
         testColliderMesh.materials.setMaterial(0, new Material());
         colliderTester.addComponent(testColliderMesh);
         Game.addGameObject(colliderTester);
-        colliderTester.transform.setPosition(0,10f,0);
+        colliderTester.transform.setPosition(2,10f,0);
         // colliderTester.transform.setScale(0.5f, 0.5f, 0.5f);
         sphere.transform.setParent(colliderTester.transform);
 
         // testCollider.mask;
+
+        Game.inputSystem.addBind("door", GLFW.GLFW_KEY_3);
+
+        TestDoor.create();
         
         Game.run();
     }

@@ -110,7 +110,7 @@ public class Collider extends Component {
     /**
      * Computes the distance to the furthest point of the collider. Used for quick rejection in collision tests
      */
-    private void computeBounds() {
+    protected void computeBounds() {
         boundDist = 0;
         for (Triangle triangle : triangles) {
             float d = triangle.getMaxDist();

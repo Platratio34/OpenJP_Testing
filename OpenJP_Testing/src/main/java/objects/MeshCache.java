@@ -1,7 +1,10 @@
 package objects;
 
 import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
+import meshLoaders.ObjLoader;
 import util.BinMesh;
 import util.MeshData;
 
@@ -71,9 +74,20 @@ public class MeshCache {
             }
             meshes.put(path, mesh);
             return;
-        }
-        if (path.contains(".bin")) {
+        } else if (path.contains(".bin")) {
             MeshData data = BinMesh.meshDataFromBinResource(path);
+            if (data == null) {
+                throw new IOException("Unable to load mesh; Unknown error");
+            }
+            Mesh mesh = new Mesh(data);
+            meshes.put(path, mesh);
+            meshData.put(path, data);
+            return;
+        } else if (path.contains(".obj")) {
+            ClassLoader classLoader = MeshCache.class.getClassLoader();
+            BufferedReader doorReader = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(path)));
+            MeshData data = ObjLoader.parseFile(doorReader);
+            // MeshData data = BinMesh.meshDataFromBinResource(path);
             if (data == null) {
                 throw new IOException("Unable to load mesh; Unknown error");
             }
