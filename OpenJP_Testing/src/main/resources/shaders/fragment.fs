@@ -1,6 +1,6 @@
 #version 310 es
+#extension GL_EXT_bindless_texture : require
 precision mediump float;
-#extension GL_ARB_bindless_texture : require
 
 in vec4 vertexColor;
 in vec3 vertexNormal;
